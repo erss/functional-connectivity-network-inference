@@ -13,7 +13,7 @@ model.window_step = 0.5; % in seconds
 model.window_size = 1;   % in seconds
 model.q=0.05;
 model.nsurrogates = 100;
-[ model ] = cross_corr_bootstrap( model);
+[ model ] = infer_network_correlation_bootstrap( model);
 %infertime = toc;
 %model.C
 %%

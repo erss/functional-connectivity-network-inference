@@ -21,7 +21,7 @@ for ii = 1:nsurrogates
     xi = data(i,ti:(ti+window_size-1));
     xj = data(j,tj:(tj+window_size-1));
     
-    [mxij,lagij] = cross_corr_2([xi' xj']);
+    [mxij,lagij] = cross_corr_statistic([xi' xj']);
     
     mx(ii)  = mxij(3);
     lag(ii) = lagij(3);

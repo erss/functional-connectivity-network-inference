@@ -1,4 +1,4 @@
-function [ model ] = cross_corr_bootstrap( model)
+function [ model ] = infer_network_correlation_bootstrap( model)
 %UNTITLED6 Summary of this function goes here
 %   Detailed explanation goes here
 t=model.t;
@@ -33,7 +33,7 @@ for k = 1:i_total
     t_start = t(1) + (k-1) * window_step;   %... get window start time [s],
     t_stop  = t_start + window_size;                  %... get window stop time [s],
     indices = t >= t_start & t < t_stop;             %... find indices for window in t,
-    [mx0(:,:,k), lag0(:,:,k)] = cross_corr_2(data(:,indices)');
+    [mx0(:,:,k), lag0(:,:,k)] = cross_corr_statistic(data(:,indices)');
      fprintf(['... inferring nets: ' num2str(k) ' of ' num2str(i_total) '\n'])
      t_net(k)       = t_start; 
 end

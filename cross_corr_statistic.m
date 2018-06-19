@@ -37,7 +37,7 @@
 % x. What's the best way to measure std of correlation (used to compute
 % p-value of max(abs(cc)))?
 
-function [mx,lag] = cross_corr_2(dgrid, varargin)
+function [mx,lag] = cross_corr_statistic(dgrid, varargin)
 
   %Define some useful variables.
   winSize = size(dgrid,1);          %The length of the data in time.
