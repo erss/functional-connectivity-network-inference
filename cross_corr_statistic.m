@@ -45,10 +45,6 @@ function [mx,lag] = cross_corr_statistic(dgrid, varargin)
   
   %Consider max correlations only within [-winSize/4, winSize/4].
   maxLags=floor(winSize/4);
-  winSizeM = maxLags*2+1;           %Window of +/- maxLags and zero lag.
-  
-  %Indicies for the upper half of the matrix - useful later.
-  up = find(triu(ones(N,N),1));
   
   %Do the correlation analysis.    
   X = dgrid(:,:)';                                      %Call the data X.

@@ -1,28 +1,17 @@
 function [ model ] = infer_network_correlation_bootstrap( model)
-%UNTITLED6 Summary of this function goes here
-%   Detailed explanation goes here
+% Infers network structure using boostrap procedure to determine
+% significance.
+
+% 1. Load model parameters
 t=model.t;
 window_size = model.window_size;
 window_step = model.window_step;
-% Step 1: Generate surrogate and compute surrogate cross correlations
-nsurrogates = model.nsurrogates;
-n = size(model.data,1);
-tic
-model = gen_surrogate_distr( model);
-model.disttime = toc;
-% mx = zeros([n n nsurrogates]);
-% lag = zeros([n n nsurrogates]);
-
-% for ii = 1:nsurrogates
-%     surrogate_network = gen_surrogate_data(model);
-%     [mx(:,:,ii), lag(:,:,ii)] = cross_corr_2(surrogate_network');
-%      fprintf(['... gen surrogate: ' num2str(ii) ' of ' num2str(nsurrogates) '\n'])
-% end
-
-% CC of real data
 data = model.data;
+nsurrogates = model.nsurrogates;
+n = size(model.data,1);  % number of electrodes
 
 
+% 2. Compute mx cross correlation for data.
 % Divide the data into windows, with overlap.
 i_total = 1+floor((t(end)-t(1)-window_size) /window_step);  % # intervals.
 
@@ -34,12 +23,16 @@ for k = 1:i_total
     t_stop  = t_start + window_size;                  %... get window stop time [s],
     indices = t >= t_start & t < t_stop;             %... find indices for window in t,
     [mx0(:,:,k), lag0(:,:,k)] = cross_corr_statistic(data(:,indices)');
-     fprintf(['... inferring nets: ' num2str(k) ' of ' num2str(i_total) '\n'])
-     t_net(k)       = t_start; 
+    fprintf(['... inferring nets: ' num2str(k) ' of ' num2str(i_total) '\n'])
+    t_net(k)       = t_start;
 end
 
+% 3. Compute surrogate distrubution.
+tic
+model = gen_surrogate_distr( model);
+model.disttime = toc;
 
-% Step 3: build binary network
+% 4. Compute pvals using surrogate distribution.
 pval = NaN(n,n,i_total);
 mx =model.mx_bootstrap;
 for i = 1:n
@@ -54,13 +47,12 @@ for i = 1:n
             if (p == 0)
                 pval(i,j,k)=0.5/nsurrogates;
             end
-        end
-        
+        end 
     end
 end
 
 
-%%Step 4: FDR to determine significant pvals
+% 5. Use FDR to determine significant pvals.
 q=model.q;
 m = (n^2-n)/2;                 % number of total tests performed
 ivals = (1:m)';
@@ -87,8 +79,8 @@ for ii = 1:size(pval,3)
 end
 
 
-% Output everything
-model.taxis = t_net;
+% 6. Output/save everything
+model.dynamic_network_taxis = t_net;
 model.mx0 = mx0;
 model.lag0 = lag0;
 model.C = C;

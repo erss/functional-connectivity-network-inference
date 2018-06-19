@@ -1,5 +1,6 @@
 function [ model ] = gen_surrogate_distr( model)
-% Shuffles channels in time to generates one surrogate network.
+% Shuffles channels in time + space to generate distribution of max abs
+% cross correlation values.
 
 data = model.data;
 window_size = model.window_size * model.sampling_frequency;   % window size (samples)
@@ -12,39 +13,26 @@ lag = zeros(1,nsurrogates);
 
 for ii = 1:nsurrogates
     
-    ij = randperm(n,2);
+    ij = randperm(n,2); % Choose two random electrodes i & j, without replacement.
     i=ij(1);
     j=ij(2);
-    ti = randi(T-window_size+1);
-    tj = randi(T-window_size+1);
+    ti = randi(T-window_size+1); % Choose random time, i.
+    tj = randi(T-window_size+1); % Choose random time, j.
     
     xi = data(i,ti:(ti+window_size-1));
     xj = data(j,tj:(tj+window_size-1));
     
-    [mxij,lagij] = cross_corr_statistic([xi' xj']);
+    [mxij,lagij] = cross_corr_statistic([xi' xj']); % Compute cross-corr
+                                                    % between xi & xj.
     
     mx(ii)  = mxij(3);
     lag(ii) = lagij(3);
     
 end
+
+% Store surrogate distribution, and lags where abs maximum values occur.
 model.mx_bootstrap = mx;
 model.lag_bootstrap = lag;
 
-% % shuffle in time
-% starting_times = randi(T-window_size+1,[nsurrogates, 1]);  % Randomly picks starting
-% starting_times = repmat(starting_times,[1,window_size]);
-% 
-% indices = 0:window_size-1;
-% indices = repmat(indices,[nsurrogates,1]);
-% indices = starting_times + indices;
-% indices(indices>size(data,2)) = NaN;
-% 
-% 
-% % shuffle in space
-% space_index = randi(n,[1 nsurrogates])' - ones([1 nsurrogates])';
-% indices = indices + repmat(space_index,[1,window_size]).*size(data,2);
-% % 
-%  d= data';
-%  surrogate_network=d(indices);
 end
 
