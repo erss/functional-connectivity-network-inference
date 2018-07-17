@@ -44,7 +44,7 @@ function [mx,lag] = cross_corr_statistic(dgrid, varargin)
   N = size(dgrid,2);                %The number of electrodes.
   
   %Consider max correlations only within [-winSize/4, winSize/4].
-  maxLags=floor(winSize/4);
+  maxLags = 20; %floor(winSize/4);
   
   %Do the correlation analysis.    
   X = dgrid(:,:)';                                      %Call the data X.

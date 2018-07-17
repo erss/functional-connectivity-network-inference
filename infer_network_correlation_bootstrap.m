@@ -3,18 +3,19 @@ function [ model ] = infer_network_correlation_bootstrap( model)
 % significance.
 
 % 1. Load model parameters
-t=model.t;
-window_size = model.window_size;
-window_step = model.window_step;
-data = model.data;
+t=model.t_clean;
+window_size = model.window_size*model.sampling_frequency;
+window_step = floor(model.window_step*model.sampling_frequency);
+data = model.data_clean;
 nsurrogates = model.nsurrogates;
 n = size(model.data,1);  % number of electrodes
 
 
+
+
 % 2. Compute mx cross correlation for data.
 % Divide the data into windows, with overlap.
-i_total = 1+floor((t(end)-t(1)-window_size) /window_step);  % # intervals.
-
+i_total = 1+floor((length(t)-1-window_size) /window_step); % # intervals
 mx0 = zeros([n n i_total]);
 lag0 = zeros([n n i_total]);
 t_net = zeros(1,i_total);
@@ -28,11 +29,11 @@ for k = 1:i_total
 end
 
 % 3. Compute surrogate distrubution.
-tic
+fprintf(['... generating surrogate distribution \n'])
 model = gen_surrogate_distr( model);
-model.disttime = toc;
 
 % 4. Compute pvals using surrogate distribution.
+fprintf(['... computing pvals \n'])
 pval = NaN(n,n,i_total);
 mx =model.mx_bootstrap;
 for i = 1:n
@@ -53,6 +54,7 @@ end
 
 
 % 5. Use FDR to determine significant pvals.
+fprintf(['... computing significance (FDR) \n'])
 q=model.q;
 m = (n^2-n)/2;                 % number of total tests performed
 ivals = (1:m)';
