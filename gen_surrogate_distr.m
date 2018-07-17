@@ -21,7 +21,8 @@ for ii = 1:nsurrogates
    % tj = randi(T-window_size+1); % Choose random time, j.
     ti = randi(length(taxis));
     tj = randi(length(taxis));
-    
+    ti = taxis(ti);
+    tj = taxis(tj);
     xi = data(i,ti:(ti+window_size-1));
     xj = data(j,tj:(tj+window_size-1));
     
