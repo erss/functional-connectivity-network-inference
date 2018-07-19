@@ -3,9 +3,9 @@ function [ model ] = infer_network_correlation_bootstrap( model)
 % significance.
 
 % 1. Load model parameters
-t=model.t_clean;
-window_size = model.window_size*model.sampling_frequency;
-window_step = floor(model.window_step*model.sampling_frequency);
+t=model.t;
+window_size = model.window_size;
+window_step = model.window_step;
 data = model.data_clean;
 nsurrogates = model.nsurrogates;
 n = size(model.data,1);  % number of electrodes
@@ -15,17 +15,27 @@ n = size(model.data,1);  % number of electrodes
 
 % 2. Compute mx cross correlation for data.
 % Divide the data into windows, with overlap.
-i_total = 1+floor((length(t)-1-window_size) /window_step); % # intervals
+i_total = 1+floor((t(end)-t(1)-window_size) /window_step);
 mx0 = zeros([n n i_total]);
 lag0 = zeros([n n i_total]);
 t_net = zeros(1,i_total);
 for k = 1:i_total
+    
     t_start = t(1) + (k-1) * window_step;   %... get window start time [s],
     t_stop  = t_start + window_size;                  %... get window stop time [s],
-    indices = t >= t_start & t < t_stop;             %... find indices for window in t,
-    [mx0(:,:,k), lag0(:,:,k)] = cross_corr_statistic(data(:,indices)');
+    indices = t >= t_start & t < t_stop;
+    d = data(:,indices)';
+    if sum(sum(isnan(d))) == 0
+        
+        [mx0(:,:,k), lag0(:,:,k)] = cross_corr_statistic(d);
+    else
+        mx0(:,:,k) = NaN(n);
+        lag0(:,:,k) = NaN(n);
+    end
     fprintf(['... inferring nets: ' num2str(k) ' of ' num2str(i_total) '\n'])
     t_net(k)       = t_start;
+    
+    
 end
 
 % 3. Compute surrogate distrubution.
@@ -48,7 +58,7 @@ for i = 1:n
             if (p == 0)
                 pval(i,j,k)=0.5/nsurrogates;
             end
-        end 
+        end
     end
 end
 
@@ -88,4 +98,3 @@ model.lag0 = lag0;
 model.C = C;
 model.pvals = pval;
 end
-

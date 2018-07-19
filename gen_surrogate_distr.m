@@ -10,28 +10,37 @@ nsurrogates = model.nsurrogates;
 
 mx = zeros(1,nsurrogates);
 lag = zeros(1,nsurrogates);
-taxis = model.dynamic_network_taxis;
 
 for ii = 1:nsurrogates
     
     ij = randperm(n,2); % Choose two random electrodes i & j, without replacement.
     i=ij(1);
     j=ij(2);
-    %ti = randi(T-window_size+1); % Choose random time, i.
-   % tj = randi(T-window_size+1); % Choose random time, j.
-    ti = randi(length(taxis));
-    tj = randi(length(taxis));
-    ti = taxis(ti);
-    tj = taxis(tj);
+    
+    
+    ti = randi(T-window_size+1); % Choose random time, i.
+    tj = randi(T-window_size+1); % Choose random time, j.
     xi = data(i,ti:(ti+window_size-1));
     xj = data(j,tj:(tj+window_size-1));
+    
+    while sum(sum(isnan(xi))) > 0
+        ti = randi(T-window_size+1); 
+        xi = data(i,ti:(ti+window_size-1));
+    end
+    
+    while sum(sum(isnan(xj))) > 0
+        tj = randi(T-window_size+1); 
+        xj = data(i,tj:(tj+window_size-1));
+         fprintf(['NaN \n'])
+    end
+    
     
     [mxij,lagij] = cross_corr_statistic([xi' xj']); % Compute cross-corr
                                                     % between xi & xj.
     
     mx(ii)  = mxij(3);
     lag(ii) = lagij(3);
-    fprintf(num2st(ii),'\n')
+    fprintf([num2str(ii),'\n'])
 end
 
 % Store surrogate distribution, and lags where abs maximum values occur.
