@@ -52,10 +52,13 @@ for i = 1:n
         v = sort(v);
         
         for k = 1:i_total
+            
             mxij = mx0(i,j,k);
             p =sum(v>mxij); % upper tail
             pval(i,j,k)= p/nsurrogates;
-            if (p == 0)
+            if isnan(mx0(i,j,k))
+                pval(i,j,k) = NaN;
+            else if (p == 0)
                 pval(i,j,k)=0.5/nsurrogates;
             end
         end
@@ -73,6 +76,8 @@ sp = ivals*q/m;
 C = zeros(n,n);
 
 for ii = 1:size(pval,3)
+    
+    if sum(sum(isnan(pval(:,:,ii)))) == 0
     adj_mat = pval(:,:,ii);
     p = adj_mat(isfinite(adj_mat));
     p = sort(p);
@@ -88,7 +93,9 @@ for ii = 1:size(pval,3)
     Ctemp = zeros(n);
     Ctemp(sigPs)=1;
     C(:,:,ii) = Ctemp+Ctemp';
-end
+    else
+       C(:,:,ii) = NaN(n,n);
+    end
 
 
 % 6. Output/save everything
