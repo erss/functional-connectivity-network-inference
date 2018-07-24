@@ -1,10 +1,7 @@
 function [ model ] = remove_artifacts_all_lobes( model, patient_coordinates )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-threshold = -1.5;
-
-
-
+threshold = -2;
 
 
 %%% Find time chunks with slope > - 1.5

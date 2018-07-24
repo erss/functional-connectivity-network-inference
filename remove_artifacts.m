@@ -1,7 +1,7 @@
 function [ model ] = remove_artifacts( model, patient_coordinates )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-slope_threshold = -1.5;
+slope_threshold = -2;
 
  [ LN,RN ] = find_subnetwork_lobe( patient_coordinates,'temporal');
 

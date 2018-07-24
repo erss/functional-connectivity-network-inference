@@ -56,10 +56,14 @@ for i = 1:n
             mxij = mx0(i,j,k);
             p =sum(v>mxij); % upper tail
             pval(i,j,k)= p/nsurrogates;
-            if isnan(mx0(i,j,k))
-                pval(i,j,k) = NaN;
-            else if (p == 0)
+%             if isnan(mx0(i,j,k))
+%                 pval(i,j,k) = NaN;
+%             else
+            if (p == 0)
                 pval(i,j,k)=0.5/nsurrogates;
+            end
+            if isnan( mxij)
+                  pval(i,j,k)=NaN;
             end
         end
     end
@@ -73,30 +77,30 @@ m = (n^2-n)/2;                 % number of total tests performed
 ivals = (1:m)';
 sp = ivals*q/m;
 
-C = zeros(n,n);
+C = zeros(n,n,size(pval,3));
 
 for ii = 1:size(pval,3)
     
-    if sum(sum(isnan(pval(:,:,ii)))) == 0
-    adj_mat = pval(:,:,ii);
-    p = adj_mat(isfinite(adj_mat));
-    p = sort(p);
-    i0 = find(p-sp<=0);
-    if ~isempty(i0)
-        threshold = p(max(i0));
-    else
-        threshold = -1.0;
-    end
-    
-    %Significant p-values are smaller than threshold.
-    sigPs = adj_mat <= threshold;
-    Ctemp = zeros(n);
-    Ctemp(sigPs)=1;
-    C(:,:,ii) = Ctemp+Ctemp';
+    if sum(sum(isfinite(pval(:,:,ii)))) >0
+        adj_mat = pval(:,:,ii);
+        p = adj_mat(isfinite(adj_mat));
+        p = sort(p);
+        i0 = find(p-sp<=0);
+            if ~isempty(i0)
+                threshold = p(max(i0));
+            else
+                threshold = -1.0;
+            end
+
+        %Significant p-values are smaller than threshold.
+        sigPs = adj_mat <= threshold;
+        Ctemp = zeros(n);
+        Ctemp(sigPs)=1;
+        C(:,:,ii) = Ctemp+Ctemp';
     else
        C(:,:,ii) = NaN(n,n);
     end
-
+end
 
 % 6. Output/save everything
 model.dynamic_network_taxis = t_net;
