@@ -1,10 +1,10 @@
-function [ model ] = remove_artifacts_all_lobes( model, patient_coordinates )
+function [ model, bvalues ] = remove_artifacts_all_lobes( model, patient_coordinates )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 threshold = -2;
 
 
-%%% Find time chunks with slope > - 1.5
+%%% Find time chunks with slope > - 2
 f0=model.sampling_frequency;
 data = model.data;
 m = mean(data,2);
@@ -30,6 +30,7 @@ i_total = 1+floor((t(end)-t(1)-window_size) /window_step);  % # intervals.
 data_clean = data;
 t_clean = t;
 
+bvalues = zeros(5,i_total);
 for k = 1:i_total
     t_start = t(1) + (k-1) * window_step;   %... get window start time [s],
     t_stop  = t_start + window_size;                  %... get window stop time [s],
@@ -81,11 +82,9 @@ for k = 1:i_total
         t_clean(indices) =NaN;
     end
     fprintf([num2str(k),'\n'])
+    
+    bvalues(:,k) = [bp(2); bt(2);bf(2);bo(2);b(2)] ;
 end
-
-
-
-
 
 model.data_clean = data_clean;
 model.t_clean = t_clean;
