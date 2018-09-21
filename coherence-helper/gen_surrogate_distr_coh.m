@@ -1,6 +1,6 @@
-function [ model ] = gen_surrogate_distr( model)
-% Shuffles channels in time + space to generate distribution of max abs
-% cross correlation values.
+function [ model ] = gen_surrogate_distr_coh( model,params,movingwin,f_start,f_stop)
+% Shuffles channels in time + space to generate distribution of coherence
+% and imaginary coherence values
 
 data = model.data_clean;
 window_size = model.window_size * model.sampling_frequency;   % window size (samples)
@@ -8,8 +8,8 @@ n = size(data,1);   % size of network
 T = size(data,2);   % length of network
 nsurrogates = model.nsurrogates;
 
-mx = zeros(1,nsurrogates);
-lag = zeros(1,nsurrogates);
+distr_imag_coh = zeros(1,nsurrogates);
+distr_coh      = zeros(1,nsurrogates);
 
 for ii = 1:nsurrogates
     
@@ -17,35 +17,37 @@ for ii = 1:nsurrogates
     i=ij(1);
     j=ij(2);
     
-    
     ti = randi(T-window_size+1); % Choose random time, i.
     tj = randi(T-window_size+1); % Choose random time, j.
     xi = data(i,ti:(ti+window_size-1));
     xj = data(j,tj:(tj+window_size-1));
     
     while sum(sum(isnan(xi))) > 0
-        ti = randi(T-window_size+1); 
+        ti = randi(T-window_size+1);
         xi = data(i,ti:(ti+window_size-1));
     end
     
     while sum(sum(isnan(xj))) > 0
-        tj = randi(T-window_size+1); 
+        tj = randi(T-window_size+1);
         xj = data(i,tj:(tj+window_size-1));
-         fprintf(['NaN \n'])
+        fprintf(['NaN \n'])
     end
     
+    [C,~,S12,S1,S2,~,f]=cohgramc_MAK(xi',xj',movingwin,params);
+    f_indices = f >= f_start & f <= f_stop;
+    cross_spec = mean(S12(:,f_indices),2);
+    spec1      = mean(S1(:,f_indices),2);
+    spec2      = mean(S2(:,f_indices),2);
+    distr_imag_coh(ii)= imag(cross_spec) ./ sqrt( spec1 ) ./ sqrt( spec2 );
+    distr_coh(ii) =  mean(C(:,f_indices),2);
     
-    [mxij,lagij] = cross_corr_statistic([xi' xj']); % Compute cross-corr
-                                                    % between xi & xj.
     
-    mx(ii)  = mxij(3);
-    lag(ii) = lagij(3);
     fprintf([num2str(ii),'\n'])
 end
 
 % Store surrogate distribution, and lags where abs maximum values occur.
-model.mx_bootstrap = mx;
-model.lag_bootstrap = lag;
+model.distr_imag_coh = distr_imag_coh;
+model.distr_coh = distr_coh;
 
 end
 

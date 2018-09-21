@@ -10,9 +10,6 @@ data = model.data_clean;
 nsurrogates = model.nsurrogates;
 n = size(model.data,1);  % number of electrodes
 
-
-
-
 % 2. Compute mx cross correlation for data.
 % Divide the data into windows, with overlap.
 i_total = 1+floor((t(end)-t(1)-window_size) /window_step);
