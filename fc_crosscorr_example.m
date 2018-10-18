@@ -10,7 +10,7 @@
 % OUTFIGPATH = strcat('~/Documents/MATLAB/',model.patient_name(1:9),'/');
 % patient_coordinates = load_patient_coordinates( model.patient_name );
 % % % 1. LOAD DATA
-model.patient_name ='model013';
+model.patient_name ='model020';
 model.data = [data_left;data_right];
 % % 2. LOAD MODEL PARAMETERS
 model.sampling_frequency = 2035;
@@ -21,12 +21,12 @@ model.q=0.05;
 model.nsurrogates = 10000;
 model.t=time;
 % % 3. Remove artifacts
-model = remove_artifacts_all_lobes(model,patient_coordinates_013);
+model = remove_artifacts_all_lobes(model,patient_coordinates_020);
 % 3a. INFER NETWORK
-
-[ model013 ] = infer_network_correlation_bootstrap( model);
-
-% 3b. SAVE DATAs
- model013.data = NaN;  % clear data
- model013.data_clean = NaN;  % clear data
- save('model013_IC_C.mat','model013')
+% 
+% [ model013 ] = infer_network_correlation_bootstrap( model);
+% 
+% % 3b. SAVE DATAs
+%  model013.data = NaN;  % clear data
+%  model013.data_clean = NaN;  % clear data
+%  save('model013_IC_C.mat','model013')
