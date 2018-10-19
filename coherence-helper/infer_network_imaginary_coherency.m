@@ -6,6 +6,7 @@ function [ model ] = infer_network_imaginary_coherency( model)
 % 1. Load model parameters
 nsurrogates = model.nsurrogates;
 data = model.data_clean;
+time = model.t;
 n = size(model.data_clean,1);  % number of electrodes
 Fs = model.sampling_frequency;
 
@@ -27,25 +28,27 @@ params.fpass    = [1 50.1];                                  % ... freq range to
 params.Fs       = Fs;                                        % ... sampling frequency.
 movingwin       = [ model.window_size, model.window_step];   % ... Window size and step.
 
+
 %%% If imaginary coherency AND coherence already exist, skip this step.
 if ~isfield(model,'kIC_beta') || ~isfield(model,'kC')
     
     d1 = data(1,:)';
     d2 = data(2,:)';
-    [~,~,~,~,~,t,~]=cohgramc_MAK(d1,d2,movingwin,params);
-    
+  %  [~,~,~,~,~,t,f]=cohgramc_MAK(d1,d2,movingwin,params);
+   [~,~,~,~,~,t,f]=cohgramc(d1,d2,movingwin,params); 
     kIC_beta  = zeros([n n length(t)]);
     kC  = zeros([n n length(t)]);
     
     % Compute the coherence and imaginary coherency.
     % Note that coherence is positive and imaginary coherency is +/-
+ %%%% MANU: subtract mean before -- this is done in the remove artifacts
+ %%%% step
     for i = 1:n
-        for j = (i+1):n
-            
-            d1 = data(i,:)';
+        d1 = data(i,:)';
+        parfor j = (i+1):n % parfor on inside,
             d2 = data(j,:)';
-            [net_coh,~,S12,S1,S2,t,f]=cohgramc_MAK(d1,d2,movingwin,params);
-            f_indices = f >= f_start & f <= f_stop;
+            [net_coh,~,S12,S1,S2,~,ftmp]=cohgramc(d1,d2,movingwin,params);
+            f_indices = ftmp >= f_start & ftmp <= f_stop;
             cross_spec = mean(S12(:,f_indices),2);
             spec1      = mean(S1(:,f_indices),2);
             spec2      = mean(S2(:,f_indices),2);
@@ -53,9 +56,12 @@ if ~isfield(model,'kIC_beta') || ~isfield(model,'kC')
             kC(i,j,:) =  mean(net_coh(:,f_indices),2);
             fprintf(['Infering edge row: ' num2str(i) ' and col: ' num2str(j) '. \n' ])
         end
+        fprintf(['Inferred edge row: ' num2str(i) '\n' ])
+
     end
     
-model.dynamic_network_taxis = t;
+model.dynamic_network_taxis = t + time(1); %%% DOUBLE CHECK THIS STEP, to
+                                           %%% TO FIX TIME AXIS
 model.kIC_beta  = kIC_beta;
 model.f = f;
 model.kC = kC;
@@ -72,7 +78,7 @@ fprintf(['... computing pvals \n'])
 
 % Initialize imaginary coherency pvals
 pval_imag_coh =  NaN(size(model.kIC_beta));
-distr_imag_coh = sort(abs(model.distr_imag_coh)); % MAKE DIST ALL POSTIVE
+% distr_imag_coh = sort(abs(model.distr_imag_coh)); % MAKE DIST ALL POSTIVE
 
 % Initialize coherence pvals
 pval_coh = NaN(size(model.kIC_beta));
@@ -85,18 +91,18 @@ for i = 1:n
         
         for k = 1:num_nets
             
-            % Compute imaginary coherence for node pair (i,j) at time k
-            kBetaTemp = abs(model.kIC_beta(i,j,k)); % MAKE DIST ALL POSTIVE
-         
-            if isnan(kBetaTemp)
-                pval_imag_coh(i,j,k)=NaN;
-            else
-                p =sum(distr_imag_coh>kBetaTemp); % upper tail
-                pval_imag_coh(i,j,k)= p/nsurrogates;
-                if (p == 0)
-                    pval_imag_coh(i,j,k)=0.5/nsurrogates;
-                end    
-            end
+%             % Compute imaginary coherence for node pair (i,j) at time k
+%             kBetaTemp = abs(model.kIC_beta(i,j,k)); % MAKE DIST ALL POSTIVE
+%          
+%             if isnan(kBetaTemp)
+%                 pval_imag_coh(i,j,k)=NaN;
+%             else
+%                 p =sum(distr_imag_coh>kBetaTemp); % upper tail
+%                 pval_imag_coh(i,j,k)= p/nsurrogates;
+%                 if (p == 0)
+%                     pval_imag_coh(i,j,k)=0.5/nsurrogates;
+%                 end    
+%             end
             
             % Compute coherence for node pair (i,j) at time k
             kCohTemp = model.kC(i,j,k);
@@ -148,35 +154,35 @@ for ii = 1:num_nets
 end
 
 % Compute significant pvals for imaginary coherency
-net_imag_coh = zeros(n,n,num_nets);
-for ii = 1:num_nets
-    
-    if sum(sum(isfinite(pval_imag_coh(:,:,ii)))) >0
-        adj_mat = pval_imag_coh(:,:,ii);
-        p = adj_mat(isfinite(adj_mat));
-        p = sort(p);
-        i0 = find(p-sp<=0);
-        if ~isempty(i0)
-            threshold = p(max(i0));
-        else
-            threshold = -1.0;
-        end
-        
-        %Significant p-values are smaller than threshold.
-        sigPs = adj_mat <= threshold;
-        Ctemp = zeros(n);
-        Ctemp(sigPs)=1;
-        net_imag_coh(:,:,ii) = Ctemp+Ctemp';
-    else
-        net_imag_coh(:,:,ii) = NaN(n,n);
-    end
-end
+% net_imag_coh = zeros(n,n,num_nets);
+% for ii = 1:num_nets
+%     
+%     if sum(sum(isfinite(pval_imag_coh(:,:,ii)))) >0
+%         adj_mat = pval_imag_coh(:,:,ii);
+%         p = adj_mat(isfinite(adj_mat));
+%         p = sort(p);
+%         i0 = find(p-sp<=0);
+%         if ~isempty(i0)
+%             threshold = p(max(i0));
+%         else
+%             threshold = -1.0;
+%         end
+%         
+%         %Significant p-values are smaller than threshold.
+%         sigPs = adj_mat <= threshold;
+%         Ctemp = zeros(n);
+%         Ctemp(sigPs)=1;
+%         net_imag_coh(:,:,ii) = Ctemp+Ctemp';
+%     else
+%         net_imag_coh(:,:,ii) = NaN(n,n);
+%     end
+% end
 
 % 6. Output/save everything
 
  model.net_coh = net_coh;
- model.net_imag_coh = net_imag_coh;
- model.pval_imag_coh = pval_imag_coh;
+%  model.net_imag_coh = net_imag_coh;
+%  model.pval_imag_coh = pval_imag_coh;
  model.pval_coh = pval_coh;
 
 
