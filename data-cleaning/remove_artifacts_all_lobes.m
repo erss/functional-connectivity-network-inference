@@ -16,7 +16,7 @@ threshold = -2;
     [ LNf,RNf] = find_subnetwork_lobe( patient_coordinates,'frontal');
     [LN,RN] = find_subnetwork_central( patient_coordinates);
     
-if isfield(model,'t_clean') & ~isnan(model.t_clean)
+if isfield(model,'t_clean') && length(model.t_clean) > 1
         data_clean = data;
     
     for t = 1:length(model.t_clean)
