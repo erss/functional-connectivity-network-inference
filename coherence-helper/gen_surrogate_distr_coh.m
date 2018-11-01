@@ -8,7 +8,7 @@ n = size(data,1);   % size of network
 T = size(data,2);   % length of network
 nsurrogates = model.nsurrogates;
 
-distr_imag_coh = zeros(1,nsurrogates);
+%distr_imag_coh = zeros(1,nsurrogates);
 distr_coh      = zeros(1,nsurrogates);
 
 for ii = 1:nsurrogates
@@ -30,15 +30,15 @@ for ii = 1:nsurrogates
     while sum(sum(isnan(xj))) > 0
         tj = randi(T-window_size+1);
         xj = data(i,tj:(tj+window_size-1));
-        fprintf(['NaN \n'])
+       
     end
     
-    [C,~,S12,S1,S2,~,f]=cohgramc_MAK(xi',xj',movingwin,params);
+    [C,~,S12,S1,S2,~,f]=cohgramc(xi',xj',movingwin,params);
     f_indices = f >= f_start & f <= f_stop;
     cross_spec = mean(S12(:,f_indices),2);
-    spec1      = mean(S1(:,f_indices),2);
-    spec2      = mean(S2(:,f_indices),2);
-    distr_imag_coh(ii)= imag(cross_spec) ./ sqrt( spec1 ) ./ sqrt( spec2 );
+%     spec1      = mean(S1(:,f_indices),2);
+%     spec2      = mean(S2(:,f_indices),2);
+%     distr_imag_coh(ii)= imag(cross_spec) ./ sqrt( spec1 ) ./ sqrt( spec2 );
     distr_coh(ii) =  mean(C(:,f_indices),2);
     
     
@@ -46,7 +46,7 @@ for ii = 1:nsurrogates
 end
 
 % Store surrogate distribution, and lags where abs maximum values occur.
-model.distr_imag_coh = distr_imag_coh;
+%     model.distr_imag_coh = distr_imag_coh;
 model.distr_coh = distr_coh;
 
 end

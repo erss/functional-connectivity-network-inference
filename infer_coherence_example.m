@@ -1,7 +1,7 @@
 %%% fc-network-ex
 
 % DYANMIC NETWORK SCRIPT EXAMPLE
-
+addpath('Toolboxes/chronux_2_12')
 %%% 1. LOAD DATA
  model.patient_name ='model013';
  model.data = [data_left; data_right];
@@ -11,14 +11,14 @@ model.sampling_frequency = 2035;
 model.window_step = 1;% 0.5; % in seconds
 model.window_size = 2;   % in seconds
 model.q=0.05;
-model.nsurrogates = 10000;
-model.t=time;
+model.nsurrogates = 100;
+model.t=[1:length(model.data)]./2035; %time;
 
 %%% 3. Remove artifacts
 model = remove_artifacts_all_lobes(model,patient_coordinates_013);
 
 %%% 4. INFER NETWORK
-model = infer_network_imaginary_coherency(model);
+model = infer_network_coherency(model);
 
 %%% 5. SAVE DATA
 model.data = NaN;  % clear data

@@ -1,4 +1,4 @@
-function [ model, bvalues ] = remove_artifacts_all_lobes( model, patient_coordinates )
+function [ model, bvalues ] = remove_artifacts_all_lobes_hem( model, patient_coordinates )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -8,6 +8,7 @@ m = mean(data,2);
 m = repmat(m,[1 size(data,2)]);
 data = data - m;
 threshold = -2;
+
 %%% FIX @O so included in first if statement
     [ LNp,RNp] = find_subnetwork_lobe( patient_coordinates,'parietal');
     [ LNt,RNt] = find_subnetwork_lobe( patient_coordinates,'temporal');
@@ -30,11 +31,6 @@ if isfield(model,'t_clean') && length(model.t_clean) > 1
     bvalues          = nan;
 else
     %%% Find time chunks with slope > - 2
-    dp = data([LNp; RNp],:)';
-    dt = data([[LNt;LN]; [RNt;RN]],:)';
-    do = data([LNo; RNo],:)';
-    df = data([LNf; RNf],:)';
-    d = data([LN; RN],:)';
     
 %     if strcmp(model.patient_name,'pBECTS020')
 %         No = [LNo;RNo];
@@ -54,7 +50,7 @@ else
     t_clean    = t;
     
     %bvalues = zeros(5,i_total);
-    bvalues = zeros(4,i_total);
+    b = zeros(4,2,i_total);
     for k = 1:i_total
         t_start = t(1) + (k-1) * window_step;   %... get window start time [s],
         t_stop  = t_start + window_size;                  %... get window stop time [s],
@@ -64,52 +60,33 @@ else
         f_stop  = 95;
         
         %%% Parietal
-        [Sxx, faxis] = pmtm(dp(indices,:),4,sum(indices),f0);
-        f_indices = faxis >= f_start & faxis < f_stop;
-        X  = log(faxis(f_indices));
-        y  = mean(log(Sxx(f_indices,:)),2);
-        bp = glmfit(X,y);
+        b(1,1,k) = compute_slope(data(LNp,indices)',f0,f_start,f_stop);
+        b(1,2,k) = compute_slope(data(RNp,indices)',f0,f_start,f_stop);
         
         %%% Occip
-        [Sxx, faxis] = pmtm(do(indices,:),4,sum(indices),f0);
-        f_indices = faxis >= f_start & faxis < f_stop;
-        X  = log(faxis(f_indices));
-        y  = mean(log(Sxx(f_indices,:)),2);
-        bo = glmfit(X,y);
+        b(2,1,k) = compute_slope(data(LNo,indices)',f0,f_start,f_stop);
+        b(2,2,k) = compute_slope(data(RNo,indices)',f0,f_start,f_stop);
         
         %%% Temporal
-        [Sxx, faxis] = pmtm(dt(indices,:),4,sum(indices),f0);
-        f_indices = faxis >= f_start & faxis < f_stop;
-        X  = log(faxis(f_indices));
-        y  = mean(log(Sxx(f_indices,:)),2);
-        bt = glmfit(X,y);
+        b(3,1,k) = compute_slope(data([LNt;LN],indices)',f0,f_start,f_stop);
+        b(3,2,k) = compute_slope(data([RNt;RN],indices)',f0,f_start,f_stop);
         
-        %%%Frontal
-        [Sxx, faxis] = pmtm(df(indices,:),4,sum(indices),f0);
-        f_indices = faxis >= f_start & faxis < f_stop;
-        X  = log(faxis(f_indices));
-        y  = mean(log(Sxx(f_indices,:)),2);
-        bf = glmfit(X,y);
         
-        %%% Pre/Post central
-        [Sxx, faxis] = pmtm(d(indices,:),4,sum(indices),f0);
-        f_indices = faxis >= f_start & faxis < f_stop;
-        X = log(faxis(f_indices));
-        y = mean(log(Sxx(f_indices,:)),2);
-        b = glmfit(X,y);
+        %%% Frontal
+        b(4,1,k) = compute_slope(data(LNf,indices)',f0,f_start,f_stop);
+        b(4,2,k) = compute_slope(data(RNf,indices)',f0,f_start,f_stop);
+
         
-        %%% MAKE NAN
-      
-        
-        if bp(2) > threshold || bt(2) > threshold || bf(2) > threshold || bo(2) > threshold% || b(2) > threshold
-            
+        bt = b(:,:,k) > -2;
+        if sum(bt(:)) > 0 % if at least one slope is greater than threshold
+                          % then artifact           
             data_clean(:,indices)= NaN;
             t_clean(indices)     = NaN;
         end
         fprintf([num2str(k),'\n'])
         
         %bvalues(:,k) = [bp(2); bt(2);bf(2);bo(2);b(2)] ;
-        bvalues(:,k) = [bp(2); bt(2);bf(2);bo(2)];
+        %bvalues(:,k) = [bp(2); bt(2);bf(2);bo(2)];
     end
     
     if strcmp(model.patient_name,'pBECTS020')
