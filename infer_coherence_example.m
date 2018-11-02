@@ -3,19 +3,19 @@
 % DYANMIC NETWORK SCRIPT EXAMPLE
 addpath('Toolboxes/chronux_2_12')
 %%% 1. LOAD DATA
- model.patient_name ='model013';
+ model.patient_name ='model020';
  model.data = [data_left; data_right];
- 
+
 %%% 2. LOAD MODEL PARAMETERS
 model.sampling_frequency = 2035;
 model.window_step = 1;% 0.5; % in seconds
 model.window_size = 2;   % in seconds
 model.q=0.05;
-model.nsurrogates = 100;
-model.t=[1:length(model.data)]./2035; %time;
+model.nsurrogates = 10000;
+model.t=time;
 
 %%% 3. Remove artifacts
-model = remove_artifacts_all_lobes(model,patient_coordinates_013);
+model = remove_artifacts_all_lobes(model,patient_coordinates_020);
 
 %%% 4. INFER NETWORK
 model = infer_network_coherency(model);

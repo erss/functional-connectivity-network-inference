@@ -24,27 +24,32 @@ if isfield(model,'t_clean') && length(model.t_clean) > 1
             data_clean(:,t) = nan;
         end
     end
-
-  
+     if strcmp(model.patient_name,'pBECTS020')
+        badchannels = [1 2 3 9 10 11 15 19 34 41 44 48 163 164 166 170 173 ... 
+            174 175 176 177 180 195];
+        data_clean(badchannels,:) = NaN(length(badchannels),size(data,2));
+    end
     model.data_clean = data_clean;
     bvalues          = nan;
 else
     %%% Find time chunks with slope > - 2
+
+    
+    if strcmp(model.patient_name,'pBECTS020')
+        badchannels = [1 2 3 9 10 11 15 19 34 41 44 48 163 164 166 170 173 ... 
+            174 175 176 177 180 195];
+        data(badchannels,:) = NaN(length(badchannels),size(data,2));
+    end
     dp = data([LNp; RNp],:)';
     dt = data([[LNt;LN]; [RNt;RN]],:)';
     do = data([LNo; RNo],:)';
     df = data([LNf; RNf],:)';
-    d = data([LN; RN],:)';
-    
-%     if strcmp(model.patient_name,'pBECTS020')
-%         No = [LNo;RNo];
-%         No([6 7 8]) = [];
-%         Np =[LNp;RNp];
-%         Np([4 5 19 20 21]) = [];
-%         dp = data(Np,:)';
-%         do = data(No,:)';
-%         fprintf('pBECTS020!!!')
-%     end
+    %d =  data([LN; RN],:)';
+    %%% remove badchannels
+    dp(:,isnan(dp(1,:))) = [];
+    dt(:,isnan(dt(1,:))) = [];
+    do(:,isnan(do(1,:))) = [];
+    df(:,isnan(df(1,:))) = [];
     t = model.t;
     window_step = 0.5;
     window_size = 0.5;
@@ -92,11 +97,11 @@ else
         bf = glmfit(X,y);
         
         %%% Pre/Post central
-        [Sxx, faxis] = pmtm(d(indices,:),4,sum(indices),f0);
-        f_indices = faxis >= f_start & faxis < f_stop;
-        X = log(faxis(f_indices));
-        y = mean(log(Sxx(f_indices,:)),2);
-        b = glmfit(X,y);
+%         [Sxx, faxis] = pmtm(d(indices,:),4,sum(indices),f0);
+%         f_indices = faxis >= f_start & faxis < f_stop;
+%         X = log(faxis(f_indices));
+%         y = mean(log(Sxx(f_indices,:)),2);
+%         b = glmfit(X,y);
         
         %%% MAKE NAN
       
@@ -110,13 +115,15 @@ else
         
         %bvalues(:,k) = [bp(2); bt(2);bf(2);bo(2);b(2)] ;
         bvalues(:,k) = [bp(2); bt(2);bf(2);bo(2)];
+        
+        bad_k = [2:45 56 60 78:89 96 97 99 102 150 176 190 267 325 326 329 414 426];
+        if strcmp(model.patient_name,'pBECTS020') && sum(k==bad_k)==1
+        
+            data_clean(:,indices)= NaN;
+            t_clean(indices) =NaN;
+        end
     end
     
-    if strcmp(model.patient_name,'pBECTS020')
-        bad_k = [60 79 80 84 89 96 97 99 176 267 326 329 426];
-        data_clean(:,bad_k)= NaN;
-        t_clean(bad_k) =NaN;
-    end
     model.data_clean = data_clean;
     model.t_clean    = t_clean;
 end

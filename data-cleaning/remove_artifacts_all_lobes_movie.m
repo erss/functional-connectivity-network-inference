@@ -7,34 +7,39 @@
 
 
 %%
-pc=patient_coordinates_020;
+pc=patient_coordinates_003;
  model.data =[data_left;data_right];
+
+
+ model.patient_name = 'pBECTS003'
 [ model, bvalues ] = remove_artifacts_all_lobes( model, pc);
-%%
-% Find all relevant subnetworks
+%% Find all relevant subnetworks
 [LNp,RNp] = find_subnetwork_lobe( pc,'parietal');
 [LNt,RNt] = find_subnetwork_lobe( pc,'temporal');
 [LNo,RNo] = find_subnetwork_lobe( pc,'occipital');
 [LNf,RNf] = find_subnetwork_lobe( pc,'frontal');
-%[LN,RN]   = find_subnetwork_central( pc);
-
+[LN,RN]   = find_subnetwork_central( pc);
+left_net = [LNp;LNt;LNo;LNf;LN];
+right_net = [RNp;RNt;RNo;RNf;RN];
+ii = 1:324;
+ii([left_net;right_net])=[];
 % Load data
 data       = model.data;
 data_clean = model.data_clean;
 
 dp = data([LNp; RNp],:)';
-dt = data([LNt; RNt],:)';
+dt = data([LNt;LN; RNt;RN],:)';
 do = data([LNo; RNo],:)';
 df = data([LNf; RNf],:)';
 %d  = data([LN; RN],:)';
 
 dpc = data_clean([LNp; RNp],:)';
-dtc = data_clean([LNt; RNt],:)';
+dtc = data_clean([LNt;LN; RNt;RN],:)';
 doc = data_clean([LNo; RNo],:)';
 dfc = data_clean([LNf; RNf],:)';
 %dc  = data_clean([LN; RN],:)';
-
-%% Movie for CLEAN data & ARTIFACT data
+dleftover = data_clean(ii,:)';
+% Movie for CLEAN data & ARTIFACT data
 OUTVIDPATH1 = strcat('~/Desktop/',model.patient_name,'_cleaned_data_old.avi');
 OUTVIDPATH2 = strcat('~/Desktop/',model.patient_name,'_artifacts_old.avi');
 v = VideoWriter(OUTVIDPATH1);
@@ -46,8 +51,8 @@ q.FrameRate=1;
 open(q);
 t = model.t;
 t_clean = model.t_clean;
-window_step = 0.5;
-window_size = 0.5;
+window_step = 1;
+window_size =2;
 i_total = 1+floor((t(end)-t(1)-window_size) /window_step);  % # intervals.
 %h = figure('units','normalized','outerposition',[0 0 .5 1]);
 h=figure;
@@ -60,19 +65,25 @@ for k = 1:i_total %length(t_clean)
     
     if sum(indices)~=0
         figure(h)
-        subplot(2,2,1)
+        subplot(2,3,1)
         plotchannels(t_clean(indices),dpc(indices,:));
         title('Parietal')
-        subplot(2,2,2)
+        subplot(2,3,2)
         plotchannels(t_clean(indices),dtc(indices,:));
         
-        title('Temproal')
-        subplot(2,2,3)
+        title('Temporal')
+        subplot(2,3,4)
         plotchannels(t_clean(indices),doc(indices,:));
         title('Occipital')
-        subplot(2,2,4)
+        subplot(2,3,5)
         plotchannels(t_clean(indices),dfc(indices,:));
         title('Frontal')
+        
+        h1=subplot(2,3,3)
+        plotNetwork(model.net_coh([LN;RN],[LN;RN],k),h1)
+        
+        subplot(2,3,6)
+        plotchannels(t_clean(indices),dleftover(indices,:));
         
 %         subplot(3,2,5)
 %         plotchannels(t_clean(indices),dc(indices,:));

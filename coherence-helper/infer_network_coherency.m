@@ -99,9 +99,7 @@ end
 % 5. Use FDR to determine significant pvals.
 fprintf(['... computing significance (FDR) \n'])
 q=model.q;
-m = (n^2-n)/2;                 % number of total tests performed
-ivals = (1:m)';
-sp = ivals*q/m;
+
 
 % Compute significant pvals for coherence
 net_coh = zeros(n,n,num_nets);
@@ -111,6 +109,11 @@ for ii = 1:num_nets
         adj_mat = pval_coh(:,:,ii);
         p = adj_mat(isfinite(adj_mat));
         p = sort(p);
+        
+        m = length(p);                 % number of total tests performed
+        ivals = (1:m)';
+        sp = ivals*q/m;
+        
         i0 = find(p-sp<=0);
         if ~isempty(i0)
             threshold = p(max(i0));

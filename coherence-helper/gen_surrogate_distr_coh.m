@@ -16,11 +16,18 @@ for ii = 1:nsurrogates
     ij = randperm(n,2); % Choose two random electrodes i & j, without replacement.
     i=ij(1);
     j=ij(2);
-    
+    while sum(isfinite(data(i,:))) == 0
+        i =randperm(n,1); 
+    end
+    while sum(isfinite(data(j,:))) == 0
+        j =randperm(n,1);
+    end
     ti = randi(T-window_size+1); % Choose random time, i.
     tj = randi(T-window_size+1); % Choose random time, j.
     xi = data(i,ti:(ti+window_size-1));
     xj = data(j,tj:(tj+window_size-1));
+    
+ 
     
     while sum(sum(isnan(xi))) > 0
         ti = randi(T-window_size+1);
@@ -33,9 +40,9 @@ for ii = 1:nsurrogates
        
     end
     
-    [C,~,S12,S1,S2,~,f]=cohgramc(xi',xj',movingwin,params);
+    [C,~,~,~,~,~,f]=cohgramc(xi',xj',movingwin,params);
     f_indices = f >= f_start & f <= f_stop;
-    cross_spec = mean(S12(:,f_indices),2);
+%    cross_spec = mean(S12(:,f_indices),2);
 %     spec1      = mean(S1(:,f_indices),2);
 %     spec2      = mean(S2(:,f_indices),2);
 %     distr_imag_coh(ii)= imag(cross_spec) ./ sqrt( spec1 ) ./ sqrt( spec2 );
