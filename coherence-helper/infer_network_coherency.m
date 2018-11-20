@@ -1,4 +1,4 @@
-function [ model ] = infer_network_coherency( model)
+function model = infer_network_coherency( model)
 % Infers network structure using coherence + imaginary coherency; 
 % Employs a bootstrap procedure to determine significance.
 

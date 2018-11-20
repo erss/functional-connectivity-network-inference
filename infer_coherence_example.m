@@ -1,7 +1,9 @@
 %%% fc-network-ex
 
 % DYANMIC NETWORK SCRIPT EXAMPLE
-addpath('Toolboxes/chronux_2_12')
+addpath(genpath('Toolboxes/chronux_2_12'))
+addpath(genpath('Toolboxes/mgh'))
+
 %%% 1. LOAD DATA
  model.patient_name ='model020';
  model.data = [data_left; data_right];

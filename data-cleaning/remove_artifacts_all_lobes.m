@@ -1,6 +1,8 @@
-function [ model, bvalues ] = remove_artifacts_all_lobes( model, patient_coordinates )
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
+function [ model, b ] = remove_artifacts_all_lobes( model, patient_coordinates )
+% Procedure to detect and remove all artifacts. Divdes signals into 4
+% regions corresponding to each brain lobe. Compute
+% average spectrum of signals within each region. Fit line to log f-log
+% power. If slope is > -2, mark as artifact.
 
 f0=model.sampling_frequency;
 data = model.data;
@@ -13,7 +15,6 @@ threshold = -2;
     [ LNt,RNt] = find_subnetwork_lobe( patient_coordinates,'temporal');
     [ LNo,RNo] = find_subnetwork_lobe( patient_coordinates,'occipital');
     [ LNf,RNf] = find_subnetwork_lobe( patient_coordinates,'frontal');
-    [LN,RN] = find_subnetwork_central( patient_coordinates);
     
 if isfield(model,'t_clean') && length(model.t_clean) > 1
         data_clean = data;
@@ -24,32 +25,16 @@ if isfield(model,'t_clean') && length(model.t_clean) > 1
             data_clean(:,t) = nan;
         end
     end
-     if strcmp(model.patient_name,'pBECTS020')
-        badchannels = [1 2 3 9 10 11 15 19 34 41 44 48 163 164 166 170 173 ... 
-            174 175 176 177 180 195];
-        data_clean(badchannels,:) = NaN(length(badchannels),size(data,2));
-    end
+    
+    data_clean = remove_bad_channels( model );
     model.data_clean = data_clean;
-    bvalues          = nan;
+    b          = nan;
 else
     %%% Find time chunks with slope > - 2
-
+    % Remove bad channels before computing average slope
     
-    if strcmp(model.patient_name,'pBECTS020')
-        badchannels = [1 2 3 9 10 11 15 19 34 41 44 48 163 164 166 170 173 ... 
-            174 175 176 177 180 195];
-        data(badchannels,:) = NaN(length(badchannels),size(data,2));
-    end
-    dp = data([LNp; RNp],:)';
-    dt = data([[LNt;LN]; [RNt;RN]],:)';
-    do = data([LNo; RNo],:)';
-    df = data([LNf; RNf],:)';
-    %d =  data([LN; RN],:)';
-    %%% remove badchannels
-    dp(:,isnan(dp(1,:))) = [];
-    dt(:,isnan(dt(1,:))) = [];
-    do(:,isnan(do(1,:))) = [];
-    df(:,isnan(df(1,:))) = [];
+    data = remove_bad_channels(model);
+ 
     t = model.t;
     window_step = 0.5;
     window_size = 0.5;
@@ -58,8 +43,7 @@ else
     data_clean = data;
     t_clean    = t;
     
-    %bvalues = zeros(5,i_total);
-    bvalues = zeros(4,i_total);
+    b = zeros(4,i_total);
     for k = 1:i_total
         t_start = t(1) + (k-1) * window_step;   %... get window start time [s],
         t_stop  = t_start + window_size;                  %... get window stop time [s],
@@ -69,59 +53,32 @@ else
         f_stop  = 95;
         
         %%% Parietal
-        [Sxx, faxis] = pmtm(dp(indices,:),4,sum(indices),f0);
-        f_indices = faxis >= f_start & faxis < f_stop;
-        X  = log(faxis(f_indices));
-        y  = mean(log(Sxx(f_indices,:)),2);
-        bp = glmfit(X,y);
-        
+        b(1,k) = compute_slope(data([LNp;RNp],indices)',f0,f_start,f_stop);
         %%% Occip
-        [Sxx, faxis] = pmtm(do(indices,:),4,sum(indices),f0);
-        f_indices = faxis >= f_start & faxis < f_stop;
-        X  = log(faxis(f_indices));
-        y  = mean(log(Sxx(f_indices,:)),2);
-        bo = glmfit(X,y);
-        
+        b(2,k) = compute_slope(data([LNo;RNo],indices)',f0,f_start,f_stop);
         %%% Temporal
-        [Sxx, faxis] = pmtm(dt(indices,:),4,sum(indices),f0);
-        f_indices = faxis >= f_start & faxis < f_stop;
-        X  = log(faxis(f_indices));
-        y  = mean(log(Sxx(f_indices,:)),2);
-        bt = glmfit(X,y);
-        
+        b(3,k) = compute_slope(data([LNt;RNt],indices)',f0,f_start,f_stop);   
         %%%Frontal
-        [Sxx, faxis] = pmtm(df(indices,:),4,sum(indices),f0);
-        f_indices = faxis >= f_start & faxis < f_stop;
-        X  = log(faxis(f_indices));
-        y  = mean(log(Sxx(f_indices,:)),2);
-        bf = glmfit(X,y);
-        
-        %%% Pre/Post central
-%         [Sxx, faxis] = pmtm(d(indices,:),4,sum(indices),f0);
-%         f_indices = faxis >= f_start & faxis < f_stop;
-%         X = log(faxis(f_indices));
-%         y = mean(log(Sxx(f_indices,:)),2);
-%         b = glmfit(X,y);
-        
+        b(4,k) = compute_slope(data([LNf;RNf],indices)',f0,f_start,f_stop);
+
         %%% MAKE NAN
       
-        
-        if bp(2) > threshold || bt(2) > threshold || bf(2) > threshold || bo(2) > threshold% || b(2) > threshold
-            
+       %%%%% DOUBLE CHECK
+        bt = b(:,k) > threshold;
+        if sum(bt(:)) > 0 % if at least one slope is greater than threshold
+            % then artifact
             data_clean(:,indices)= NaN;
             t_clean(indices)     = NaN;
         end
         fprintf([num2str(k),'\n'])
         
-        %bvalues(:,k) = [bp(2); bt(2);bf(2);bo(2);b(2)] ;
-        bvalues(:,k) = [bp(2); bt(2);bf(2);bo(2)];
         
-        bad_k = [2:45 56 60 78:89 96 97 99 102 150 176 190 267 325 326 329 414 426];
-        if strcmp(model.patient_name,'pBECTS020') && sum(k==bad_k)==1
-        
-            data_clean(:,indices)= NaN;
-            t_clean(indices) =NaN;
-        end
+%         bad_k = [2:45 56 60 78:89 96 97 99 102 150 176 190 267 325 326 329 414 426];
+%         if strcmp(model.patient_name,'pBECTS020') && sum(k==bad_k)==1 && strcmp(model.source_session,'rest03')
+%         
+%             data_clean(:,indices)= NaN;
+%             t_clean(indices) =NaN;
+%         end
     end
     
     model.data_clean = data_clean;
