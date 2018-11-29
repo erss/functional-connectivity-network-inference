@@ -5,7 +5,7 @@ addpath(genpath('Toolboxes/chronux_2_12'))
 addpath(genpath('Toolboxes/mgh'))
 
 %%% 1. LOAD DATA
- model.patient_name ='model020';
+ model.patient_name ='model019';
  model.data = [data_left; data_right];
 
 %%% 2. LOAD MODEL PARAMETERS
@@ -17,7 +17,7 @@ model.nsurrogates = 10000;
 model.t=time;
 
 %%% 3. Remove artifacts
-model = remove_artifacts_all_lobes(model,patient_coordinates_020);
+model = remove_artifacts_all_lobes(model,patient_coordinates_019);
 
 %%% 4. INFER NETWORK
 model = infer_network_coherency(model);

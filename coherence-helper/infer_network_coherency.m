@@ -1,6 +1,19 @@
 function model = infer_network_coherency( model)
 % Infers network structure using coherence + imaginary coherency; 
 % Employs a bootstrap procedure to determine significance.
+%
+% INPUTS:
+%
+% OUTPUTS:
+%   -- New fields added to 'model' structure: --
+% phase     = absolute value of mean phase over frequency bands where
+%             coherence occurs [node x node x time]
+% kC        = mean coherence over frequency bands for each signal pair and
+%             at each moment of time [node x node x time]
+% f         = frequency axis
+% net_coh   = binary adjacency matrix [node x node x time]
+% pval_coh  = p-value for each edge pair in adjacency [node x node x time]
+% distr_coh = surrogate distrobution of coherence [1 x model.nsurrogates]
 
 % 1. Load model parameters
 nsurrogates = model.nsurrogates;
@@ -35,7 +48,7 @@ if ~isfield(model,'kC')
     d2 = data(2,:)';
    [~,~,~,~,~,t,f]=cohgramc(d1,d2,movingwin,params); 
     kC  = zeros([n n length(t)]);
-    
+    phi = zeros([n n length(t)]);
     % Compute the coherence.
     % Note that coherence is positive.
  %%%% MANU: subtract mean before -- this is done in the remove artifacts
@@ -44,9 +57,10 @@ if ~isfield(model,'kC')
         d1 = data(i,:)';
         parfor j = (i+1):n % parfor on inside,
             d2 = data(j,:)';
-            [net_coh,~,~,~,~,~,ftmp]=cohgramc(d1,d2,movingwin,params);
+            [net_coh,phase,~,~,~,~,ftmp]=cohgramc(d1,d2,movingwin,params);
             f_indices = ftmp >= f_start & ftmp <= f_stop;
             kC(i,j,:) =  mean(net_coh(:,f_indices),2);
+            phi(i,j,:) = mean(abs(phase(:,f_indices)),2);
             fprintf(['Infering edge row: ' num2str(i) ' and col: ' num2str(j) '. \n' ])
         end
         fprintf(['Inferred edge row: ' num2str(i) '\n' ])
@@ -57,6 +71,7 @@ model.dynamic_network_taxis = t + time(1); %%% DOUBLE CHECK THIS STEP, to
                                            %%% TO FIX TIME AXIS
 model.f = f;
 model.kC = kC;
+model.phi = phi;
 end
 
 % % 3. Compute surrogate distrubution.

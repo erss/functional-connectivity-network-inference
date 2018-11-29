@@ -2,17 +2,16 @@
 %%% all the data that passes as clean
 
 %%
-load('/Users/erss/Documents/MATLAB/pBECTS_inferred_nets/coherence - r1/pBECTS020_coherence.mat')
-load('/Users/erss/Documents/MATLAB/pBECTS020/patient_coordinates_020.mat')
-load('/Users/erss/Documents/MATLAB/pBECTS020/pBECTS020_rest03_source.mat')
+% load('/Users/erss/Documents/MATLAB/pBECTS_inferred_nets/coherence - r1/pBECTS020_coherence.mat')
+% load('/Users/erss/Documents/MATLAB/pBECTS020/patient_coordinates_020.mat')
+% load('/Users/erss/Documents/MATLAB/pBECTS020/pBECTS020_rest03_source.mat')
 
 
 %%
-pc=patient_coordinates_020;
+pc=patient_coordinates_019;
  model.data =[data_left;data_right];
 
-
- model.patient_name = 'pBECTS020'
+ model.patient_name = 'pBECTS019';
 [ model, bvalues ] = remove_artifacts_all_lobes( model, pc);
 %% Find all relevant subnetworks
 [LNp,RNp] = find_subnetwork_lobe( pc,'parietal');
