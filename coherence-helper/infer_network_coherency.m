@@ -3,7 +3,7 @@ function model = infer_network_coherency( model)
 % Employs a bootstrap procedure to determine significance.
 %
 % INPUTS:
-%
+% model = structure with network inference parameters
 % OUTPUTS:
 %   -- New fields added to 'model' structure: --
 % phase     = absolute value of mean phase over frequency bands where
