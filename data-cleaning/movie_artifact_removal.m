@@ -8,10 +8,10 @@
 
 
 %%
-pc=patient_coordinates_019;
+pc=patient_coordinates_020;
  model.data =[data_left;data_right];
 
- model.patient_name = 'pBECTS019';
+ model.patient_name = 'pBECTS020';
 [ model, bvalues ] = remove_artifacts_all_lobes( model, pc);
 %% Find all relevant subnetworks
 [LNp,RNp] = find_subnetwork_lobe( pc,'parietal');

@@ -7,7 +7,7 @@
 % 
 %  model.patient_name = 'pBECTS020';
 %%
-pc=patient_coordinates_007;
+pc=patient_coordinates_020;
 model.data =[data_left;data_right];
 [ model, bvalues ] = remove_artifacts_all_lobes( model, pc);
 %% Find all relevant subnetworks
@@ -31,7 +31,7 @@ dfc = data_clean([LNf; RNf],:)';
 %dc  = data_clean([LN; RN],:)';
 dleftover = data_clean(ii,:)';
 %%% Movie for CLEAN data & ARTIFACT data
-OUTVIDPATH1 = strcat('~/Desktop/',model.patient_name,'_cleaned_network.avi');
+OUTVIDPATH1 = strcat('~/Desktop/',model.patient_name,'_cleaned_network_05.avi');
 v = VideoWriter(OUTVIDPATH1);
 v.FrameRate=1;
 open(v);

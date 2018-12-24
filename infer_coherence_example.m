@@ -19,7 +19,9 @@ model.t=time;
 %%% 3. Remove artifacts
 model = remove_artifacts_all_lobes(model,patient_coordinates_019);
 
-%%% 4. INFER NETWORK
+
+%%% 4. INFER NETWORK ---Delta = 2-4 (TW=2, K=3), Theta = 4-8 (TW=4, K=7), 
+% Alpha = 8-12, Sigma = 12.5 - 15,
 model = infer_network_coherency(model);
 
 %%% 5. SAVE DATA

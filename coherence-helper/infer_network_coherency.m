@@ -28,10 +28,23 @@ Fs = model.sampling_frequency;
 % delta (1-4 Hz), theta (4-8 Hz), alpha (8-12 Hz), beta (12-30 Hz), 
 % gamma (30-50 Hz)
 
-f_start = 21; % Because frequency resolution = 9, f_start=f_stop = 21, and
-f_stop  = 21; % 21+-9 = [12-30] gives us beta band
-    
-TW = model.window_size*9;                                    % Time bandwidth product.
+%%% BETA
+% f_start = 21; % Because frequency resolution = 9, f_start=f_stop = 21, and
+% f_stop  = 21; % 21+-9 = [12-30] gives us beta band
+% W  = 9;
+
+%%% THETA
+W = 2; % frequency resolution
+f_start = 6; % Because frequency resolution = 2, f_start=f_stop = 6, and
+f_stop  = 6; % 6+-2 = [4 8] gives us beta band
+
+%%% ALPHA
+W = 2; % frequency resoltuion
+f_start = 10; % Because frequency resolution = 2, f_start=f_stop = 10, and
+f_stop  = 10; % 10+-2 = [8 12] gives us beta band
+
+
+TW = model.window_size*W;                                    % Time bandwidth product.
 ntapers         = 2*TW-1;                                    % Choose the # of tapers.
 params.tapers   = [TW,ntapers];                              % ... time-bandwidth product and tapers.
 params.pad      = -1;                                        % ... no zero padding.
@@ -60,7 +73,9 @@ if ~isfield(model,'kC')
             [net_coh,phase,~,~,~,~,ftmp]=cohgramc(d1,d2,movingwin,params);
             f_indices = ftmp >= f_start & ftmp <= f_stop;
             kC(i,j,:) =  mean(net_coh(:,f_indices),2);
-            phi(i,j,:) = mean(abs(phase(:,f_indices)),2);
+           % phi(i,j,:) = mean(abs(phase(:,f_indices)),2);
+           phi(i,j,:) = phase(:,f_indices);
+
             fprintf(['Infering edge row: ' num2str(i) ' and col: ' num2str(j) '. \n' ])
         end
         fprintf(['Inferred edge row: ' num2str(i) '\n' ])
