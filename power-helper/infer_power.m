@@ -6,17 +6,10 @@ function model = infer_power( model)
 % model = structure with network inference parameters
 % OUTPUTS:
 %   -- New fields added to 'model' structure: --
-% phase     = absolute value of mean phase over frequency bands where
-%             coherence occurs [node x node x time]
-% kC        = mean coherence over frequency bands for each signal pair and
-%             at each moment of time [node x node x time]
-% f         = frequency axis
-% net_coh   = binary adjacency matrix [node x node x time]
-% pval_coh  = p-value for each edge pair in adjacency [node x node x time]
-% distr_coh = surrogate distrobution of coherence [1 x model.nsurrogates]
+% kPower = spectal power [nelectrods x frequency x time]
+% f      = frequencies
 
 % 1. Load model parameters
-nsurrogates = model.nsurrogates;
 data = model.data_clean;
 time = model.t;
 n = size(model.data_clean,1);  % number of electrodes
@@ -44,7 +37,7 @@ movingwin       = [ model.window_size, model.window_step];   % ... Window size a
 faxis = params.fpass(1):W:params.fpass(2);
 
 %%% If coherence network already exists, skip this step.
-if ~isfield(model,'kPower')
+%if ~isfield(model,'kPower')
     
     d1 = data(1,:)';
     [S,t,f]  = mtspecgramc(d1,movingwin,params); % output S is length(t)
@@ -53,13 +46,12 @@ if ~isfield(model,'kPower')
     kPower(1,:,:) = S';
     % Compute the coherence.
     % Note that coherence is positive.
-    %%%% MANU: subtract mean before -- this is done in the remove artifacts
-    %%%% step
+    %%%% 
     for i = 2:n
         d1 = data(i,:)';
         [S,t,f]  = mtspecgramc(d1,movingwin,params);
         kPower(i,:,:) = S';
-        %         f_indices = ftmp >= f_start & ftmp <= f_stop;;
+        % f_indices = ftmp >= f_start & ftmp <= f_stop;
         fprintf(['Inferred electrode: ' num2str(i) '\n' ])
         
     end
@@ -69,10 +61,9 @@ if ~isfield(model,'kPower')
     model.f = f;
     model.kPower = kPower;
     
-end
+%end
 
-% NOTE: We are analyzing BETA, but possible bands for interest could be:
-% delta (1-4 Hz), theta (4-8 Hz), alpha (8-12 Hz), beta (12-30 Hz),
+% BEANDS: delta (1-4 Hz), theta (4-8 Hz), alpha (8-12 Hz), beta (15-30 Hz),
 % gamma (30-50 Hz)
 
 % 3. Infer delta band 

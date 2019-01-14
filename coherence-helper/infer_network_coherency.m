@@ -28,20 +28,23 @@ Fs = model.sampling_frequency;
 % delta (1-4 Hz), theta (4-8 Hz), alpha (8-12 Hz), beta (12-30 Hz), 
 % gamma (30-50 Hz)
 
-%%% BETA
-% f_start = 21; % Because frequency resolution = 9, f_start=f_stop = 21, and
-% f_stop  = 21; % 21+-9 = [12-30] gives us beta band
-% W  = 9;
-
-%%% THETA
-W = 2; % frequency resolution
-f_start = 6; % Because frequency resolution = 2, f_start=f_stop = 6, and
-f_stop  = 6; % 6+-2 = [4 8] gives us beta band
-
-%%% ALPHA
-W = 2; % frequency resoltuion
-f_start = 10; % Because frequency resolution = 2, f_start=f_stop = 10, and
-f_stop  = 10; % 10+-2 = [8 12] gives us beta band
+% %%% BETA
+% % f_start = 21; % Because frequency resolution = 9, f_start=f_stop = 21, and
+% % f_stop  = 21; % 21+-9 = [12-30] gives us beta band
+% % W  = 9;
+% 
+% %%% THETA
+% W = 2; % frequency resolution
+% f_start = 6; % Because frequency resolution = 2, f_start=f_stop = 6, and
+% f_stop  = 6; % 6+-2 = [4 8] gives us beta band
+% 
+% %%% ALPHA
+% W = 2; % frequency resoltuion
+% f_start = 10; % Because frequency resolution = 2, f_start=f_stop = 10, and
+% f_stop  = 10; % 10+-2 = [8 12] gives us beta band
+W       = model.W;
+f_start = model.f_start;
+f_stop  = model.f_stop;
 
 
 TW = model.window_size*W;                                    % Time bandwidth product.

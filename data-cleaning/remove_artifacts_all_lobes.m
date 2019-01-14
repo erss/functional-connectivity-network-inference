@@ -9,7 +9,8 @@ data = model.data;
 m = mean(data,2);
 m = repmat(m,[1 size(data,2)]);
 data = data - m;
-threshold = -2;
+model.data = data;
+threshold = - 2;
 %%% FIX @O so included in first if statement
     [ LNp,RNp] = find_subnetwork_lobe( patient_coordinates,'parietal');
     [ LNt,RNt] = find_subnetwork_lobe( patient_coordinates,'temporal');
@@ -60,7 +61,6 @@ else
         b(3,k) = compute_slope(data([LNt;RNt],indices)',f0,f_start,f_stop);   
         %%%Frontal
         b(4,k) = compute_slope(data([LNf;RNf],indices)',f0,f_start,f_stop);
-
         %%% MAKE NAN
       
        %%%%% DOUBLE CHECK
@@ -72,16 +72,9 @@ else
         end
         fprintf([num2str(k),'\n'])
         
-        
-%         bad_k = [2:45 56 60 78:89 96 97 99 102 150 176 190 267 325 326 329 414 426];
-%         if strcmp(model.patient_name,'pBECTS020') && sum(k==bad_k)==1 && strcmp(model.source_session,'rest03')
-%         
-%             data_clean(:,indices)= NaN;
-%             t_clean(indices) =NaN;
-%         end
     end
     
-    model.data_clean = data_clean;
+    model.data_clean = bsxfun(@minus,data_clean,nanmean(data_clean,2));
     model.t_clean    = t_clean;
 end
 
