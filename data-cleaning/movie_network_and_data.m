@@ -7,7 +7,8 @@
 % 
 %  model.patient_name = 'pBECTS020';
 %%
-pc=patient_coordinates_020;
+model = model_sigma_two;
+pc=patient_coordinates_003;
 model.data =[data_left;data_right];
 [ model, bvalues ] = remove_artifacts_all_lobes( model, pc);
 %% Find all relevant subnetworks
@@ -39,7 +40,7 @@ open(v);
 t = model.t;
 t_clean = model.t_clean;
 window_step = 1;
-window_size =2;
+window_size = 2;
 i_total = 1+floor((t(end)-t(1)-window_size) /window_step);  % # intervals.
 %h = figure('units','normalized','outerposition',[0 0 .5 1]);
 h=figure;

@@ -12,10 +12,10 @@ data = data - m;
 model.data = data;
 threshold = - 2;
 %%% FIX @O so included in first if statement
-    [ LNp,RNp] = find_subnetwork_lobe( patient_coordinates,'parietal');
-    [ LNt,RNt] = find_subnetwork_lobe( patient_coordinates,'temporal');
-    [ LNo,RNo] = find_subnetwork_lobe( patient_coordinates,'occipital');
-    [ LNf,RNf] = find_subnetwork_lobe( patient_coordinates,'frontal');
+    [LNp,RNp] = find_subnetwork_lobe( patient_coordinates,'parietal');
+    [LNt,RNt] = find_subnetwork_lobe( patient_coordinates,'temporal');
+    [LNo,RNo] = find_subnetwork_lobe( patient_coordinates,'occipital');
+    [LNf,RNf] = find_subnetwork_lobe( patient_coordinates,'frontal');
     
 if isfield(model,'t_clean') && length(model.t_clean) > 1
         data_clean = data;
@@ -26,7 +26,7 @@ if isfield(model,'t_clean') && length(model.t_clean) > 1
             data_clean(:,t) = nan;
         end
     end
-    
+    data_clean = bsxfun(@minus,data_clean,nanmean(data_clean,2));
     data_clean = remove_bad_channels( model );
     model.data_clean = data_clean;
     b          = nan;

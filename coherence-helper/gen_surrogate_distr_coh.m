@@ -11,11 +11,23 @@ nsurrogates = model.nsurrogates;
 %distr_imag_coh = zeros(1,nsurrogates);
 distr_coh      = zeros(1,nsurrogates);
 
+% Determine distance
+D = compute_nodal_distances(pc.coords(3:5,:));
+[i,j]=find(D<=0.01);
+
 for ii = 1:nsurrogates
     
-    ij = randperm(n,2); % Choose two random electrodes i & j, without replacement.
+    ij = randperm(n,2); % Choose two random electrodes i & j, without '
+                        % replacement.
     i=ij(1);
     j=ij(2);
+    
+    while D(i,j) <= 0.01
+        ij = randperm(n,2); % Keep choosing electrode pairs until i and j 
+                            % are > 0.01 apart.
+        i=ij(1);
+        j=ij(2);
+    end
     while sum(isfinite(data(i,:))) == 0
         i =randperm(n,1); 
     end

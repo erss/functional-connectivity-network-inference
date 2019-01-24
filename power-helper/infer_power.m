@@ -12,8 +12,8 @@ function model = infer_power( model)
 % 1. Load model parameters
 data = model.data_clean;
 time = model.t;
-n = size(model.data_clean,1);  % number of electrodes
-Fs = model.sampling_frequency;
+n    = size(model.data_clean,1);  % number of electrodes
+Fs   = model.sampling_frequency;
 
 % 2. Compute coherence + imaginary coherency for data.
 

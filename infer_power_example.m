@@ -11,7 +11,7 @@ addpath(genpath('Toolboxes/mgh'))
 
 %%% 2. LOAD MODEL PARAMETERS
 model.sampling_frequency = 2035;
-model.window_step = 1;% 0.5; % in seconds
+model.window_step = 1;% % in seconds
 model.window_size = 2;   % in seconds
 model.q=0.05;
 model.nsurrogates = 10000;

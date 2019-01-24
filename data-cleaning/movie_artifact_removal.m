@@ -8,10 +8,11 @@
 
 
 %%
-pc=patient_coordinates_020;
- model.data =[data_left;data_right];
+model=model_sigma_two;
+pc=patient_coordinates_013;
+model.data =[data_left;data_right];
 
- model.patient_name = 'pBECTS020';
+model.patient_name = 'pBECTS013';
 [ model, bvalues ] = remove_artifacts_all_lobes( model, pc);
 %% Find all relevant subnetworks
 [LNp,RNp] = find_subnetwork_lobe( pc,'parietal');
@@ -32,13 +33,14 @@ dt = data([LNt; RNt],:)';
 do = data([LNo; RNo],:)';
 df = data([LNf; RNf],:)';
 %d  = data([LN; RN],:)';
+dleftover = data(ii,:)';
 
 dpc = data_clean([LNp; RNp],:)';
 dtc = data_clean([LNt; RNt],:)';
 doc = data_clean([LNo; RNo],:)';
 dfc = data_clean([LNf; RNf],:)';
 %dc  = data_clean([LN; RN],:)';
-dleftover = data_clean(ii,:)';
+dleftoverc = data_clean(ii,:)';
 %% Movie for CLEAN data & ARTIFACT data
 OUTVIDPATH1 = strcat('~/Desktop/',model.patient_name,'_cleaned_data_old.avi');
 OUTVIDPATH2 = strcat('~/Desktop/',model.patient_name,'_artifacts_old.avi');
@@ -83,7 +85,7 @@ for k = 1:i_total %length(t_clean)
 %         plotNetwork(model.net_coh([LN;RN],[LN;RN],k),h1)
         
         subplot(2,3,6)
-        plotchannels(t_clean(indices),dleftover(indices,:));
+        plotchannels(t_clean(indices),dleftoverc(indices,:));
         
 %         subplot(3,2,5)
 %         plotchannels(t_clean(indices),dc(indices,:));
@@ -102,23 +104,22 @@ for k = 1:i_total %length(t_clean)
         t_stop2  = t_start2 + window_size;                  %... get window stop time [s],
         indices2 = t >= t_start2 & t < t_stop2;
         figure(g)
-        subplot(2,2,1)
+        subplot(2,3,1)
         plotchannels(t(indices2),dp(indices2,:));
         title('Parietal')
-        subplot(2,2,2)
+        subplot(2,3,2)
         plotchannels(t(indices2),dt(indices2,:));
         
         title('Temporal')
-        subplot(2,2,3)
+        subplot(2,3,4)
         plotchannels(t(indices2),do(indices2,:));
         title('Occipital')
-        subplot(2,2,4)
+        subplot(2,3,5)
         plotchannels(t(indices2),df(indices2,:));
         title('Frontal')
         
-%         subplot(3,2,5)
-%         plotchannels(t(indices2),d(indices2,:));
-%         title('Post/pre CG,')
+        subplot(2,3,6)
+        plotchannels(t(indices2),dleftover(indices2,:));
         
         drawnow
         
