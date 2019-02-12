@@ -47,7 +47,7 @@ f_start = model.f_start;
 f_stop  = model.f_stop;
 
 
-TW = model.window_size*W;                                    % Time bandwidth product.
+TW              = model.window_size*W;              % Time bandwidth product.
 ntapers         = 2*TW-1;                                    % Choose the # of tapers.
 params.tapers   = [TW,ntapers];                              % ... time-bandwidth product and tapers.
 params.pad      = -1;                                        % ... no zero padding.
@@ -95,6 +95,7 @@ end
 % % 3. Compute surrogate distrubution.
 fprintf(['... generating surrogate distribution \n'])
 if ~isfield(model,'distr_coh')
+    
     model = gen_surrogate_distr_coh(model,params,movingwin,f_start,f_stop);
 end
 % 

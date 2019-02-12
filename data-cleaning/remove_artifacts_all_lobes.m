@@ -4,36 +4,39 @@ function [ model, b ] = remove_artifacts_all_lobes( model, patient_coordinates )
 % average spectrum of signals within each region. Fit line to log f-log
 % power. If slope is > -2, mark as artifact.
 
+
+% Load sampling frequency and define artifact threshold.
 f0=model.sampling_frequency;
+threshold = - 2;
+
+% Load data + remove mean
 data = model.data;
 m = mean(data,2);
 m = repmat(m,[1 size(data,2)]);
 data = data - m;
 model.data = data;
-threshold = - 2;
-%%% FIX @O so included in first if statement
-    [LNp,RNp] = find_subnetwork_lobe( patient_coordinates,'parietal');
-    [LNt,RNt] = find_subnetwork_lobe( patient_coordinates,'temporal');
-    [LNo,RNo] = find_subnetwork_lobe( patient_coordinates,'occipital');
-    [LNf,RNf] = find_subnetwork_lobe( patient_coordinates,'frontal');
+
+% Load subnetworks
+[LNp,RNp] = find_subnetwork_lobe( patient_coordinates,'parietal');
+[LNt,RNt] = find_subnetwork_lobe( patient_coordinates,'temporal');
+[LNo,RNo] = find_subnetwork_lobe( patient_coordinates,'occipital');
+[LNf,RNf] = find_subnetwork_lobe( patient_coordinates,'frontal');
     
-if isfield(model,'t_clean') && length(model.t_clean) > 1
-        data_clean = data;
+if isfield(model,'t_clean')
     
+    data_clean = remove_bad_channels( model );
     for t = 1:length(model.t_clean)
     
         if isnan(model.t_clean(t))
             data_clean(:,t) = nan;
         end
     end
-    data_clean = bsxfun(@minus,data_clean,nanmean(data_clean,2));
-    data_clean = remove_bad_channels( model );
+    data_clean       = bsxfun(@minus,data_clean,nanmean(data_clean,2));
     model.data_clean = data_clean;
-    b          = nan;
+    b                = nan;
 else
-    %%% Find time chunks with slope > - 2
+
     % Remove bad channels before computing average slope
-    
     data = remove_bad_channels(model);
  
     t = model.t;
@@ -63,7 +66,6 @@ else
         b(4,k) = compute_slope(data([LNf;RNf],indices)',f0,f_start,f_stop);
         %%% MAKE NAN
       
-       %%%%% DOUBLE CHECK
         bt = b(:,k) > threshold;
         if sum(bt(:)) > 0 % if at least one slope is greater than threshold
             % then artifact
@@ -74,6 +76,7 @@ else
         
     end
     
+    % Remove mean after removing bad time intervalss
     model.data_clean = bsxfun(@minus,data_clean,nanmean(data_clean,2));
     model.t_clean    = t_clean;
 end

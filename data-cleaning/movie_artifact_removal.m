@@ -8,11 +8,14 @@
 
 
 %%
-model=model_sigma_two;
-pc=patient_coordinates_013;
+% model=model_sigma_two;
+% model.bad_channels =[1:8 10 12 14 15 16 17 18 20 21 24 25 29 31 32 35 36 39 41 ...
+%     42 44 47 48 53 54 57 64 69 71 72 74 88 104 130 132 163 165:167 170 ...
+%    172 177 180 182 183 193 201 206 212 230 233];
+pc=patient_coordinates_019;
 model.data =[data_left;data_right];
 
-model.patient_name = 'pBECTS013';
+model.patient_name = 'pBECTS019';
 [ model, bvalues ] = remove_artifacts_all_lobes( model, pc);
 %% Find all relevant subnetworks
 [LNp,RNp] = find_subnetwork_lobe( pc,'parietal');
@@ -25,15 +28,15 @@ right_net = [RNp;RNt;RNo;RNf];
 ii = 1:324;
 ii([left_net;right_net])=[];
 % Load data
-data       = model.data;
-data_clean = model.data_clean;
 
+data = remove_bad_channels( model );
 dp = data([LNp; RNp],:)';
 dt = data([LNt; RNt],:)';
 do = data([LNo; RNo],:)';
 df = data([LNf; RNf],:)';
 %d  = data([LN; RN],:)';
 dleftover = data(ii,:)';
+data_clean=model.data_clean;
 
 dpc = data_clean([LNp; RNp],:)';
 dtc = data_clean([LNt; RNt],:)';
@@ -42,8 +45,8 @@ dfc = data_clean([LNf; RNf],:)';
 %dc  = data_clean([LN; RN],:)';
 dleftoverc = data_clean(ii,:)';
 %% Movie for CLEAN data & ARTIFACT data
-OUTVIDPATH1 = strcat('~/Desktop/',model.patient_name,'_cleaned_data_old.avi');
-OUTVIDPATH2 = strcat('~/Desktop/',model.patient_name,'_artifacts_old.avi');
+OUTVIDPATH1 = strcat('~/Desktop/',model.patient_name,'_rest05_clean.avi');
+OUTVIDPATH2 = strcat('~/Desktop/',model.patient_name,'_rest05_artifacts.avi');
 v = VideoWriter(OUTVIDPATH1);
 v.FrameRate=1;
 open(v);

@@ -6,7 +6,7 @@ function model = infer_power( model)
 % model = structure with network inference parameters
 % OUTPUTS:
 %   -- New fields added to 'model' structure: --
-% kPower = spectal power [nelectrods x frequency x time]
+% kPower = spectal power [nelectrodes x frequency x time]
 % f      = frequencies
 
 % 1. Load model parameters

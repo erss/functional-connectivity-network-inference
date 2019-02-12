@@ -5,9 +5,9 @@ addpath(genpath('Toolboxes/chronux_2_12'))
 addpath(genpath('Toolboxes/mgh'))
 
 %%% 1. LOAD DATA
- model.patient_name ='pBECTS020_rest05';
+ model.patient_name ='pBECTS013';
  model.data = [data_left; data_right];
- pc = patient_coordinates_020;
+ pc = patient_coordinates_013;
 
 %%% 2. LOAD MODEL PARAMETERS
 model.sampling_frequency = 2035;
@@ -20,22 +20,19 @@ model.t=time;
 %%% 3. Remove artifacts
 
 model = remove_artifacts_all_lobes(model,pc);
- d = model.data_clean;
-% do = [data_left; data_right];
-%%
-% m = mean(do,2);
-% m = repmat(m,[1 size(do,2)]);
-% dtest1 = do - m;
+% model.bad_channels =[1:8 10 12 14 15 16 17 18 20 21 24 25 29 31 32 35 36 39 41 ...
+%     42 44 47 48 53 54 57 64 69 71 72 74 88 104 130 132 163 165:167 170 ...
+%    172 177 180 182 183 193 201 206 212 230 233];
 % 
-% dtest2 = bsxfun(@minus,do,mean(do,2));
+% [ data] = remove_bad_channels( model );
 
 %%% 4. INFER NETWORK
 model = infer_power(model);
 
 %%% 5. SAVE DATA
-model.data = NaN;  % clear data
-model.data_clean = NaN;  % clear data
-save([ model.patient_name '_power.mat'],'model')
+% model.data = NaN;  % clear data
+% model.data_clean = NaN;  % clear data
+% save([ model.patient_name '_power.mat'],'model')
 
 %%%%%%%%%%%%%%%%%%%%%%%% 
 

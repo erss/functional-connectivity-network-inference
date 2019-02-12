@@ -1,5 +1,5 @@
-function [ data ] = remove_bad_channels( model )
-% Removes all noisy channels noted by eye. Mark as NaN values.
+function data = remove_bad_channels( model )
+% Removes all noisy channels noted by visual inspection. Mark as NaN values.
 if isfield(model,'bad_channels')
     bad_channels = model.bad_channels;
     data = model.data;
