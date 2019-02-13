@@ -19,8 +19,17 @@ model.data =[data_left;data_right];
 [LN,RN]   = find_subnetwork_central( pc);
 left_net = [LNp;LNt;LNo;LNf];
 right_net = [RNp;RNt;RNo;RNf];
-ii = 1:324;
-ii([left_net;right_net])=[];
+%ii = 1:324;
+% ii([left_net;right_net])=[]; %%%%% this is wrong
+
+ii = 1:162;
+iiL = setdiff(ii,left_net);
+%patient_coordinates.LDL(ii)
+ii = 163:324;
+iiR = setdiff(ii,right_net);
+%patient_coordinates.RDL(ii-162)
+ii=[iiL;iiR];
+
 % Load data
 data       = model.data;
 data_clean = model.data_clean;
