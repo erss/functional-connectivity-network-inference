@@ -15,6 +15,12 @@ model.q=0.05;
 model.nsurrogates = 10000;
 model.t=time;
 
+model.params.trialave = 1;                                         % ... trial average.
+model.params.fpass    = [1 50.1];                                  % ... freq range to pass.
+model.params.Fs       = model.sampling_frequency;                  % ... sampling frequency.
+
+
+
 %%% 3. Remove artifacts
 model = remove_artifacts_all_lobes(model,pc);
 
@@ -33,6 +39,7 @@ model.window_step = 2.5; % in seconds
 model.window_size = 5;   % in seconds
 model.f_start     = 3;
 model.f_stop      = 3;
+model.params.pad  = -1;                           % ... no zero padding.
 model_delta       = infer_network_coherency(model);
 
 % 4. b) SAVE DELTA DATA
@@ -47,6 +54,7 @@ model.f_start     = 6;
 model.f_stop      = 6;
 model.window_step = 1.5; % in seconds
 model.window_size = 3;   % in seconds
+model.params.pad      = -1;                          % ... no zero padding.
 model_theta       = infer_network_coherency(model);
 
 % 5. b) SAVE THETA DATA
@@ -61,6 +69,7 @@ model.f_start     = 10;
 model.f_stop      = 10;
 model.window_step = 1.5; % in seconds
 model.window_size = 3;   % in seconds
+model.params.pad      = -1;                          % ... no zero padding.
 model_alpha       = infer_network_coherency(model);
 
 % 6. b) SAVE ALPHA DATA
@@ -75,6 +84,7 @@ model.f_start     = 12.5;
 model.f_stop      = 12.5;
 model.window_step = 1; % in seconds
 model.window_size = 2; % in seconds
+model.params.pad      = -1;                           % ... no zero padding.
 model_sigma       = infer_network_coherency(model);
 
 % 7. b) SAVE SIGMA DATA
@@ -86,10 +96,11 @@ save([ model.patient_name '_sigma_coherence.mat'],'model_sigma')
 % 8. a) BETA --------------------------------------------------------------
 % Beta:  [15, 30] --> W = 7.5, T = 1,   2TW-1 = 14
 model.W           = 7.5;
-model.f_start     = 22.5;
-model.f_stop      = 22.5;
+model.f_start     = 22.3572;
+model.f_stop      = 22.3572;
 model.window_step = 0.5; % in seconds
 model.window_size = 1;   % in seconds
+model.params.pad  = 1;                          % ... with zero padding.
 model_beta        = infer_network_coherency(model);
 
 % 8. b) SAVE BETA DATA
@@ -100,10 +111,11 @@ save([ model.patient_name '_beta_coherence.mat'],'model_beta')
 % 9. a) GAMMA -------------------------------------------------------------
 % Gamma: [30, 50] --> W = 10,  T = 0.5, 2TW-1 = 9
 model.W           = 10;
-model.f_start     = 40;
-model.f_stop      = 40;
+model.f_start     = 39.9804;
+model.f_stop      = 39.9804;
 model.window_step = 0.25; % in seconds
 model.window_size = 0.5;   % in seconds
+model.params.pad  = -1;                          % ... no zero padding.
 model_gamma       = infer_network_coherency(model);
 
 % 9. b) SAVE GAMMA DATA

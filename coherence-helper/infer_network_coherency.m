@@ -1,9 +1,10 @@
 function model = infer_network_coherency( model)
-% Infers network structure using coherence + imaginary coherency; 
+% Infers network structure using coherence + imaginary coherency;
 % Employs a bootstrap procedure to determine significance.
 %
 % INPUTS:
 % model = structure with network inference parameters
+%
 % OUTPUTS:
 %   -- New fields added to 'model' structure: --
 % phase     = absolute value of mean phase over frequency bands where
@@ -17,44 +18,19 @@ function model = infer_network_coherency( model)
 
 % 1. Load model parameters
 nsurrogates = model.nsurrogates;
-data = model.data_clean;
-time = model.t;
-n = size(model.data_clean,1);  % number of electrodes
-Fs = model.sampling_frequency;
+data        = model.data_clean;
+time        = model.t;
+n           = size(model.data_clean,1);  % number of electrodes
 
-% 2. Compute coherence + imaginary coherency for data.
-
-% NOTE: We are analyzing BETA, but possible bands for interest could be:
-% delta (1-4 Hz), theta (4-8 Hz), alpha (8-12 Hz), beta (12-30 Hz), 
-% gamma (30-50 Hz)
-
-% %%% BETA
-% % f_start = 21; % Because frequency resolution = 9, f_start=f_stop = 21, and
-% % f_stop  = 21; % 21+-9 = [12-30] gives us beta band
-% % W  = 9;
-% 
-% %%% THETA
-% W = 2; % frequency resolution
-% f_start = 6; % Because frequency resolution = 2, f_start=f_stop = 6, and
-% f_stop  = 6; % 6+-2 = [4 8] gives us beta band
-% 
-% %%% ALPHA
-% W = 2; % frequency resoltuion
-% f_start = 10; % Because frequency resolution = 2, f_start=f_stop = 10, and
-% f_stop  = 10; % 10+-2 = [8 12] gives us beta band
 W       = model.W;
-f_start = model.f_start;
-f_stop  = model.f_stop;
+f_start = round(model.f_start,3);
+f_stop  = round(model.f_stop, 3);
 
-
-TW              = model.window_size*W;              % Time bandwidth product.
-ntapers         = 2*TW-1;                                    % Choose the # of tapers.
-params.tapers   = [TW,ntapers];                              % ... time-bandwidth product and tapers.
-params.pad      = -1;                                        % ... no zero padding.
-params.trialave = 1;                                         % ... trial average.
-params.fpass    = [1 50.1];                                  % ... freq range to pass.
-params.Fs       = Fs;                                        % ... sampling frequency.
-movingwin       = [ model.window_size, model.window_step];   % ... Window size and step.
+TW                  = model.window_size*W;                    % Time bandwidth product.
+ntapers             = 2*TW-1;                                 % Choose the # of tapers.
+model.params.tapers = [TW,ntapers];                           % time-bandwidth product and tapers.
+params              = model.params;
+movingwin           = [model.window_size, model.window_step]; % Window size and step.
 
 
 %%% If coherence network already exists, skip this step.
@@ -62,34 +38,32 @@ if ~isfield(model,'kC')
     
     d1 = data(1,:)';
     d2 = data(2,:)';
-   [~,~,~,~,~,t,f]=cohgramc(d1,d2,movingwin,params); 
+    [~,~,~,~,~,t,f]=cohgramc(d1,d2,movingwin,params);
     kC  = zeros([n n length(t)]);
     phi = zeros([n n length(t)]);
     % Compute the coherence.
     % Note that coherence is positive.
- %%%% MANU: subtract mean before -- this is done in the remove artifacts
- %%%% step
+    %%%% MANU: subtract mean before -- this is done in the remove artifacts
+    %%%% step
     for i = 1:n
         d1 = data(i,:)';
-        parfor j = (i+1):n % parfor on inside,
+        parfor j = (i+1):n % parfor on inside
             d2 = data(j,:)';
-            [net_coh,phase,~,~,~,~,ftmp]=cohgramc(d1,d2,movingwin,params);
-            f_indices = ftmp >= f_start & ftmp <= f_stop;
-            kC(i,j,:) =  mean(net_coh(:,f_indices),2);
-           % phi(i,j,:) = mean(abs(phase(:,f_indices)),2);
-           phi(i,j,:) = phase(:,f_indices);
-
+            [net_coh,phase,~,~,~,~,ftmp] = cohgramc(d1,d2,movingwin,params);
+            f_indices  = round(ftmp,3) >= f_start & round(ftmp,3) <= f_stop;
+            kC(i,j,:)  = mean(net_coh(:,f_indices),2);
+            phi(i,j,:) = phase(:,f_indices);
             fprintf(['Infering edge row: ' num2str(i) ' and col: ' num2str(j) '. \n' ])
         end
+        
         fprintf(['Inferred edge row: ' num2str(i) '\n' ])
-
     end
     
-model.dynamic_network_taxis = t + time(1); %%% DOUBLE CHECK THIS STEP, to
-                                           %%% TO FIX TIME AXIS
-model.f = f;
-model.kC = kC;
-model.phi = phi;
+    model.dynamic_network_taxis = t + time(1); %%% DOUBLE CHECK THIS STEP
+                                               %%% TO FIX TIME AXIS
+    model.f = f;
+    model.kC = kC;
+    model.phi = phi;
 end
 
 % % 3. Compute surrogate distrubution.
@@ -98,7 +72,7 @@ if ~isfield(model,'distr_coh')
     
     model = gen_surrogate_distr_coh(model,params,movingwin,f_start,f_stop);
 end
-% 
+%
 % % 4. Compute pvals using surrogate distribution.
 fprintf(['... computing pvals \n'])
 
@@ -165,9 +139,8 @@ for ii = 1:num_nets
 end
 
 % 6. Output/save everything
-
- model.net_coh = net_coh;
- model.pval_coh = pval_coh;
+model.net_coh = net_coh;
+model.pval_coh = pval_coh;
 
 
 end
