@@ -29,22 +29,22 @@ for ii = 1:nsurrogates
     end
     
     
-    
-    ti = randi(T-window_size+1); % Choose random time, i.
-    tj = randi(T-window_size+1); % Choose random time, j.
-    xi = data(i,ti:(ti+window_size-1));
-    xj = data(j,tj:(tj+window_size-1));
+    M = floor(T-window_size+1);
+    ti = randi(M); % Choose random time, i.
+    tj = randi(M); % Choose random time, j.
+    xi = data(i,ti:round(ti+window_size-1));
+    xj = data(j,tj:round(tj+window_size-1));
     
     
     
     while sum(sum(isnan(xi))) > 0
-        ti = randi(T-window_size+1);
-        xi = data(i,ti:(ti+window_size-1));
+        ti = randi(M);
+        xi = data(i,ti:round(ti+window_size-1));
     end
     
     while sum(sum(isnan(xj))) > 0
-        tj = randi(T-window_size+1);
-        xj = data(i,tj:(tj+window_size-1));
+        tj = randi(M);
+        xj = data(i,tj:round(tj+window_size-1));
         
     end
     

@@ -19,8 +19,6 @@ model.params.trialave = 1;                                         % ... trial a
 model.params.fpass    = [1 50.1];                                  % ... freq range to pass.
 model.params.Fs       = model.sampling_frequency;                  % ... sampling frequency.
 
-
-
 %%% 3. Remove artifacts
 model = remove_artifacts_all_lobes(model,pc);
 
@@ -35,7 +33,7 @@ model = remove_artifacts_all_lobes(model,pc);
 % 4. a) DELTA -------------------------------------------------------------
 % Delta: [2, 4]   --> W = 1,   T = 5,   2TW-1 = 9
 model.W           = 1;
-model.window_step = 2.5; % in seconds
+model.window_step = 5; % in seconds
 model.window_size = 5;   % in seconds
 model.f_start     = 3;
 model.f_stop      = 3;
@@ -52,7 +50,7 @@ save([ model.patient_name '_delta_coherence.mat'],'model_delta')
 model.W           = 2;
 model.f_start     = 6;
 model.f_stop      = 6;
-model.window_step = 1.5; % in seconds
+model.window_step = 3; % in seconds
 model.window_size = 3;   % in seconds
 model.params.pad      = -1;                          % ... no zero padding.
 model_theta       = infer_network_coherency(model);
@@ -67,7 +65,7 @@ save([ model.patient_name '_theta_coherence.mat'],'model_theta')
 model.W           = 2;
 model.f_start     = 10;
 model.f_stop      = 10;
-model.window_step = 1.5; % in seconds
+model.window_step = 3; % in seconds
 model.window_size = 3;   % in seconds
 model.params.pad      = -1;                          % ... no zero padding.
 model_alpha       = infer_network_coherency(model);
@@ -82,7 +80,7 @@ save([ model.patient_name '_alpha_coherence.mat'],'model_alpha')
 model.W           = 2.5;
 model.f_start     = 12.5;
 model.f_stop      = 12.5;
-model.window_step = 1; % in seconds
+model.window_step = 2; % in seconds
 model.window_size = 2; % in seconds
 model.params.pad      = -1;                           % ... no zero padding.
 model_sigma       = infer_network_coherency(model);
@@ -98,7 +96,7 @@ save([ model.patient_name '_sigma_coherence.mat'],'model_sigma')
 model.W           = 7.5;
 model.f_start     = 22.3572;
 model.f_stop      = 22.3572;
-model.window_step = 0.5; % in seconds
+model.window_step = 1; % in seconds
 model.window_size = 1;   % in seconds
 model.params.pad  = 1;                          % ... with zero padding.
 model_beta        = infer_network_coherency(model);
@@ -113,7 +111,7 @@ save([ model.patient_name '_beta_coherence.mat'],'model_beta')
 model.W           = 10;
 model.f_start     = 39.9804;
 model.f_stop      = 39.9804;
-model.window_step = 0.25; % in seconds
+model.window_step = 0.5; % in seconds
 model.window_size = 0.5;   % in seconds
 model.params.pad  = -1;                          % ... no zero padding.
 model_gamma       = infer_network_coherency(model);
