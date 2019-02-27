@@ -51,7 +51,8 @@ for k =  5 % loop through patients
         model.params.trialave = 1;                        % ... trial average.
         model.params.fpass    = [1 50.1];                 % ... freq range to pass.
         model.params.Fs       = model.sampling_frequency; % ... sampling frequency. 
-        %
+        params.err            = [2 0.05];                 % ... Jacknife error bars, p =0.05;
+                                                          
         %%% 3. REMOVE ARTIFACTS
         model = remove_artifacts_all_lobes(model,patient_coordinates);
         

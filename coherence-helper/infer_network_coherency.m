@@ -38,8 +38,11 @@ if ~isfield(model,'kC')
     
     d1 = data(1,:)';
     d2 = data(2,:)';
+
     [~,~,~,~,~,t,f]=cohgramc(d1,d2,movingwin,params);
     kC  = zeros([n n length(t)]);
+    kUp = zeros([n n length(t)]);
+    KLo = zeros([n n length(t)]); 
     phi = zeros([n n length(t)]);
     % Compute the coherence.
     % Note that coherence is positive.
@@ -49,9 +52,12 @@ if ~isfield(model,'kC')
         d1 = data(i,:)';
         parfor j = (i+1):n % parfor on inside
             d2 = data(j,:)';
-            [net_coh,phase,~,~,~,~,ftmp] = cohgramc(d1,d2,movingwin,params);
+            [net_coh,phase,~,~,~,~,ftmp,~,~,Cerr] = cohgramc(d1,d2,movingwin,params);
             f_indices  = round(ftmp,3) >= f_start & round(ftmp,3) <= f_stop;
-            kC(i,j,:)  = mean(net_coh(:,f_indices),2);
+          %  kC(i,j,:)  = mean(net_coh(:,f_indices),2);
+            kC(i,j,:)  = net_coh(:,f_indices);
+            kUp(i,j,:) = Cerr(2,:,f_indices);
+            kLo(i,j,:) = Cerr(1,:,f_indices);
             phi(i,j,:) = phase(:,f_indices);
             fprintf(['Infering edge row: ' num2str(i) ' and col: ' num2str(j) '. \n' ])
         end

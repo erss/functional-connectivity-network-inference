@@ -5,9 +5,9 @@ addpath(genpath('Toolboxes/chronux_2_12'))
 addpath(genpath('Toolboxes/mgh'))
 
 %%% 1. LOAD DATA
-model.patient_name ='model013';
+model.patient_name ='model006';
 model.data = [data_left; data_right];
-pc=patient_coordinates_013;
+pc=patient_coordinates_006;
 
 %%% 2. LOAD MODEL PARAMETERS
 model.sampling_frequency = 2035;
