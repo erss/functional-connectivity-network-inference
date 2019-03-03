@@ -5,13 +5,13 @@ addpath(genpath('Toolboxes/chronux_2_12'))
 addpath(genpath('Toolboxes/mgh'))
 
 %%% 1. LOAD DATA
- model.patient_name ='pBECTS013';
+ model.patient_name ='pBECTS007';
  model.data = [data_left; data_right];
- pc = patient_coordinates_013;
+ pc = patient_coordinates_007;
 
 %%% 2. LOAD MODEL PARAMETERS
 model.sampling_frequency = 2035;
-model.window_step = 1;% % in seconds
+model.window_step = 2;% % in seconds
 model.window_size = 2;   % in seconds
 model.q=0.05;
 model.nsurrogates = 10000;

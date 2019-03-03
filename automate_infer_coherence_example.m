@@ -21,7 +21,6 @@ for k =  5 % loop through patients
     
     PATIENTPATH = [DATAPATH model.patient_name];
     addpath(PATIENTPATH)
-    patient_coordinates = load_patient_coordinates( PATIENTPATH,source_session );
     
     for i = 1:1 %4  % loop through source sessions
         
@@ -31,6 +30,8 @@ for k =  5 % loop through patients
         
         source_session       = source_directory(i).name;
         model.source_session = source_session;
+        patient_coordinates = load_patient_coordinates( PATIENTPATH,source_session );
+
         if strcmp(source_session(11),'r')
             rnge = 1:17;
         else

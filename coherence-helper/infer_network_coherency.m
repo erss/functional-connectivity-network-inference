@@ -41,8 +41,8 @@ if ~isfield(model,'kC')
 
     [~,~,~,~,~,t,f]=cohgramc(d1,d2,movingwin,params);
     kC  = zeros([n n length(t)]);
-    kUp = zeros([n n length(t)]);
-    KLo = zeros([n n length(t)]); 
+    kUp = nan([n n length(t)]);
+    kLo = nan([n n length(t)]); 
     phi = zeros([n n length(t)]);
     % Compute the coherence.
     % Note that coherence is positive.
@@ -70,6 +70,8 @@ if ~isfield(model,'kC')
     model.f = f;
     model.kC = kC;
     model.phi = phi;
+    model.kLo = kLo;
+    model.kUp = kUp;
 end
 
 % % 3. Compute surrogate distrubution.
