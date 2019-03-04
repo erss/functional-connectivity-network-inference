@@ -79,7 +79,7 @@ for k =  5 % loop through patients
         % 4. b) SAVE DELTA DATA
         model_delta.data       = NaN;  % clear data
         model_delta.data_clean = NaN;  % clear data
-        save([ OUTDATAPATH source_session(rnge) '_delta_coherence.mat'],'model_delta')
+        save([ OUTDATAPATH source_session(rnge) '_delta_coherence.mat'],'model_delta','-v7.3')
         
         % 5. a) THETA -------------------------------------------------------------
         % Theta: [4, 8]   --> W = 2,   T = 3,   2TW-1 = 11
@@ -95,7 +95,7 @@ for k =  5 % loop through patients
         % 5. b) SAVE THETA DATA
         model_theta.data       = NaN;  % clear data
         model_theta.data_clean = NaN;  % clear data
-        save([ OUTDATAPATH source_session(rnge) '_theta_coherence.mat'],'model_theta')
+        save([ OUTDATAPATH source_session(rnge) '_theta_coherence.mat'],'model_theta','-v7.3')
         
         % 6. a) ALPHA -------------------------------------------------------------
         % Alpha: [8, 12]  --> W = 2,   T = 3,   2TW-1 = 11
@@ -111,7 +111,7 @@ for k =  5 % loop through patients
         % 6. b) SAVE ALPHA DATA
         model_alpha.data       = NaN;  % clear data
         model_alpha.data_clean = NaN;  % clear data
-        save([ OUTDATAPATH source_session(rnge) '_alpha_coherence.mat'],'model_alpha')
+        save([ OUTDATAPATH source_session(rnge) '_alpha_coherence.mat'],'model_alpha','-v7.3')
         
         % 7. a) SIGMA -------------------------------------------------------------
         % Sigma: [10, 15] --> W = 2.5, T = 2,   2TW-1 = 9
@@ -127,7 +127,7 @@ for k =  5 % loop through patients
         % 7. b) SAVE SIGMA DATA
         model_sigma.data = NaN;  % clear data
         model_sigma.data_clean = NaN;  % clear data
-        save([OUTDATAPATH source_session(rnge) '_sigma_coherence.mat'],'model_sigma')
+        save([OUTDATAPATH source_session(rnge) '_sigma_coherence.mat'],'model_sigma','-v7.3')
         
         
         % 8. a) BETA --------------------------------------------------------------
@@ -144,7 +144,7 @@ for k =  5 % loop through patients
         % 8. b) SAVE BETA DATA
         model_beta.data       = NaN;  % clear data
         model_beta.data_clean = NaN;  % clear data
-        save([OUTDATAPATH source_session(rnge)  '_beta_coherence.mat'],'model_beta')
+        save([OUTDATAPATH source_session(rnge)  '_beta_coherence.mat'],'model_beta','-v7.3')
         
         % 9. a) GAMMA -------------------------------------------------------------
         % Gamma: [30, 50] --> W = 10,  T = 0.5, 2TW-1 = 9
@@ -160,7 +160,7 @@ for k =  5 % loop through patients
         % 9. b) SAVE GAMMA DATA
         model_gamma.data       = NaN;  % clear data
         model_gamma.data_clean = NaN;  % clear data
-        save([ OUTDATAPATH source_session(rnge)  '_gamma_coherence.mat'],'model_gamma')
+        save([ OUTDATAPATH source_session(rnge)  '_gamma_coherence.mat'],'model_gamma','-v7.3')
         
         
         clear model_delta
