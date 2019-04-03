@@ -12,11 +12,11 @@
 % model.bad_channels =[1:8 10 12 14 15 16 17 18 20 21 24 25 29 31 32 35 36 39 41 ...
 %     42 44 47 48 53 54 57 64 69 71 72 74 88 104 130 132 163 165:167 170 ...
 %    172 177 180 182 183 193 201 206 212 230 233];
-pc=patient_coordinates_019;
-model.data =[data_left;data_right];
+pc=patient_coordinates;
+model_sigma.data =[data_left;data_right];
 
-model.patient_name = 'pBECTS019';
-[ model, bvalues ] = remove_artifacts_all_lobes( model, pc);
+model_sigma.patient_name = 'pBECTS006';
+[ model_sigma, bvalues ] = remove_artifacts_all_lobes( model_sigma, pc);
 %% Find all relevant subnetworks
 [LNp,RNp] = find_subnetwork_lobe( pc,'parietal');
 [LNt,RNt] = find_subnetwork_lobe( pc,'temporal');
@@ -34,18 +34,18 @@ iiL = setdiff(ii,left_net);
 ii = 163:324;
 iiR = setdiff(ii,right_net);
 %patient_coordinates.RDL(ii-162)
-ii=[iiL;iiR];
+ii=[iiL,iiR];
 
 % Load data
-
-data = remove_bad_channels( model );
+%%
+data = remove_bad_channels( model_sigma );
 dp = data([LNp; RNp],:)';
 dt = data([LNt; RNt],:)';
 do = data([LNo; RNo],:)';
 df = data([LNf; RNf],:)';
 %d  = data([LN; RN],:)';
 dleftover = data(ii,:)';
-data_clean=model.data_clean;
+data_clean=model_sigma.data_clean;
 
 dpc = data_clean([LNp; RNp],:)';
 dtc = data_clean([LNt; RNt],:)';
@@ -54,8 +54,8 @@ dfc = data_clean([LNf; RNf],:)';
 %dc  = data_clean([LN; RN],:)';
 dleftoverc = data_clean(ii,:)';
 %% Movie for CLEAN data & ARTIFACT data
-OUTVIDPATH1 = strcat('~/Desktop/',model.patient_name,'_rest05_clean.avi');
-OUTVIDPATH2 = strcat('~/Desktop/',model.patient_name,'_rest05_artifacts.avi');
+OUTVIDPATH1 = strcat('~/Desktop/',model_sigma.patient_name,'_rest05_clean.avi');
+OUTVIDPATH2 = strcat('~/Desktop/',model_sigma.patient_name,'_rest05_artifacts.avi');
 v = VideoWriter(OUTVIDPATH1);
 v.FrameRate=1;
 open(v);
@@ -63,14 +63,15 @@ open(v);
 q = VideoWriter(OUTVIDPATH2);
 q.FrameRate=1;
 open(q);
-t = model.t;
-t_clean = model.t_clean;
+t = model_sigma.t;
+t_clean = model_sigma.t_clean;
 window_step =0.5;
 window_size =0.5;
 i_total = 1+floor((t(end)-t(1)-window_size) /window_step);  % # intervals.
 %h = figure('units','normalized','outerposition',[0 0 .5 1]);
 h=figure;
 g=figure;
+b=model.bvalues;
 for k = 1:i_total %length(t_clean)
     t_start = t(1) + (k-1) * window_step;   %... get window start time [s],
     t_stop  = t_start + window_size;                  %... get window stop time [s],
@@ -81,17 +82,17 @@ for k = 1:i_total %length(t_clean)
         figure(h)
         subplot(2,3,1)
         plotchannels(t_clean(indices),dpc(indices,:));
-        title('Parietal')
+        title(['Parietal, m: ' num2str(b(1,k))])
         subplot(2,3,2)
         plotchannels(t_clean(indices),dtc(indices,:));
         
-        title('Temporal')
+        title(['Temporal, m: ' num2str(b(3,k))])
         subplot(2,3,4)
         plotchannels(t_clean(indices),doc(indices,:));
-        title('Occipital')
+        title(['Occipital, m: ' num2str(b(2,k))])
         subplot(2,3,5)
         plotchannels(t_clean(indices),dfc(indices,:));
-        title('Frontal')
+        title(['Frontal, m: ' num2str(b(4,k))])
         
 %         h1=subplot(2,3,3);
 %         plotNetwork(model.net_coh([LN;RN],[LN;RN],k),h1)

@@ -59,7 +59,8 @@ else
         %%% Parietal
         b(1,k) = compute_slope(data([LNp;RNp],indices)',f0,f_start,f_stop);
         %%% Occip
-        b(2,k) = compute_slope(data([LNo;RNo],indices)',f0,f_start,f_stop);
+   %     b(2,k) = compute_slope(data([LNo;RNo],indices)',f0,f_start,f_stop);
+         b(2,k) = NaN;
         %%% Temporal
         b(3,k) = compute_slope(data([LNt;RNt],indices)',f0,f_start,f_stop);   
         %%%Frontal
@@ -79,6 +80,7 @@ else
     % Remove mean after removing bad time intervalss
     model.data_clean = bsxfun(@minus,data_clean,nanmean(data_clean,2));
     model.t_clean    = t_clean;
+    model.bvalues    = b;
 end
 
 

@@ -5,9 +5,9 @@ addpath(genpath('Toolboxes/chronux_2_12'))
 addpath(genpath('Toolboxes/mgh'))
 
 %%% 1. LOAD DATA
-model.patient_name ='model006';
+model.patient_name ='model007';
 model.data = [data_left; data_right];
-pc=patient_coordinates_006;
+pc=patient_coordinates;
 
 %%% 2. LOAD MODEL PARAMETERS
 model.sampling_frequency = 2035;
@@ -38,7 +38,7 @@ model.window_size = 5;   % in seconds
 model.f_start     = 3;
 model.f_stop      = 3;
 model.params.pad  = -1;                           % ... no zero padding.
-model_delta       = infer_network_coherency(model);
+model_delta       = infer_network_coherence(model);
 
 % 4. b) SAVE DELTA DATA
 model_delta.data       = NaN;  % clear data
@@ -53,7 +53,7 @@ model.f_stop      = 6;
 model.window_step = 3; % in seconds
 model.window_size = 3;   % in seconds
 model.params.pad      = -1;                          % ... no zero padding.
-model_theta       = infer_network_coherency(model);
+model_theta       = infer_network_coherence(model);
 
 % 5. b) SAVE THETA DATA
 model_theta.data       = NaN;  % clear data
@@ -68,7 +68,7 @@ model.f_stop      = 10;
 model.window_step = 3; % in seconds
 model.window_size = 3;   % in seconds
 model.params.pad      = -1;                          % ... no zero padding.
-model_alpha       = infer_network_coherency(model);
+model_alpha       = infer_network_coherence(model);
 
 % 6. b) SAVE ALPHA DATA
 model_alpha.data       = NaN;  % clear data
@@ -83,7 +83,7 @@ model.f_stop      = 12.5;
 model.window_step = 2; % in seconds
 model.window_size = 2; % in seconds
 model.params.pad      = -1;                           % ... no zero padding.
-model_sigma       = infer_network_coherency(model);
+model_sigma       = infer_network_coherence(model);
 
 % 7. b) SAVE SIGMA DATA
 model_sigma.data = NaN;  % clear data
@@ -99,7 +99,7 @@ model.f_stop      = 22.3572;
 model.window_step = 1; % in seconds
 model.window_size = 1;   % in seconds
 model.params.pad  = 1;                          % ... with zero padding.
-model_beta        = infer_network_coherency(model);
+model_beta        = infer_network_coherence(model);
 
 % 8. b) SAVE BETA DATA
 model_beta.data       = NaN;  % clear data
@@ -114,7 +114,7 @@ model.f_stop      = 39.9804;
 model.window_step = 0.5; % in seconds
 model.window_size = 0.5;   % in seconds
 model.params.pad  = -1;                          % ... no zero padding.
-model_gamma       = infer_network_coherency(model);
+model_gamma       = infer_network_coherence(model);
 
 % 9. b) SAVE GAMMA DATA
 model_gamma.data       = NaN;  % clear data

@@ -1,0 +1,32 @@
+function model = infer_soz_coherence( model, pc)
+% INFER_SOZ_COHERENCE computes zone coherence in left SOZ, right SOZ and
+% left to right SOZ
+[LN,RN] = find_subnetwork_coords(pc);
+fprintf(['...computing left SOZ coherence ... \n'])
+model.left = compute_soz_coherence(model,LN);
+model.right = compute_soz_coherence(model,RN);
+nodes.source = LN;
+nodes.target = RN;
+model.across = compute_soz_coherence(model,nodes);
+
+
+[LNp,RNp] = find_subnetwork_lobe( pc,'parietal');
+[LNt,RNt] = find_subnetwork_lobe( pc,'temporal');
+[LNo,RNo] = find_subnetwork_lobe( pc,'occipital');
+[LNf,RNf] = find_subnetwork_lobe( pc,'frontal');
+
+LNt = setdiff(LNt,LN);
+RNt = setdiff(RNt,RN);
+LNp = setdiff(LNp,LN);
+RNp = setdiff(RNp,RN);
+model.temporal_left  = compute_soz_coherence(model,LNt);
+model.temporal_right  = compute_soz_coherence(model,RNt);
+model.occipital_left  = compute_soz_coherence(model,LNo);
+model.occipital_right = compute_soz_coherence(model,RNo);
+model.frontal_left   = compute_soz_coherence(model,LNf);
+model.frontal_right  = compute_soz_coherence(model,RNf);
+model.parietal_left  = compute_soz_coherence(model,LNp);
+model.parietal_right = compute_soz_cohernece(model,RNp);
+
+end
+
