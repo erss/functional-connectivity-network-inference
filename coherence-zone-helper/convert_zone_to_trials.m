@@ -7,7 +7,7 @@ function [ d1, d2 ] = convert_zone_to_trials( data,varargin )
 %
 % INPUTS:
 %  data     = [t x channels] data matrix
-%  varargin = if this is a structure containing source and targer indices,
+%  varargin = if this is a structure containing source and target indices,
 %             then trials are made so that they are looking at connections
 %             from source to target (excluding within source and target).
 %             If empty, then all channels are included in trial.
@@ -23,8 +23,12 @@ elseif nargin==2
     nodes=varargin{1};
     nL = length(nodes.source);
     nR = length(nodes.target);
-    C(:,1) = sort(repmat(nodes.source',1,nR));
-    C(:,2) = repmat(nodes.target',1,nL);
+%     C(:,1) = sort(repmat(nodes.source',1,nR));
+%     C(:,2) = repmat(nodes.target',1,nL);
+
+    C(:,1) = sort(repmat((1:nL),1,nR));
+    C(:,2) = repmat((nL+1:nL+nR),1,nL);
+
 end
 
 d1 = data(:,C(:,1));

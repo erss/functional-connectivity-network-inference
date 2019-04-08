@@ -56,7 +56,7 @@ faxis = params.fpass(1):W:params.fpass(2);
         
     end
     
-    model.dynamic_network_taxis = t + time(1); %%% DOUBLE CHECK THIS STEP, to
+    model.dynamic_network_taxis_power = t + time(1); %%% DOUBLE CHECK THIS STEP, to
     %%% TO FIX TIME AXIS
     model.f = f;
     model.kPower = kPower;
@@ -107,7 +107,5 @@ f_start = band(1);
 f_stop  = band(2);
 f_indices = f >= f_start & f <= f_stop;
 model.gamma_power = squeeze(mean(kPower(:,f_indices,:),2));
-
-
 
 end

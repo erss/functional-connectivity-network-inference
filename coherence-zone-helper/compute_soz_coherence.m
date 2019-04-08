@@ -21,17 +21,24 @@ function model_zone = compute_soz_coherence( model,nodes)
 % kLo, kUp  = lower and upper bounds respectively on estimate of coherence
 % f         = frequency axis
 
-% 1. Transform data into appropriate trial structure.  
+% 1. Remove artifacts
+f0 = model.sampling_frequency;
 if ~isstruct(nodes)
-    data        = model.data_clean(nodes,:);
-    [d1,d2]     = convert_zone_to_trials( data');
+   [data_clean,t_clean, b] = remove_artifacts_zone(model.data(nodes,:),model.t,f0);
+else
+   [data_clean,t_clean, b] = remove_artifacts_zone(model.data([nodes.source;nodes.target],:),model.t,f0);
+end
+
+% 2. Transform data into appropriate trial structure and remove artifacts
+if ~isstruct(nodes)
+    [d1,d2]     = convert_zone_to_trials( data_clean');
 else
     
-    data        = model.data_clean;
+    data        = data_clean;
     [d1,d2]     = convert_zone_to_trials( data',nodes);
 end
 
-% 2. Load parameters
+% 3. Load parameters
 time    = model.t;
 W       = model.W;
 f_start = round(model.f_start,3);
@@ -43,38 +50,19 @@ model.params.tapers = [TW,ntapers];                           % time-bandwidth p
 params              = model.params;
 movingwin           = [model.window_size, model.window_step]; % Window size and step.
 
-% 3. Compute coherence from d1 to d2
+% 4. Compute coherence from d1 to d2
 [C,phase,~,~,~,t,ftmp,~,~,Cerr] = cohgramc(d1,d2,movingwin,params);
 f_indices  = round(ftmp,3) >= f_start & round(ftmp,3) <= f_stop;
 
-% 4. Save results
-model_zone.f  = ftmp;
-model_zone.kC = C(:,f_indices);
-model_zone.kUp= Cerr(2,:,f_indices);
-model_zone.kLo= Cerr(1,:,f_indices);
-model_zone.phi= phase(:,f_indices);
-model_zone.taxis = t + time(1);
-
-%  only try 10s
-%     d1t = d1(1:20350,:);
-%     d2t = d2(1:20350,:);
-%     d1p = convert_to_trials(d1, model.window_size*model.sampling_frequency);
-%     d2p = convert_to_trials(d2, model.window_size*model.sampling_frequency);
-%     tic
-%     [Cglobal,phase,~,~,~,f,~,~,CerrGlobal] = coherencyc(d1p,d2p,params);
-%     ctime = toc;
-%     f_indices  = round(f,2) >= f_start & round(f,2) <= f_stop;
-%     i = find(f_indices==1);
-%     Cglobal   = Cglobal(i(1));
-%     kUpGlobal = CerrGlobal(2,i(1));
-%     kLoGlobal = CerrGlobal(1,i(1));
-%     phi = phase(i(1));
-
-
-
-
-
-
+% 5. Save results
+model_zone.t_clean = t_clean;
+model_zone.b       = b;
+model_zone.f       = ftmp;
+model_zone.kC      = C(:,f_indices);
+model_zone.kUp     = Cerr(2,:,f_indices);
+model_zone.kLo     = Cerr(1,:,f_indices);
+model_zone.phi     = phase(:,f_indices);
+model_zone.taxis   = t + time(1);
 
 
 end

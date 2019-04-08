@@ -21,12 +21,11 @@ model.data = data;
 [LNt,RNt] = find_subnetwork_lobe( patient_coordinates,'temporal');
 [LNo,RNo] = find_subnetwork_lobe( patient_coordinates,'occipital');
 [LNf,RNf] = find_subnetwork_lobe( patient_coordinates,'frontal');
-    
 if isfield(model,'t_clean')
     
     data_clean = remove_bad_channels( model );
     for t = 1:length(model.t_clean)
-    
+        
         if isnan(model.t_clean(t))
             data_clean(:,t) = nan;
         end
@@ -35,10 +34,10 @@ if isfield(model,'t_clean')
     model.data_clean = data_clean;
     b                = nan;
 else
-
+    
     % Remove bad channels before computing average slope
     data = remove_bad_channels(model);
- 
+    
     t = model.t;
     window_step = 0.5;
     window_size = 0.5;
@@ -56,27 +55,25 @@ else
         f_start = 30;
         f_stop  = 95;
         
-        %%% Parietal
+        
+        % %% Parietal
         b(1,k) = compute_slope(data([LNp;RNp],indices)',f0,f_start,f_stop);
         %%% Occip
-   %     b(2,k) = compute_slope(data([LNo;RNo],indices)',f0,f_start,f_stop);
-         b(2,k) = NaN;
+        b(2,k) = compute_slope(data([LNo;RNo],indices)',f0,f_start,f_stop);
         %%% Temporal
-        b(3,k) = compute_slope(data([LNt;RNt],indices)',f0,f_start,f_stop);   
+        b(3,k) = compute_slope(data([LNt;RNt],indices)',f0,f_start,f_stop);
         %%%Frontal
         b(4,k) = compute_slope(data([LNf;RNf],indices)',f0,f_start,f_stop);
-        %%% MAKE NAN
-      
+        
         bt = b(:,k) > threshold;
         if sum(bt(:)) > 0 % if at least one slope is greater than threshold
             % then artifact
-            data_clean(:,indices)= NaN;
-            t_clean(indices)     = NaN;
+            data_clean(:,indices) = NaN;
+            t_clean(indices)      = NaN;
         end
         fprintf([num2str(k),'\n'])
         
     end
-    
     % Remove mean after removing bad time intervalss
     model.data_clean = bsxfun(@minus,data_clean,nanmean(data_clean,2));
     model.t_clean    = t_clean;

@@ -15,8 +15,8 @@
 pc=patient_coordinates;
 model_sigma.data =[data_left;data_right];
 
-model_sigma.patient_name = 'pBECTS006';
-[ model_sigma, bvalues ] = remove_artifacts_all_lobes( model_sigma, pc);
+model_sigma.patient_name = 'pBECTS007';
+%[ model_sigma, bvalues ] = remove_artifacts_all_lobes( model_sigma, pc);
 %% Find all relevant subnetworks
 [LNp,RNp] = find_subnetwork_lobe( pc,'parietal');
 [LNt,RNt] = find_subnetwork_lobe( pc,'temporal');
@@ -54,8 +54,8 @@ dfc = data_clean([LNf; RNf],:)';
 %dc  = data_clean([LN; RN],:)';
 dleftoverc = data_clean(ii,:)';
 %% Movie for CLEAN data & ARTIFACT data
-OUTVIDPATH1 = strcat('~/Desktop/',model_sigma.patient_name,'_rest05_clean.avi');
-OUTVIDPATH2 = strcat('~/Desktop/',model_sigma.patient_name,'_rest05_artifacts.avi');
+OUTVIDPATH1 = strcat('~/Desktop/',model_sigma.patient_name,'_clean.avi');
+OUTVIDPATH2 = strcat('~/Desktop/',model_sigma.patient_name,'_artifacts.avi');
 v = VideoWriter(OUTVIDPATH1);
 v.FrameRate=1;
 open(v);
@@ -119,17 +119,17 @@ for k = 1:i_total %length(t_clean)
         figure(g)
         subplot(2,3,1)
         plotchannels(t(indices2),dp(indices2,:));
-        title('Parietal')
+        title(['Parietal, m: ' num2str(b(1,k))])
         subplot(2,3,2)
         plotchannels(t(indices2),dt(indices2,:));
         
-        title('Temporal')
+        title(['Temporal, m: ' num2str(b(3,k))])
         subplot(2,3,4)
         plotchannels(t(indices2),do(indices2,:));
-        title('Occipital')
+        title(['Occipital, m: ' num2str(b(2,k))])
         subplot(2,3,5)
         plotchannels(t(indices2),df(indices2,:));
-        title('Frontal')
+        title(['Frontal, m: ' num2str(b(4,k))])
         
         subplot(2,3,6)
         plotchannels(t(indices2),dleftover(indices2,:));
