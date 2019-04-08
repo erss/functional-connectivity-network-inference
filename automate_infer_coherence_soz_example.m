@@ -1,16 +1,16 @@
 %%% Load toolboxes and scripts
 addpath(genpath('~/Documents/MATLAB/bects-networks-toolbox/'))
 addpath(genpath('~/Documents/MATLAB/fc-network-inference-bootstrap/'))
-addpath(genpath('~/Documents/MATLAB/Toolboxes/chronux_2_12/'))
+addpath(genpath('~/Documents/MATLAB/Toolboxes/chronux/'))
 addpath(genpath('~/Documents/MATLAB/Toolboxes/mgh/'))
 
 %%% My computer
-DATAPATH    = '~/Desktop/bects_data/DKData/';
-OUTDATAPATH = '~/Desktop/bects_results/coherence - r7/';
+% DATAPATH    = '~/Desktop/bects_data/DKData/';
+% OUTDATAPATH = '~/Desktop/bects_results/coherence - r7/';
 
 %%% Galactica
-% DATAPATH    = '~/Desktop/bects_data/source_data_2/'
-% OUTDATAPATH = '/Users/liz/Desktop/bects_results/nets_final/';
+DATAPATH    = '~/Desktop/bects_data/source_data_2/'
+OUTDATAPATH = '/Users/liz/Desktop/bects_results/nets_final/';
 
 data_directory = dir(DATAPATH);
 
