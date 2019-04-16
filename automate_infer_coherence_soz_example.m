@@ -5,23 +5,23 @@ addpath(genpath('~/Documents/MATLAB/Toolboxes/chronux/'))
 addpath(genpath('~/Documents/MATLAB/Toolboxes/mgh/'))
 
 %%% My computer
-% DATAPATH    = '~/Desktop/bects_data/DKData/';
-% OUTDATAPATH = '~/Desktop/bects_results/coherence - r7/';
+DATAPATH    = '~/Desktop/bects_data/DKData/';
+OUTDATAPATH = '~/Desktop/bects_results/coherence - r7/';
 
-%%% Galactica
-DATAPATH    = '~/Desktop/bects_data/source_data_2/'
-OUTDATAPATH = '/Users/liz/Desktop/bects_results/nets_final/';
+% %%% Galactica
+% DATAPATH    = '~/Desktop/bects_data/source_data_2/'
+% OUTDATAPATH = '/Users/liz/Desktop/bects_results/nets_final/';
 
 data_directory = dir(DATAPATH);
 
-for k = 4:9 % loop through patients
+for k = 5;%4:9 % loop through patients
     model.patient_name = data_directory(k).name;
     fprintf([model.patient_name '\n']);
     source_directory = dir([ DATAPATH data_directory(k).name '/sleep_source/*.mat']);
     
     PATIENTPATH = [DATAPATH model.patient_name];
     addpath(PATIENTPATH)
-    
+
     for i = 1:size(source_directory,1)  % loop through source sessions
         
         %%% 1. LOAD PATIENT DATA
@@ -45,7 +45,6 @@ for k = 4:9 % loop through patients
         %%% 2. LOAD MODEL PARAMETERS
         model.sampling_frequency = 2035;
         model.q                  = 0.05;
-        model.nsurrogates        = 10000;
         model.t                  = time;
         
         model.params.trialave = 1;                        % ... trial average.
@@ -54,7 +53,7 @@ for k = 4:9 % loop through patients
         model.params.err      = [2 0.05];                 % ... Jacknife error bars, p =0.05;
         
         %%% 3. REMOVE ARTIFACTS
-        model = infer_power_soz( model,pc);
+        model = infer_power_soz( model,patient_coordinates);
         %%% 4. --- INFER NETWORKs ---
         % Delta: [2, 4]   --> W = 1,   T = 5,   2TW-1 = 9
         % Theta: [4, 8]   --> W = 2,   T = 3,   2TW-1 = 11
@@ -161,6 +160,41 @@ for k = 4:9 % loop through patients
         model_gamma.data       = NaN;  % clear data
         model_gamma.data_clean = NaN;  % clear data
         save([ OUTDATAPATH source_session(rnge)  '_gamma_coherence.mat'],'model_gamma','-v7.3')
+        
+        
+        h = figure;
+        set(h, 'Visible', 'off');
+        plot_patient_activity_zone(model_delta)
+        
+        saveas(h,[OUTFIGPATH model.source_session(1:17) '_delta.fig']);
+        
+        g = figure;
+        set(g, 'Visible', 'off');
+        plot_patient_activity_zone(model_theta)
+        
+        saveas(g,[OUTFIGPATH model.source_session(1:17) '_theta.jpg']);
+        
+        f = figure;
+        set(f, 'Visible', 'off');
+        plot_patient_activity_zone(model_sigma)
+        
+        saveas(f,[OUTFIGPATH model.source_session(1:17) '_sigma.jpg']);
+        
+        m = figure;
+        set(m, 'Visible', 'off');
+        plot_patient_activity_zone(model_beta)
+        
+        saveas(m,[OUTFIGPATH model.source_session(1:17) '_beta.jpg']);
+        
+        n = figure;
+        set(n, 'Visible', 'off');
+        plot_patient_activity_zone(model_gamma)
+        
+        saveas(n,[OUTFIGPATH model.source_session(1:17) '_gamma.jpg']);
+
+        
+        
+        
         
         
         clear model_delta
