@@ -1,9 +1,10 @@
 function model = infer_power_soz( model)
-% Infers network structure using coherence + imaginary coherency;
-% Employs a bootstrap procedure to determine significance.
+% Computes power in left SOZ, right SOZ, and both SOZs with error bars.
+% Plots in figpath
 %
 % INPUTS:
 % model = structure with network inference parameters
+%
 % OUTPUTS:
 %   -- New fields added to 'model' structure: --
 % kPower = spectal power [nelectrodes x frequency x time]
@@ -50,6 +51,12 @@ model.power_combined_soz.f = fC;
 model.power_left_soz.Serr = SerrL;
 model.power_right_soz.Serr = SerrR;
 model.power_combined_soz.Serr = SerrC;
+
+%%% Compute sigma/beta ratio
+ % mean([10,14.5])/mean([15, 29.5])
+model.power_left_soz.sbratio     = mean(SL(fL<=15 &fL>=10))/ mean(SL(fL<=30 &fL>=15));
+model.power_right_soz.sbratio    = mean(SR(fR<=15 &fR>=10))/ mean(SR(fR<=30 &fR>=15));
+model.power_combined_soz.sbratio = mean(SC(fC<=15 &fC>=10))/ mean(SC(fC<=30 &fC>=15));
 
 h = figure;
 set(h, 'Visible', 'off');

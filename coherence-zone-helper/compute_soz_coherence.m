@@ -64,5 +64,4 @@ model_zone.kLo     = Cerr(1,:,f_indices);
 model_zone.phi     = phase(:,f_indices);
 model_zone.taxis   = t + time(1);
 
-
 end
