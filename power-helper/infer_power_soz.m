@@ -25,12 +25,12 @@ params.trialave = 1;                                         % ... trial average
 params.fpass    = [0 50.1];                                  % ... freq range to pass.
 params.Fs       = Fs;                                        % ... sampling frequency.
 params.err      = [2 0.05];                                  % ... Jacknife error bars, p =0.05;
-movingwin       = [2, 2];   % ... Window size and step.
+movingwin       = [2, 2];                                    % ... Window size and step.
 
 %faxis = params.fpass(1):W:params.fpass(2);
-dataL=model.dataL;
-dataR=model.dataR;
-dataC=model.dataC;
+dataL = model.dataL;
+dataR = model.dataR;
+dataC = model.dataC;
 
 fprintf('...inferring left SOZ power \n');
 [SL,~,fL,SerrL]  = mtspecgramc(dataL,movingwin,params);

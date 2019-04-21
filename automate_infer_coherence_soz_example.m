@@ -14,7 +14,7 @@ OUTDATAPATH = '~/Desktop/bects_results/coherence - r7/';
 
 data_directory = dir(DATAPATH);
 
-for k = 5;%4:9 % loop through patients
+for k = 7;%4:9 % loop through patients
     model.patient_name = data_directory(k).name;
     fprintf([model.patient_name '\n']);
     source_directory = dir([ DATAPATH data_directory(k).name '/sleep_source/*.mat']);
@@ -53,7 +53,7 @@ for k = 5;%4:9 % loop through patients
         model.params.err      = [2 0.05];                 % ... Jacknife error bars, p =0.05;
         
         %%% 3. REMOVE ARTIFACTS
-        model = infer_power_soz( model,patient_coordinates);
+       % model = infer_power_soz( model,patient_coordinates);
         %%% 4. --- INFER NETWORKs ---
         % Delta: [2, 4]   --> W = 1,   T = 5,   2TW-1 = 9
         % Theta: [4, 8]   --> W = 2,   T = 3,   2TW-1 = 11

@@ -35,7 +35,7 @@ for k = 1:i_total
         data_clean(:,indices)= NaN;
         t_clean(indices)     = NaN;
     end
-    fprintf([num2str(k),'\n'])
+
     
 end
 
