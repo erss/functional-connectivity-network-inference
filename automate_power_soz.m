@@ -3,7 +3,8 @@ addpath(genpath('~/Documents/MATLAB/bects-networks-toolbox/'))
 addpath(genpath('~/Documents/MATLAB/fc-network-inference-bootstrap/'))
 addpath(genpath('~/Documents/MATLAB/Toolboxes/chronux/'))
 addpath(genpath('~/Documents/MATLAB/Toolboxes/mgh/'))
-
+addpath(genpath('~/Documents/MATLAB/Toolboxes/bu/'))
+%%
 %%% My computer
 DATAPATH    = '~/Desktop/bects_data/DKData/';
 OUTDATAPATH = '~/Desktop/bects_results/power - r2/';
