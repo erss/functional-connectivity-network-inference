@@ -22,8 +22,7 @@ model.prepost = compute_soz_coherence(model,nodes);
 
 fprintf('...computing dom pre & post SOZ coherence \n')
 [PreN,PostN] = find_subnetwork_prepost(pc);
-nodes = [PreN; PostN];
-model.prepost_all = compute_soz_coherence(model,nodes);
+model.prepost_all = compute_soz_coherence(model,[PreN; PostN]);
 
 [ LNstl,~ ] = find_subnetwork_str( pc,'superiortemporal');
 fprintf('...computing SOZ to superior temporal lobe coherence left \n')
@@ -32,8 +31,7 @@ nodes.target = LNstl;
 model.phoneme_left =compute_soz_coherence(model,nodes);
 
 fprintf('...computing within left superior temporal lobe coherence \n')
-nodes = LNstl;
-model.left_stl =compute_soz_coherence(model,nodes);
+model.left_stl =compute_soz_coherence(model,LNstl);
 
 
 %%% ----- Normalize by other brain region left and right ------------------
