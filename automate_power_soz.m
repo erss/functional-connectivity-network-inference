@@ -6,15 +6,15 @@ addpath(genpath('~/Documents/MATLAB/Toolboxes/mgh/'))
 addpath(genpath('~/Documents/MATLAB/Toolboxes/bu/'))
 %%
 %%% My computer
-DATAPATH    = '~/Desktop/bects_data/DKData/';
-OUTDATAPATH = '~/Desktop/bects_results/power - r2/';
+DATAPATH    = '~/Documents/BECTS-project/bects_data/DKData/';
+OUTDATAPATH = '~/Documents/BECTS-project/bects_results/power - r2/';
 
 % %%% Galactica
 % DATAPATH    = '~/Desktop/bects_data/source_data_2/'
 % OUTDATAPATH = '/Users/liz/Desktop/bects_results/power---NAME---/';
 
 data_directory = dir(DATAPATH);
-for k =8 %5:35 loop through patients
+for k =6:10 %5:35 loop through patients
 
     model.sampling_frequency = 2035;
     model.patient_name = data_directory(k).name;
@@ -28,7 +28,7 @@ for k =8 %5:35 loop through patients
     dataR =[];
     dataC =[];
   
-    for i = 1:size(source_directory,1)
+    for i = 1:1; %size(source_directory,1)
         
         %%% ---- Load source data and patient coordinate structure --------
         fprintf(['Loading source ' num2str(i) ' of ' num2str(size(source_directory,1)) '...\n'])

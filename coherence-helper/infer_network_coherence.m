@@ -22,15 +22,11 @@ data        = model.data_clean;
 time        = model.t;
 n           = size(model.data_clean,1);  % number of electrodes
 
-W       = model.W;
-f_start = round(model.f_start,3);
-f_stop  = round(model.f_stop, 3);
 
-TW                  = model.window_size*W;                    % Time bandwidth product.
-ntapers             = 2*TW-1;                                 % Choose the # of tapers.
-model.params.tapers = [TW,ntapers];                           % time-bandwidth product and tapers.
-params              = model.params;
-movingwin           = [model.window_size, model.window_step]; % Window size and step.
+f_start     = round(model.band_params.f_start,3);
+f_stop      = round(model.band_params.f_stop, 3);
+params      = model.band_params.params;
+movingwin   = model.band_params.movingwin;
 
 
 %%% If coherence network already exists, skip this step.
@@ -74,81 +70,81 @@ if ~isfield(model,'kC')
     model.kUp = kUp;
 end
 
-% % 3. Compute surrogate distrubution.
-fprintf(['... generating surrogate distribution \n'])
-if ~isfield(model,'distr_coh')
-    
-    model = gen_surrogate_distr_coh(model,params,movingwin,f_start,f_stop);
-end
-%
-% % 4. Compute pvals using surrogate distribution.
-fprintf(['... computing pvals \n'])
-
-% Initialize coherence pvals
-pval_coh = NaN(size(model.kC));
-distr_coh = sort(model.distr_coh);
-
-num_nets = size(pval_coh,3);
-
-for i = 1:n
-    for j = (i+1):n
-        
-        for k = 1:num_nets
-            
-            % Compute coherence for node pair (i,j) at time k
-            kCohTemp = model.kC(i,j,k);
-            if isnan(kCohTemp)
-                pval_coh(i,j,k)=NaN;
-            else
-                p =sum(distr_coh>kCohTemp); % upper tail
-                pval_coh(i,j,k)= p/nsurrogates;
-                if (p == 0)
-                    pval_coh(i,j,k)=0.5/nsurrogates;
-                end
-            end
-            
-        end
-    end
-end
-
-
-% 5. Use FDR to determine significant pvals.
-fprintf(['... computing significance (FDR) \n'])
-q=model.q;
-
-
-% Compute significant pvals for coherence
-net_coh = zeros(n,n,num_nets);
-
-for ii = 1:num_nets
-    if sum(sum(isfinite(pval_coh(:,:,ii)))) >0
-        adj_mat = pval_coh(:,:,ii);
-        p = adj_mat(isfinite(adj_mat));
-        p = sort(p);
-        
-        m = length(p);                 % number of total tests performed
-        ivals = (1:m)';
-        sp = ivals*q/m;
-        
-        i0 = find(p-sp<=0);
-        if ~isempty(i0)
-            threshold = p(max(i0));
-        else
-            threshold = -1.0;
-        end
-        %Significant p-values are smaller than threshold.
-        sigPs = adj_mat <= threshold;
-        Ctemp = zeros(n);
-        Ctemp(sigPs)=1;
-        net_coh(:,:,ii) = Ctemp+Ctemp';
-    else
-        net_coh(:,:,ii) = NaN(n,n);
-    end
-end
-
-% 6. Output/save everything
-model.net_coh = net_coh;
-model.pval_coh = pval_coh;
+% % % 3. Compute surrogate distrubution.
+% fprintf(['... generating surrogate distribution \n'])
+% if ~isfield(model,'distr_coh')
+%     
+%     model = gen_surrogate_distr_coh(model,params,movingwin,f_start,f_stop);
+% end
+% %
+% % % 4. Compute pvals using surrogate distribution.
+% fprintf(['... computing pvals \n'])
+% 
+% % Initialize coherence pvals
+% pval_coh = NaN(size(model.kC));
+% distr_coh = sort(model.distr_coh);
+% 
+% num_nets = size(pval_coh,3);
+% 
+% for i = 1:n
+%     for j = (i+1):n
+%         
+%         for k = 1:num_nets
+%             
+%             % Compute coherence for node pair (i,j) at time k
+%             kCohTemp = model.kC(i,j,k);
+%             if isnan(kCohTemp)
+%                 pval_coh(i,j,k)=NaN;
+%             else
+%                 p =sum(distr_coh>kCohTemp); % upper tail
+%                 pval_coh(i,j,k)= p/nsurrogates;
+%                 if (p == 0)
+%                     pval_coh(i,j,k)=0.5/nsurrogates;
+%                 end
+%             end
+%             
+%         end
+%     end
+% end
+% 
+% 
+% % 5. Use FDR to determine significant pvals.
+% fprintf(['... computing significance (FDR) \n'])
+% q=model.q;
+% 
+% 
+% % Compute significant pvals for coherence
+% net_coh = zeros(n,n,num_nets);
+% 
+% for ii = 1:num_nets
+%     if sum(sum(isfinite(pval_coh(:,:,ii)))) >0
+%         adj_mat = pval_coh(:,:,ii);
+%         p = adj_mat(isfinite(adj_mat));
+%         p = sort(p);
+%         
+%         m = length(p);                 % number of total tests performed
+%         ivals = (1:m)';
+%         sp = ivals*q/m;
+%         
+%         i0 = find(p-sp<=0);
+%         if ~isempty(i0)
+%             threshold = p(max(i0));
+%         else
+%             threshold = -1.0;
+%         end
+%         %Significant p-values are smaller than threshold.
+%         sigPs = adj_mat <= threshold;
+%         Ctemp = zeros(n);
+%         Ctemp(sigPs)=1;
+%         net_coh(:,:,ii) = Ctemp+Ctemp';
+%     else
+%         net_coh(:,:,ii) = NaN(n,n);
+%     end
+% end
+% 
+% % 6. Output/save everything
+% model.net_coh = net_coh;
+% model.pval_coh = pval_coh;
 
 
 end

@@ -40,15 +40,11 @@ end
 
 % 3. Load parameters
 time    = model.t;
-W       = model.W;
-f_start = round(model.f_start,3);
-f_stop  = round(model.f_stop, 3);
 
-TW                  = model.window_size*W;                    % Time bandwidth product.
-ntapers             = 2*TW-1;                                 % Choose the # of tapers.
-model.params.tapers = [TW,ntapers];                           % time-bandwidth product and tapers.
-params              = model.params;
-movingwin           = [model.window_size, model.window_step]; % Window size and step.
+f_start     = round(model.band_params.f_start,3);
+f_stop      = round(model.band_params.f_stop, 3);
+params      = model.band_params.params;
+movingwin   = model.band_params.movingwin;
 
 % 4. Compute coherence from d1 to d2
 [C,phase,~,~,~,t,ftmp,~,~,Cerr] = cohgramc(d1,d2,movingwin,params);

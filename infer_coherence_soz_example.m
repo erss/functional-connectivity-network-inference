@@ -1,4 +1,5 @@
 %%% fc-network-ex
+% load('/Users/erss/Documents/BECTS-project/bects_data/DKData/pBECTS006/sleep_source/pBECTS006_rest007_on-ico-2-position_averaged-sources-from-ico-5.mat')
 
 % DYANMIC NETWORK SCRIPT EXAMPLE
 addpath(genpath('Toolboxes/chronux_2_12'))

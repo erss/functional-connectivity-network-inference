@@ -1,7 +1,6 @@
 function [data_clean,t_clean, b ] = remove_artifacts_zone(data,t,f0)
-% Procedure to detect and remove all artifacts. Divdes signals into 4
-% regions corresponding to each brain lobe. Compute
-% average spectrum of signals within each region. Fit line to log f-log
+% Procedure to detect and remove all artifacts. Compute
+% average spectrum of signals within data matrix. Fit line to log f-log
 % power. If slope is > -2, mark as artifact.
 
 
@@ -39,7 +38,7 @@ for k = 1:i_total
     
 end
 
-% Remove mean after removing bad time intervalss
+% Remove mean after removing bad time intervals
 data_clean = bsxfun(@minus,data_clean,nanmean(data_clean,2));
 
 end
