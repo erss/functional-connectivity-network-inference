@@ -7,19 +7,20 @@ addpath(genpath(bects_default.fcnetworkinference))
 addpath(genpath(bects_default.chronuxtoolbox))
 addpath(genpath(bects_default.mgh))
 DATAPATH    = bects_default.datapath;
-OUTDATAPATH = bects_default.outdatapath;
+OUTDATAPATH = bects_default.outdatapathcc;
 
 data_directory = dir(DATAPATH);
 
 for k= 6 % loop through patients
     model.patient_name = data_directory(k).name;
-    mkdir([OUTDATAPATH '/cross_correlation'],model.patient_name)
+    mkdir(OUTDATAPATH,model.patient_name)
     fprintf([model.patient_name '\n']);
     source_directory = dir([ DATAPATH data_directory(k).name '/sleep_source/*.mat']);
     
     PATIENTPATH = [DATAPATH model.patient_name];
     addpath(PATIENTPATH)
     for i = 1:size(source_directory,1)  %4  % loop through source sessions
+        model.patient_name = data_directory(k).name;
         source_session       = source_directory(i).name;
         model.source_session = source_session;
         patient_coordinates = load_patient_coordinates( PATIENTPATH,source_session );
@@ -55,7 +56,7 @@ for k= 6 % loop through patients
         %%% 5. SAVE DATA
         model_cross_corr.data = NaN;  % clear data
         model_cross_corr.data_clean = NaN;  % clear data
-        save([OUTDATAPATH '/cross_correlation/' model.patient_name '/' source_session(rnge)],'model_cross_corr','-v7.3')
+        save([OUTDATAPATH model.patient_name '/' source_session(rnge)],'model_cross_corr','-v7.3')
         
         clear model_cross_corr
         clear model

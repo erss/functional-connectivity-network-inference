@@ -7,7 +7,7 @@ addpath(genpath(bects_default.fcnetworkinference))
 addpath(genpath(bects_default.chronuxtoolbox))
 addpath(genpath(bects_default.mgh))
 DATAPATH    = bects_default.datapath;
-OUTDATAPATH = bects_default.outdatapath;
+OUTDATAPATH = bects_default.outdatapathpwc;
 
 data_directory = dir(DATAPATH);
 
@@ -19,6 +19,8 @@ for k =  6 % loop through patients
     PATIENTPATH = [DATAPATH model.patient_name];
     addpath(PATIENTPATH)
     
+    mkdir(OUTDATAPATH,[model.patient_name '/sigma/'])
+    mkdir(OUTDATAPATH,[model.patient_name '/delta/'])
     for i = 1:size(source_directory,1)  %4  % loop through source sessions
         
         %%% 1. LOAD PATIENT DATA
@@ -65,18 +67,19 @@ for k =  6 % loop through patients
         % 4. b) SAVE DELTA DATA
         model_delta.data       = NaN;  % clear data
         model_delta.data_clean = NaN;  % clear data
-        save([ OUTDATAPATH source_session(rnge) '_delta_coherence.mat'],'model_delta','-v7.3')
+        save([ OUTDATAPATH model.patient_name '/delta/' source_session(rnge) '.mat'],'model_delta','-v7.3')
         
         
         % 7. a) SIGMA -------------------------------------------------------------
         % Sigma: [10, 15] --> W = 2.5, T = 2,   2TW-1 = 9
+        
         model.band_params = cfg_band('sigma');                     % ... no zero padding.
         model_sigma       = infer_network_coherence(model);
         
         % 7. b) SAVE SIGMA DATA
         model_sigma.data = NaN;  % clear data
         model_sigma.data_clean = NaN;  % clear data
-        save([OUTDATAPATH source_session(rnge) '_sigma_coherence.mat'],'model_sigma','-v7.3')
+        save([OUTDATAPATH model.patient_name '/sigma/' source_session(rnge) '.mat'],'model_sigma','-v7.3')
         
         
      

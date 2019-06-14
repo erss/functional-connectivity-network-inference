@@ -5,7 +5,7 @@ function [data_clean,t_clean, b ] = remove_artifacts_zone(data,t,f0)
 
 
 % Load sampling frequency and define artifact threshold.
-threshold = - 2;
+threshold = - 2.5;
 
 % Load data + remove mean
 m    = mean(data,2);

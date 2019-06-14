@@ -7,7 +7,7 @@ addpath(genpath(bects_default.fcnetworkinference))
 addpath(genpath(bects_default.chronuxtoolbox))
 addpath(genpath(bects_default.mgh))
 DATAPATH    = bects_default.datapath;
-OUTDATAPATH = bects_default.outdatapath;
+OUTDATAPATH = bects_default.outdatapathtc;
 
 data_directory = dir(DATAPATH);
 
@@ -18,7 +18,8 @@ for k = 6;%4:9 % loop through patients
     
     PATIENTPATH = [DATAPATH model.patient_name];
     addpath(PATIENTPATH)
-
+    mkdir(OUTDATAPATH,[model.patient_name '/sigma/'])
+    mkdir(OUTDATAPATH,[model.patient_name '/delta/'])
     for i = 1:size(source_directory,1)  % loop through source sessions
         
         %%% 1. LOAD PATIENT DATA
@@ -53,24 +54,22 @@ for k = 6;%4:9 % loop through patients
         % 4. a) DELTA -------------------------------------------------------------
         % Delta: [2, 4]   --> W = 1,   T = 5,   2TW-1 = 9
         model.band_params = cfg_band('delta');
-        model.subnetwork_params = cfg_subnetwork();
         model_delta       = infer_soz_coherence(model,patient_coordinates);
         
         % 4. b) SAVE DELTA DATA
         model_delta.data       = NaN;  % clear data
         model_delta.data_clean = NaN;  % clear data
-        save([ OUTDATAPATH source_session(rnge) '_delta_coherence.mat'],'model_delta','-v7.3')
+        save([ OUTDATAPATH model.patient_name '/delta/' source_session(rnge) '.mat'],'model_delta','-v7.3')
         
         % 7. a) SIGMA -------------------------------------------------------------
         % Sigma: [10, 15] --> W = 2.5, T = 2,   2TW-1 = 9
         model.band_params = cfg_band('sigma');
         model_sigma       = infer_soz_coherence(model,patient_coordinates);
-        model_sigma.fband = 'sigma';
         
         %7. b) SAVE SIGMA DATA
         model_sigma.data = NaN;  % clear data
         model_sigma.data_clean = NaN;  % clear data
-        save([OUTDATAPATH source_session(rnge) '_sigma_coherence.mat'],'model_sigma','-v7.3')
+        save([ OUTDATAPATH model.patient_name '/sigma/' source_session(rnge) '.mat'],'model_delta','-v7.3')
         
         
 %         

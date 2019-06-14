@@ -33,7 +33,7 @@ for ii = 1:nsurrogates
     while sum(sum(isnan(xj))) > 0
         tj = randi(T-window_size+1); 
         xj = data(i,tj:(tj+window_size-1));
-         fprintf(['NaN \n'])
+ %        fprintf(['NaN \n'])
     end
     
     [mxij,lagij] = cross_corr_statistic([xi' xj']); % Compute cross-corr
@@ -42,7 +42,7 @@ for ii = 1:nsurrogates
     lag(ii) = lagij(3);
 
 
-    fprintf([num2str(ii),'\n'])
+  %  fprintf([num2str(ii),'\n'])
 end
 
 % Store surrogate distribution, and lags where abs maximum values occur.

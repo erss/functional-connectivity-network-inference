@@ -6,7 +6,7 @@ function subnetwork = cfg_subnetwork( patient_coordinates )
 
 %%%% 1) Left SOZ
 
-subnetwork.leftSOZ.nodes = LN;
+ subnetwork.leftSOZ.nodes = LN;
 
 %%%% 2) Right SOZ
 
@@ -15,7 +15,7 @@ subnetwork.rightSOZ.nodes = RN;
 %%%% 3) From Left to Right SOZ
 
 subnetwork.acrossSOZ.nodes.source = LN;
-subnetwork.acrossSOZ.nodes.source = LN;
+subnetwork.acrossSOZ.nodes.target = RN;
 
 
 

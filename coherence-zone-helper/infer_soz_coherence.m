@@ -2,14 +2,17 @@ function model = infer_soz_coherence( model, pc)
 % INFER_SOZ_COHERENCE computes zone coherence in left SOZ, right SOZ and
 % left to right SOZ
 
-cfg_subnetwork(pc);
+subnetwork_params = cfg_subnetwork(pc);
 
-fn = fieldnames(subnetwork);
+fn = fieldnames(subnetwork_params);
 for k=1:numel(fn)
     fprintf(['...computing ' fn{k} ' coherence \n'])
-    nodes = subnetwork.(fn{k});
+    nodes = subnetwork_params.(fn{k}).nodes;
     model.(fn{k}) = compute_soz_coherence(model,nodes);
 end
+
+model.subnetwork_params = subnetwork_params;
+
 
 
 % fprintf('...computing dom pre-post SOZ coherence \n')

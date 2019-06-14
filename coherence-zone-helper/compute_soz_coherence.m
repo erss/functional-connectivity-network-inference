@@ -23,9 +23,10 @@ function model_zone = compute_soz_coherence( model,nodes)
 
 % 1. Remove artifacts
 f0 = model.sampling_frequency;
+
 if ~isstruct(nodes)
    [data_clean,t_clean, b] = remove_artifacts_zone(model.data(nodes,:),model.t,f0);
-else
+else 
    [data_clean,t_clean, b] = remove_artifacts_zone(model.data([nodes.source;nodes.target],:),model.t,f0);
 end
 
