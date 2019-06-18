@@ -27,7 +27,7 @@ for k = 6;%4:9 % loop through patients
         model.patient_name   = data_directory(k).name;
         source_session       = source_directory(i).name;
         model.source_session = source_session;
-        patient_coordinates = load_patient_coordinates( PATIENTPATH,source_session );
+        patient_coordinates = load_patient_coordinates(PATIENTPATH,[OUTDATAPATH model.patient_name ],source_session );
         
         if strcmp(source_session(11),'r')
             rnge = 1:17;
@@ -69,7 +69,7 @@ for k = 6;%4:9 % loop through patients
         %7. b) SAVE SIGMA DATA
         model_sigma.data = NaN;  % clear data
         model_sigma.data_clean = NaN;  % clear data
-        save([ OUTDATAPATH model.patient_name '/sigma/' source_session(rnge) '.mat'],'model_delta','-v7.3')
+        save([ OUTDATAPATH model.patient_name '/sigma/' source_session(rnge) '.mat'],'model_sigma','-v7.3')
         
         
 %         

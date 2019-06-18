@@ -29,7 +29,7 @@ for k =  6 % loop through patients
         
         source_session       = source_directory(i).name;
         model.source_session = source_session;
-        patient_coordinates = load_patient_coordinates( PATIENTPATH,source_session );
+        patient_coordinates = load_patient_coordinates(PATIENTPATH,[OUTDATAPATH model.patient_name ],source_session );
 
         if strcmp(source_session(11),'r')
             rnge = 1:17;

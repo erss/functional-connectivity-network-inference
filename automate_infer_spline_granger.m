@@ -5,9 +5,10 @@ global bects_default;
 addpath(genpath(bects_default.bectsnetworkstoolbox))
 addpath(genpath(bects_default.fcnetworkinference))
 addpath(genpath(bects_default.chronuxtoolbox))
+addpath(genpath(bects_default.splineGrangertoolbox))
 addpath(genpath(bects_default.mgh))
 DATAPATH    = bects_default.datapath;
-OUTDATAPATH = bects_default.outdatapathcc;
+OUTDATAPATH = bects_default.outdatapathsg;
 
 data_directory = dir(DATAPATH);
 
@@ -41,31 +42,38 @@ for k= 6 % loop through patients
         
         %%% 2. LOAD MODEL PARAMETERS
         model.sampling_frequency = 2035;
-        model.window_step = 0.5;% 0.5; % in seconds
         model.window_size = 1;   % in seconds
+        model.window_step = 1;   % in seconds
+
         model.q=0.05;
         model.nsurrogates = 10000;
         model.t=time;
         
+        %%% 2b. SPLINE INFERENCE PARAMS
+        model.s = 0.5;
+        model.cntrl_pts = linspace(0,10,6);
+        model.estimated_model_order = model.cntrl_pts(end);
         %%% 3. REMOVE ARTIFACTS
         
         [model.data_clean,model.t_clean, model.b] = remove_artifacts_zone(model.data,model.t,model.sampling_frequency);
         
         %%% 4. INFER NETWORK
-        model_cross_corr = infer_network_correlation_bootstrap( model);
+       
+        [ model_spline] = infer_spline_granger( model);
+
         %%% 5. SAVE DATA
-        model_cross_corr.data = NaN;  % clear data
-        model_cross_corr.data_clean = NaN;  % clear data
-        save([OUTDATAPATH model.patient_name '/' source_session(rnge)],'model_cross_corr','-v7.3')
+        model_spline.data = NaN;  % clear data
+        model_spline.data_clean = NaN;  % clear data
+        save([OUTDATAPATH model.patient_name '/' source_session(rnge)],'model_spline','-v7.3')
         
-        clear model_cross_corr
+        clear model_spline
         clear model
         clear data_left
         clear data_right
         clear time
         
     end
-    clear model_cross_corr
+    clear model_spline
     clear model
     clear data_left
     clear data_right

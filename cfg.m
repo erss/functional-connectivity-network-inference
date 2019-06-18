@@ -8,11 +8,12 @@ if strcmp(host, 'erss') % my mac
     bects_default.fcnetworkinference = '~/Documents/MATLAB/fc-network-inference-bootstrap/';
     bects_default.chronuxtoolbox = '~/Documents/MATLAB/Toolboxes/chronux/';
     bects_default.mgh =       '~/Documents/MATLAB/Toolboxes/mgh/';
+    bects_default.splineGrangertoolbox = '~/Documents/MATLAB/spline-granger-causality/';
     bects_default.datapath =  '~/Documents/BECTS-project/bects_data/DKData/';
     bects_default.outdatapathcc = '~/Documents/BECTS-project/bects_results/cross_correlation/';
     bects_default.outdatapathpwc = '~/Documents/BECTS-project/bects_results/coherence_pw/';
     bects_default.outdatapathtc = '~/Documents/BECTS-project/bects_results/coherence_trial/';
-    bects_default.outdatapathsg = '';
+    bects_default.outdatapathsg = '~/Documents/BECTS-project/bects_results/spline-Granger/';
 
 elseif strcmp(host, 'liz') % Galactica
     bects_default.bectsnetworkstoolbox = '~/Documents/MATLAB/bects-networks-toolbox/';
@@ -20,6 +21,8 @@ elseif strcmp(host, 'liz') % Galactica
     bects_default.chronuxtoolbox = '~/Documents/MATLAB/Toolboxes/chronux/';
     bects_default.mgh =       '~/Documents/MATLAB/Toolboxes/mgh/';
     bects_default.datapath =   '~/Desktop/bects_data/source_data_2/';
+        bects_default.splineGrangertoolbox = '';
+
  %   bects_default.outdatapath = '/Users/liz/Desktop/bects_results/nets_final/';
     bects_default.outdatapathcc = '';
     bects_default.outdatapathpwc = '';
