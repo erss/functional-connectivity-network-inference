@@ -11,7 +11,7 @@ OUTDATAPATH = bects_default.outdatapathcc;
 
 data_directory = dir(DATAPATH);
 
-for k= 6 % loop through patients
+for k= [15 37] % loop through patients
     model.patient_name = data_directory(k).name;
     mkdir(OUTDATAPATH,model.patient_name)
     fprintf([model.patient_name '\n']);

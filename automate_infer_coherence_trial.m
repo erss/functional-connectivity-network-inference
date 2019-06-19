@@ -11,7 +11,7 @@ OUTDATAPATH = bects_default.outdatapathtc;
 
 data_directory = dir(DATAPATH);
 
-for k = 6;%4:9 % loop through patients
+for k = [15 37]; % loop through patients
     model.patient_name = data_directory(k).name;
     fprintf([model.patient_name '\n']);
     source_directory = dir([ DATAPATH data_directory(k).name '/sleep_source/*.mat']);
