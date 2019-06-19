@@ -1,40 +1,35 @@
 %%% Makes two movies: one with data marked as an artifact and one that is
 %%% all the data that passes as clean
+cfg();
 
-%%
-% load('/Users/erss/Documents/MATLAB/pBECTS_inferred_nets/coherence - r1/pBECTS020_coherence.mat')
-% load('/Users/erss/Documents/MATLAB/pBECTS020/patient_coordinates_020.mat')
-% load('/Users/erss/Documents/MATLAB/pBECTS020/pBECTS020_rest03_source.mat')
+global bects_default;
 
-%%% Load toolboxes and scripts
-addpath(genpath('~/Documents/MATLAB/bects-networks-toolbox/'))
-addpath(genpath('~/Documents/MATLAB/fc-network-inference-bootstrap/'))
-addpath(genpath('~/Documents/MATLAB/Toolboxes/chronux/'))
-addpath(genpath('~/Documents/MATLAB/Toolboxes/mgh/'))
-%%
-DATAPATH    = '~/Desktop/bects_data/source_data_2/';
-RESULTSPATH = '~/Desktop/bects_results/nets_final/';
-OUTDATAPATH = '/Users/liz/Desktop/bects_results/nets_final/';
+addpath(genpath(bects_default.bectsnetworkstoolbox))
+addpath(genpath(bects_default.fcnetworkinference))
+addpath(genpath(bects_default.chronuxtoolbox))
+addpath(genpath(bects_default.mgh))
+DATAPATH    = bects_default.datapath;
+OUTDATAPATH = bects_default.outmoviepath;
+RESULTSPATH = bects_default.outdatapathcc;
 
 data_directory = dir(RESULTSPATH);
 
-
-
-for idx=11:28
+for idx=6
     patient_name = data_directory(idx).name;
+    mkdir(OUTDATAPATH,patient_name)
     fprintf([patient_name '\n']);
   
     
     PATIENTPATH = [DATAPATH patient_name];
     addpath(PATIENTPATH)
-    load([PATIENTPATH '/patient_coordinates']);
-        source_directory = dir([ PATIENTPATH '/sleep_source/*.mat']);
-      
+    load([RESULTSPATH patient_name '/patient_coordinates']);
+  
+    source_directory = dir([ PATIENTPATH '/sleep_source/*.mat']);  
   pc=patient_coordinates;
   data=[];
   t =[];
   fprintf('Loading source sessions ... \n')
-   for i = 1:size(source_directory,1)
+   for i = 1:2%:size(source_directory,1)
       source_session       = source_directory(i).name
         load([PATIENTPATH '/sleep_source/' source_session],'data_left')
         load([PATIENTPATH '/sleep_source/' source_session],'data_right')
@@ -58,8 +53,8 @@ for idx=11:28
     d          = data([LN; RN],:)';
     dc         = data_clean';
     %% Movie for CLEAN data & ARTIFACT data
-    OUTVIDPATH1 = [RESULTSPATH patient_name '/' patient_name '_clean.avi']; %strcat('~/Desktop/',patient_name,'_clean.avi');
-    OUTVIDPATH2 = [RESULTSPATH patient_name '/' patient_name '_artifact.avi']; %strcat('~/Desktop/',patient_name,'_artifacts.avi');
+    OUTVIDPATH1 = [OUTDATAPATH patient_name '/' patient_name '_thresh_3_clean.avi']; 
+    OUTVIDPATH2 = [OUTDATAPATH patient_name '/' patient_name '_thresh_3_artifact.avi']; 
     v = VideoWriter(OUTVIDPATH1);
     v.FrameRate=1;
     open(v);
