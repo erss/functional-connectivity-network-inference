@@ -19,7 +19,7 @@ for k = 1:i_total
     model_temp=model;
     model_temp.data=d;
     tic
-    [ adj_spline(:,:,k)] = build_ar_splines( model_temp);
+    [ adj_spline(:,:,k),~,~] = build_ar_splines( model_temp);
     st  = toc;
     splinetime = splinetime + st;
    fprintf(['..... time: ' num2str(splinetime) '.\n'])

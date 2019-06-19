@@ -13,8 +13,8 @@ OUTDATAPATH = bects_default.outmoviepath;
 RESULTSPATH = bects_default.outdatapathcc;
 
 data_directory = dir(RESULTSPATH);
-
-for idx=6
+%%
+for idx=5
     patient_name = data_directory(idx).name;
     mkdir(OUTDATAPATH,patient_name)
     fprintf([patient_name '\n']);
@@ -29,7 +29,7 @@ for idx=6
   data=[];
   t =[];
   fprintf('Loading source sessions ... \n')
-   for i = 1:2%:size(source_directory,1)
+   for i = 1:6%:size(source_directory,1)
       source_session       = source_directory(i).name
         load([PATIENTPATH '/sleep_source/' source_session],'data_left')
         load([PATIENTPATH '/sleep_source/' source_session],'data_right')
@@ -53,8 +53,8 @@ for idx=6
     d          = data([LN; RN],:)';
     dc         = data_clean';
     %% Movie for CLEAN data & ARTIFACT data
-    OUTVIDPATH1 = [OUTDATAPATH patient_name '/' patient_name '_thresh_3_clean.avi']; 
-    OUTVIDPATH2 = [OUTDATAPATH patient_name '/' patient_name '_thresh_3_artifact.avi']; 
+    OUTVIDPATH1 = [OUTDATAPATH patient_name '/' patient_name '_v1_thresh_2.8_clean.avi']; 
+    OUTVIDPATH2 = [OUTDATAPATH patient_name '/' patient_name '_v1_thresh_2.8_artifact.avi']; 
     v = VideoWriter(OUTVIDPATH1);
     v.FrameRate=1;
     open(v);

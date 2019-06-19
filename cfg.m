@@ -25,6 +25,7 @@ elseif strcmp(host, 'liz') % Galactica
     bects_default.mgh =       '~/Documents/MATLAB/Toolboxes/mgh/';
     bects_default.datapath =   '~/Desktop/bects_data/source_data_2/';
     bects_default.outdatapathcc = '~/Desktop/bects_results/cross_correlation/';
+   bects_default.outdatapathccf = '~/Desktop/bects_results/cross_correlation_filter/';
     bects_default.outdatapathpwc = '~/Desktop/bects_results/coherence_pairwise/';
     bects_default.outdatapathtc = '~/Desktop/bects_results/coherence_trial/';
     bects_default.outdatapathsg = '~/Desktop/bects_results/spline_granger/';

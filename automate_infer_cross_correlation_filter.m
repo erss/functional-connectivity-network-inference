@@ -5,14 +5,13 @@ global bects_default;
 addpath(genpath(bects_default.bectsnetworkstoolbox))
 addpath(genpath(bects_default.fcnetworkinference))
 addpath(genpath(bects_default.chronuxtoolbox))
-addpath(genpath(bects_default.splineGrangertoolbox))
 addpath(genpath(bects_default.mgh))
 DATAPATH    = bects_default.datapath;
-OUTDATAPATH = bects_default.outdatapathsg;
+OUTDATAPATH = bects_default.outdatapathccf;
 
 data_directory = dir(DATAPATH);
 
-for k= 8 % loop through patients
+for k= 6;%[15 37] % loop through patients
     model.patient_name = data_directory(k).name;
     mkdir(OUTDATAPATH,model.patient_name)
     fprintf([model.patient_name '\n']);
@@ -42,38 +41,38 @@ for k= 8 % loop through patients
         
         %%% 2. LOAD MODEL PARAMETERS
         model.sampling_frequency = 2035;
+        model.window_step = 1;% 0.5; % in seconds
         model.window_size = 1;   % in seconds
-        model.window_step = 1;   % in seconds
-
         model.q=0.05;
         model.nsurrogates = 10000;
         model.t=time;
         
-        %%% 2b. SPLINE INFERENCE PARAMS
-        model.s = 0.5;
-        model.cntrl_pts = round(linspace(0,2035*0.040,5));
-        model.estimated_model_order = model.cntrl_pts(end);
         %%% 3. REMOVE ARTIFACTS
+        
         
         [model.data_clean,model.t_clean, model.b] = remove_artifacts_zone(model.data,model.t,model.sampling_frequency);
         
-        %%% 4. INFER NETWORK
-       
-        [ model_spline] = infer_spline_granger( model);
-
-        %%% 5. SAVE DATA
-        model_spline.data = NaN;  % clear data
-        model_spline.data_clean = NaN;  % clear data
-        save([OUTDATAPATH model.patient_name '/' source_session(rnge)],'model_spline','-v7.3')
         
-        clear model_spline
+        %%% 4. INFER NETWORK
+        %%%%%% Filter data ----------
+hpFilt = designfilt('highpassfir','StopbandFrequency',0.1, 'PassbandFrequency',2, ...
+    'PassbandRipple',0.1, 'StopbandAttenuation',90, ...
+    'SampleRate',model.sampling_frequency);
+[num den] = tf(hpFilt);
+        model_cross_corr = infer_network_correlation_filter( model,num,den);
+        %%% 5. SAVE DATA
+        model_cross_corr.data = NaN;  % clear data
+        model_cross_corr.data_clean = NaN;  % clear data
+        save([OUTDATAPATH model.patient_name '/' source_session(rnge)],'model_cross_corr','-v7.3')
+        
+        clear model_cross_corr
         clear model
         clear data_left
         clear data_right
         clear time
         
     end
-    clear model_spline
+    clear model_cross_corr
     clear model
     clear data_left
     clear data_right

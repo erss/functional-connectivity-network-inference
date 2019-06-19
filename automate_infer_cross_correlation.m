@@ -11,7 +11,7 @@ OUTDATAPATH = bects_default.outdatapathcc;
 
 data_directory = dir(DATAPATH);
 
-for k= [15 37] % loop through patients
+for k= 6;%[15 37] % loop through patients
     model.patient_name = data_directory(k).name;
     mkdir(OUTDATAPATH,model.patient_name)
     fprintf([model.patient_name '\n']);
@@ -41,7 +41,7 @@ for k= [15 37] % loop through patients
         
         %%% 2. LOAD MODEL PARAMETERS
         model.sampling_frequency = 2035;
-        model.window_step = 0.5;% 0.5; % in seconds
+        model.window_step = 1;% 0.5; % in seconds
         model.window_size = 1;   % in seconds
         model.q=0.05;
         model.nsurrogates = 10000;
@@ -49,10 +49,12 @@ for k= [15 37] % loop through patients
         
         %%% 3. REMOVE ARTIFACTS
         
+        
         [model.data_clean,model.t_clean, model.b] = remove_artifacts_zone(model.data,model.t,model.sampling_frequency);
         
+        
         %%% 4. INFER NETWORK
-        model_cross_corr = infer_network_correlation_bootstrap( model);
+        model_cross_corr = infer_network_correlation( model);
         %%% 5. SAVE DATA
         model_cross_corr.data = NaN;  % clear data
         model_cross_corr.data_clean = NaN;  % clear data

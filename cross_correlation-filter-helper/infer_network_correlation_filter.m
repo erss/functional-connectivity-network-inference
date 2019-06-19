@@ -1,4 +1,4 @@
-function [ model ] = infer_network_correlation_bootstrap( model)
+function [ model ] = infer_network_correlation_filter( model,num,den)
 % Infers network structure using boostrap procedure to determine
 % significance.
 
@@ -7,6 +7,22 @@ t=model.t;
 window_size = model.window_size;
 window_step = model.window_step;
 data = model.data_clean;
+data_og = model.data;
+
+
+for i = 1:size(data,1)
+    d1 = data_og(i,:);
+    dfilt = filtfilt(num,den,d1);
+    dfilt(isnan(model.t_clean))=nan;
+    data(i,:)=dfilt;
+end
+
+
+% figure; plot(t,d1); hold on; plot(t,d1filt)
+%  figure; periodogram(d1,[],[],2035)
+% hold on;
+% periodogram(d1filt,[],[],2035)
+%%%%% -----------------------
 nsurrogates = model.nsurrogates;
 n = size(model.data,1);  % number of electrodes
 
