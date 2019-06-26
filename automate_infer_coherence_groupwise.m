@@ -11,7 +11,7 @@ OUTDATAPATH = bects_default.outdatapathtc;
 
 data_directory = dir(DATAPATH);
 
-for k = [7:s37]; % loop through patients
+for k = [7:37]; % loop through patients
     model.patient_name = data_directory(k).name;
     fprintf([model.patient_name '\n']);
     source_directory = dir([ DATAPATH data_directory(k).name '/sleep_source/*.mat']);
@@ -22,7 +22,7 @@ for k = [7:s37]; % loop through patients
     mkdir(OUTDATAPATH,[model.patient_name '/delta/'])
     for i = 1:size(source_directory,1)  % loop through source sessions
         
-        %%% 1. LOAD PATIENT DATA
+        %%% 1. LOAD PATIENT DTA
         
         model.patient_name   = data_directory(k).name;
         source_session       = source_directory(i).name;
