@@ -46,11 +46,12 @@ for k= 6;%[15 37] % loop through patients
         model.q=0.05;
         model.nsurrogates = 10000;
         model.t=time;
-        
+        model.threshold = -2.8;
         %%% 3. REMOVE ARTIFACTS
         
         
-        [model.data_clean,model.t_clean, model.b] = remove_artifacts_zone(model.data,model.t,model.sampling_frequency);
+        [model.data_clean,model.t_clean, model.b] = remove_artifacts_zone(model.data,model.t,...
+            model.sampling_frequency,model.threshold);
         
         
         %%% 4. INFER NETWORK

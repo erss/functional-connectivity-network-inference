@@ -1,4 +1,4 @@
-function model_zone = compute_soz_coherence( model,nodes)
+function model_zone = compute_coherence_groupwise( model,nodes)
 % [kC,kLo,kUp,phi,taxis,Cglobal,kLoGlobal,kUpGlobal] = compute_soz_coherence( model,nodes)
 % Computes coherence of group of nodes over time such that each node pair 
 % within group is treated as a trial.
@@ -25,9 +25,10 @@ function model_zone = compute_soz_coherence( model,nodes)
 f0 = model.sampling_frequency;
 
 if ~isstruct(nodes)
-   [data_clean,t_clean, b] = remove_artifacts_zone(model.data(nodes,:),model.t,f0);
+   [data_clean,t_clean, b] = remove_artifacts_zone(model.data(nodes,:),model.t,f0, model.threshold);
 else 
-   [data_clean,t_clean, b] = remove_artifacts_zone(model.data([nodes.source;nodes.target],:),model.t,f0);
+   [data_clean,t_clean, b] = remove_artifacts_zone(model.data([nodes.source;nodes.target],:),...
+       model.t,f0, model.threshold);
 end
 
 % 2. Transform data into appropriate trial structure and remove artifacts

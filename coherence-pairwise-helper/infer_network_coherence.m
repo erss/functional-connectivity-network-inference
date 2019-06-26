@@ -1,4 +1,4 @@
-function model = infer_network_coherence( model)
+function model = infer_network_coherence( model,patient_coordinates)
 % Infers network structure using coherence + imaginary coherency;
 % Employs a bootstrap procedure to determine significance.
 %
@@ -64,12 +64,12 @@ if ~isfield(model,'kC')
     model.dynamic_network_taxis = t + time(1); %%% DOUBLE CHECK THIS STEP
                                                %%% TO FIX TIME AXIS
     model.f = f;
-    model.kC = kC;
+    model.net_coh = kC;
     model.phi = phi;
     model.kLo = kLo;
     model.kUp = kUp;
 end
-
+[ model.leftSOZ,model.rightSOZ,model.acrossSOZ ] = patient_activity_temp( kC, patient_coordinates );
 % % % 3. Compute surrogate distrubution.
 % fprintf(['... generating surrogate distribution \n'])
 % if ~isfield(model,'distr_coh')
@@ -145,6 +145,8 @@ end
 % % 6. Output/save everything
 % model.net_coh = net_coh;
 % model.pval_coh = pval_coh;
+
+
 
 
 end

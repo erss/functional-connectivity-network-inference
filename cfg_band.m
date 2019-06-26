@@ -15,11 +15,19 @@ band_params.params.Fs       = 2035;        % ... sampling frequency.
 band_params.params.err      = [2 0.05];    % ... Jacknife error bars, p =0.05;
 
 if strcmp(band,'delta')
-    band_params.W           = 1;
-    band_params.window_step = 5;       % in seconds
-    band_params.window_size = 5;       % in seconds
-    band_params.f_start     = 3;
-    band_params.f_stop      = 3;
+%     band_params.W           = 1;
+%     band_params.window_step = 5;       % in seconds
+%     band_params.window_size = 5;       % in seconds
+%     band_params.f_start     = 3;
+%     band_params.f_stop      = 3;
+%     band_params.params.pad  = -1;      % ... no zero padding.
+%     band_params.fband       = 'delta';
+
+    band_params.W           = 1.5;
+    band_params.window_step = 1;       % in seconds
+    band_params.window_size = 1;       % in seconds
+    band_params.f_start     = 2.5;
+    band_params.f_stop      = 2.5;
     band_params.params.pad  = -1;      % ... no zero padding.
     band_params.fband       = 'delta';
     
@@ -41,13 +49,22 @@ elseif strcmp(band,'alpha')
     band_params.params.pad  = -1; % ... no zero padding.
     band_params.fband = 'alpha';
 elseif strcmp(band,'sigma')
+%     band_params.W           = 2.5;
+%     band_params.f_start     = 12.5;
+%     band_params.f_stop      = 12.5;
+%     band_params.window_step = 2;      % in seconds
+%     band_params.window_size = 2;      % in seconds
+%     band_params.params.pad  = -1;     % ... no zero padding.
+%     band_params.fband = 'sigma';
+
     band_params.W           = 2.5;
     band_params.f_start     = 12.5;
     band_params.f_stop      = 12.5;
-    band_params.window_step = 2;      % in seconds
-    band_params.window_size = 2;      % in seconds
+    band_params.window_step = 1;      % in seconds
+    band_params.window_size = 1;      % in seconds
     band_params.params.pad  = -1;     % ... no zero padding.
     band_params.fband = 'sigma';
+    
 elseif strcmp(band,'beta')
     band_params.W           = 7.5;
     band_params.f_start     = 22.3572;

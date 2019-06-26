@@ -48,6 +48,7 @@ for k= 8 % loop through patients
         model.q=0.05;
         model.nsurrogates = 10000;
         model.t=time;
+        model.threshold = -2.8;
         
         %%% 2b. SPLINE INFERENCE PARAMS
         model.s = 0.5;
@@ -55,7 +56,8 @@ for k= 8 % loop through patients
         model.estimated_model_order = model.cntrl_pts(end);
         %%% 3. REMOVE ARTIFACTS
         
-        [model.data_clean,model.t_clean, model.b] = remove_artifacts_zone(model.data,model.t,model.sampling_frequency);
+        [model.data_clean,model.t_clean, model.b] = remove_artifacts_zone(model.data,model.t,model.sampling_frequency, ...
+            model.threshhold);
         
         %%% 4. INFER NETWORK
        

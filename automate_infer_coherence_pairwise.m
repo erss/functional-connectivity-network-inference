@@ -50,10 +50,11 @@ for k = [15 37]; % loop through patients
         model.q=0.05;
         model.nsurrogates = 10000;
         model.t=time;
-                                           
+        model.threshold = -2.8;                                  
         %%% 3. REMOVE ARTIFACTS
         
-        [model.data_clean,model.t_clean,model.b] = remove_artifacts_zone(model.data,model.t,model.sampling_frequency);
+        [model.data_clean,model.t_clean,model.b] = remove_artifacts_zone(model.data,model.t,...
+            model.sampling_frequency,model.threshold);
         
         %%% 4. --- INFER NETWORKs ---
    
@@ -62,7 +63,7 @@ for k = [15 37]; % loop through patients
         % Delta: [2, 4]   --> W = 1,   T = 5,   2TW-1 = 9
 
         model.band_params = cfg_band('delta');
-        model_delta       = infer_network_coherence(model);
+        model_delta       = infer_network_coherence(model,patient_coordinates);
         
         % 4. b) SAVE DELTA DATA
         model_delta.data       = NaN;  % clear data
@@ -74,7 +75,7 @@ for k = [15 37]; % loop through patients
         % Sigma: [10, 15] --> W = 2.5, T = 2,   2TW-1 = 9
         
         model.band_params = cfg_band('sigma');                     % ... no zero padding.
-        model_sigma       = infer_network_coherence(model);
+        model_sigma       = infer_network_coherence(model,patient_coordinates);
         
         % 7. b) SAVE SIGMA DATA
         model_sigma.data = NaN;  % clear data

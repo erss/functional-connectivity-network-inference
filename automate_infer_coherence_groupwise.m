@@ -44,7 +44,7 @@ for k = [15 37]; % loop through patients
         model.sampling_frequency = 2035;
         model.q                  = 0.05;
         model.t                  = time;
-        
+        model.threshold          = -2.8; % cleaning threshold
         model.params.trialave = 1;                        % ... trial average.
         model.params.fpass    = [1 50.1];                 % ... freq range to pass.
         model.params.Fs       = model.sampling_frequency; % ... sampling frequency. 
@@ -54,7 +54,7 @@ for k = [15 37]; % loop through patients
         % 4. a) DELTA -------------------------------------------------------------
         % Delta: [2, 4]   --> W = 1,   T = 5,   2TW-1 = 9
         model.band_params = cfg_band('delta');
-        model_delta       = infer_soz_coherence(model,patient_coordinates);
+        model_delta       = infer_network_coherence_groupwise(model,patient_coordinates);
         
         % 4. b) SAVE DELTA DATA
         model_delta.data       = NaN;  % clear data
@@ -64,7 +64,7 @@ for k = [15 37]; % loop through patients
         % 7. a) SIGMA -------------------------------------------------------------
         % Sigma: [10, 15] --> W = 2.5, T = 2,   2TW-1 = 9
         model.band_params = cfg_band('sigma');
-        model_sigma       = infer_soz_coherence(model,patient_coordinates);
+        model_sigma       = infer_network_coherence_groupwise(model,patient_coordinates);
         
         %7. b) SAVE SIGMA DATA
         model_sigma.data = NaN;  % clear data
