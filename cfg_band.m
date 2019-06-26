@@ -23,11 +23,11 @@ if strcmp(band,'delta')
 %     band_params.params.pad  = -1;      % ... no zero padding.
 %     band_params.fband       = 'delta';
 
-    band_params.W           = 1.5;
+    band_params.W           = 1;
     band_params.window_step = 1;       % in seconds
     band_params.window_size = 1;       % in seconds
-    band_params.f_start     = 2.5;
-    band_params.f_stop      = 2.5;
+    band_params.f_start     = 3;
+    band_params.f_stop      = 3;
     band_params.params.pad  = -1;      % ... no zero padding.
     band_params.fband       = 'delta';
     
@@ -56,10 +56,10 @@ elseif strcmp(band,'sigma')
 %     band_params.window_size = 2;      % in seconds
 %     band_params.params.pad  = -1;     % ... no zero padding.
 %     band_params.fband = 'sigma';
-
-    band_params.W           = 2.5;
-    band_params.f_start     = 12.5;
-    band_params.f_stop      = 12.5;
+% [10 16]
+    band_params.W           = 3;
+    band_params.f_start     = 13;
+    band_params.f_stop      = 13;
     band_params.window_step = 1;      % in seconds
     band_params.window_size = 1;      % in seconds
     band_params.params.pad  = -1;     % ... no zero padding.
