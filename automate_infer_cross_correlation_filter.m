@@ -50,7 +50,7 @@ for k= 6;%[15 37] % loop through patients
         %%% 3. REMOVE ARTIFACTS
         
         
-        [model.data_clean,model.t_clean, model.b] = remove_artifacts_zone(model.data,model.t,...
+        [model.data_clean,model.t_clean, model.b] = remove_artifacts(model.data,model.t,...
             model.sampling_frequency,model.threshold);
         
         

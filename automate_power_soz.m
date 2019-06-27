@@ -1,23 +1,20 @@
-%%% Load toolboxes and scripts
-addpath(genpath('~/Documents/MATLAB/bects-networks-toolbox/'))
-addpath(genpath('~/Documents/MATLAB/fc-network-inference-bootstrap/'))
-addpath(genpath('~/Documents/MATLAB/Toolboxes/chronux/'))
-addpath(genpath('~/Documents/MATLAB/Toolboxes/mgh/'))
-addpath(genpath('~/Documents/MATLAB/Toolboxes/bu/'))
-%%
-%%% My computer
-DATAPATH    = '~/Documents/BECTS-project/bects_data/DKData/';
-OUTDATAPATH = '~/Documents/BECTS-project/bects_results/power - r2/';
+cfg();
 
-% %%% Galactica
-% DATAPATH    = '~/Desktop/bects_data/source_data_2/'
-% OUTDATAPATH = '/Users/liz/Desktop/bects_results/power---NAME---/';
+global bects_default;
+
+addpath(genpath(bects_default.bectsnetworkstoolbox))
+addpath(genpath(bects_default.fcnetworkinference))
+addpath(genpath(bects_default.chronuxtoolbox))
+addpath(genpath(bects_default.mgh))
+DATAPATH    = bects_default.datapath;
+OUTDATAPATH = bects_default.outdatapathpwr;
 
 data_directory = dir(DATAPATH);
 for k =6:10 %5:35 loop through patients
 
     model.sampling_frequency = 2035;
     model.patient_name = data_directory(k).name;
+    model.threshold = -2.8;
     fprintf(['Inferring power for ' model.patient_name '\n']);
     source_directory = dir([ DATAPATH data_directory(k).name '/sleep_source/*.mat']);
     
@@ -42,7 +39,7 @@ for k =6:10 %5:35 loop through patients
         [LN,RN] = find_subnetwork_coords(patient_coordinates);
         nL=length(LN);
         data =[data_left;data_right];
-        [data_clean,t_clean] = remove_artifacts_zone(data([LN;RN],:),time,model.sampling_frequency);
+        [data_clean,t_clean] = remove_artifacts(data([LN;RN],:),time,model.sampling_frequency,model.threshold);
         
         %%% ---- Convert left SOZ into 2 s trials -------------------------
         dataLt = data_clean(1:nL,:);

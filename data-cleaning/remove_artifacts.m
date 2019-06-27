@@ -1,4 +1,4 @@
-function [data_clean,t_clean, b ] = remove_artifacts_zone(data,t,f0,threshold)
+function [data_clean,t_clean, b ] = remove_artifacts(data,t,f0,threshold)
 % Procedure to detect and remove all artifacts. Compute
 % average spectrum of signals within data matrix. Fit line to log f-log
 % power. If slope is > threshold, mark as artifact.

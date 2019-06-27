@@ -25,9 +25,9 @@ function model_zone = compute_coherence_groupwise( model,nodes)
 f0 = model.sampling_frequency;
 
 if ~isstruct(nodes)
-   [data_clean,t_clean, b] = remove_artifacts_zone(model.data(nodes,:),model.t,f0, model.threshold);
+   [data_clean,t_clean, b] = remove_artifacts(model.data(nodes,:),model.t,f0, model.threshold);
 else 
-   [data_clean,t_clean, b] = remove_artifacts_zone(model.data([nodes.source;nodes.target],:),...
+   [data_clean,t_clean, b] = remove_artifacts(model.data([nodes.source;nodes.target],:),...
        model.t,f0, model.threshold);
 end
 

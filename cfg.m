@@ -15,6 +15,7 @@ if strcmp(host, 'erss') % my mac
     bects_default.outdatapathtc = '~/Documents/BECTS-project/bects_results/coherence_trial/';
     bects_default.outdatapathsg = '~/Documents/BECTS-project/bects_results/spline-Granger/';
     bects_default.outmoviepath =  '~/Documents/BECTS-project/bects_results/cleaning_movies/';
+    bects_default.outdatapathpwr = '~/Documents/BECTS-project/bects_results/power/';
     
 elseif strcmp(host, 'liz') % Galactica
     
@@ -30,6 +31,7 @@ elseif strcmp(host, 'liz') % Galactica
     bects_default.outdatapathtc = '~/Desktop/bects_results/coherence_groupwise/';
     bects_default.outdatapathsg = '~/Desktop/bects_results/spline_granger/';
     bects_default.outmoviepath =  '~/Desktop/bects_results/cleaning_movies/';
+    bects_default.outdatapathpwr = '~/Desktop/bects_results/power/';
     
 
 end
