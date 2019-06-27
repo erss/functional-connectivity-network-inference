@@ -82,6 +82,14 @@ elseif strcmp(band, 'gamma')
     band_params.window_size = 0.5;   % in seconds
     band_params.params.pad  = -1;    % ... no zero padding.
     band_params.fband = 'gamma';
+elseif strcmp(band, 'power')
+    band_params.W           = 1;
+    band_params.window_step = 1;   % in seconds
+    band_params.window_size = 1;   % in seconds
+    band_params.params.pad  = -1;    % ... no zero padding.
+    band_params.params.fpass    = [0 50.1];    % ... freq range to pass.
+
+ 
 end
 
 TW                        = band_params.window_size*band_params.W;  % Time bandwidth product.
