@@ -1,4 +1,3 @@
-function automate_power_trial(method)
 cfg();
 
 global bects_default;
@@ -11,8 +10,8 @@ DATAPATH    = bects_default.datapath;
 OUTDATAPATH = bects_default.outdatapathpwr;
 
 data_directory = dir(DATAPATH);
-for k =6;%:10 %5:35 loop through patients
-    model.method = method;
+for k =7:37;%:10 %5:35 loop through patients
+    model.method = 'absolute_power_trial';
     model.sampling_frequency = 2035;
     model.patient_name = data_directory(k).name;
     model.threshold = -2.8;
@@ -105,4 +104,4 @@ for k =6;%:10 %5:35 loop through patients
     clear dataCt
     
 end
-end
+
