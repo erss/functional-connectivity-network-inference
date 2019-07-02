@@ -32,6 +32,7 @@ if strcmp(model.method,'relative_power_trial')
 end
 fprintf('...inferring left SOZ power \n');
 [SL,~,fL,SerrL]  = mtspecgramc(dataL,movingwin,params);
+
 fprintf('...inferring right SOZ power \n');
 [SR,~,fR,SerrR]  = mtspecgramc(dataR,movingwin,params);
 fprintf('...inferring combined SOZ power \n');
