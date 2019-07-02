@@ -25,9 +25,9 @@ dataL = model.dataL;
 dataR = model.dataR;
 dataC = model.dataC;
 if strcmp(model.method,'relative_power_trial')
-    dataL = bsxfun(@minus,dataL,nanstd(dataL,1));
-    dataR = bsxfun(@minus,dataR,nanstd(dataR,1));
-    dataC = bsxfun(@minus,dataC,nanstd(dataC,1));
+    dataL = bsxfun(@rdivide,dataL,nanstd(dataL,1));
+    dataR = bsxfun(@rdivide,dataR,nanstd(dataR,1));
+    dataC = bsxfun(@rdivide,dataC,nanstd(dataC,1));
     
 end
 fprintf('...inferring left SOZ power \n');
@@ -71,6 +71,6 @@ title(model.patient_name,'FontSize',20)
 
 box off
 saveas(h,[model.figpath model.patient_name '/' model.method '/power.fig']);
-saveas(h,[model.figpath model.patient_name '/' model.method '/power.png']);
+saveas(h,[model.figpath model.patient_name '/' model.method '/power.jpg']);
 
 end

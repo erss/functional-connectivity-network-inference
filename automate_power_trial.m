@@ -21,7 +21,7 @@ for k =7:37;%:10 %5:35 loop through patients
     mkdir([OUTDATAPATH model.patient_name],model.method)
     PATIENTPATH = [DATAPATH model.patient_name];
     addpath(PATIENTPATH)
-    
+    T = 1; %window_size
     dataL =[];
     dataR =[];
     dataC =[];
@@ -44,7 +44,7 @@ for k =7:37;%:10 %5:35 loop through patients
         
         %%% ---- Convert left SOZ into 1 s trials -------------------------
         dataLt = data_clean(1:nL,:);
-        dataLt = convert_to_trials( dataLt', 1*2035 );
+        dataLt = convert_to_trials( dataLt', T*2035 );
         
         for i = size(dataLt,2):-1:1 % remove any trial that contains a nan
             dtemp = dataLt(:,i);
@@ -56,7 +56,7 @@ for k =7:37;%:10 %5:35 loop through patients
         
         %%% ---- Convert right SOZ into 1 s trials ------------------------
         dataRt = data_clean(nL+1:end,:);
-        dataRt = convert_to_trials( dataRt', 1*2035 );
+        dataRt = convert_to_trials( dataRt', T*2035 );
         for i = size(dataRt,2):-1:1 % remove any trial that contains a nan
             dtemp = dataRt(:,i);
             if any(isnan(dtemp)) % col contains at least one nan
@@ -66,7 +66,7 @@ for k =7:37;%:10 %5:35 loop through patients
         end
         
         %%% ---- Convert left and right SOZ into 1 s trials ---------------
-        dataCt = convert_to_trials( data_clean', 1*2035 );
+        dataCt = convert_to_trials( data_clean', T*2035 );
         for i = size(dataCt,2):-1:1 % remove any trial that contains a nan
             dtemp = dataCt(:,i);
             if any(isnan(dtemp)) % col contains at least one nan
@@ -84,15 +84,19 @@ for k =7:37;%:10 %5:35 loop through patients
         
         
     end
-    model.figpath = OUTDATAPATH;
-    model.dataL = dataL;
-    model.dataR = dataR;
-    model.dataC = dataC;
-    model = infer_power_soz( model);
-    model=rmfield(model,'dataL');
-    model=rmfield(model,'dataR');
-    model=rmfield(model,'dataC');
-    save([ OUTDATAPATH model.patient_name '/' model.method '/power.mat'],'model')
+    if ~isempty(dataL) && ~isempty(dataR) && ~isempty(dataC)
+        model.t = time;
+        model.t_clean = t_clean;
+        model.figpath = OUTDATAPATH;
+        model.dataL = dataL;
+        model.dataR = dataR;
+        model.dataC = dataC;
+        model = infer_power_soz( model);
+        model=rmfield(model,'dataL');
+        model=rmfield(model,'dataR');
+        model=rmfield(model,'dataC');
+        save([ OUTDATAPATH model.patient_name '/' model.method '/power.mat'],'model')
+    end
     
     clear model
     clear patient_coordinates
