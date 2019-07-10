@@ -5,6 +5,8 @@ global bects_default;
 host = java.lang.System.getProperty('user.name');
 if strcmp(host, 'erss') % my mac
     bects_default.bectsnetworkstoolbox = '~/Documents/MATLAB/bects-networks-toolbox/';
+        bects_default.bu = '~/Documents/MATLAB/Toolboxes/bu/';
+
     bects_default.fcnetworkinference = '~/Documents/MATLAB/fc-network-inference-bootstrap/';
     bects_default.chronuxtoolbox = '~/Documents/MATLAB/Toolboxes/chronux/';
     bects_default.mgh =       '~/Documents/MATLAB/Toolboxes/mgh/';

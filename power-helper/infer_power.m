@@ -1,39 +1,16 @@
-function subnetwork = cfg_subnetwork( patient_coordinates )
-%UNTITLED12 Summary of this function goes here
-%   Detailed explanation goes here
+function model = infer_power( model, pc, data_cell)
+% INFER_SOZ_COHERENCE computes power in all labels
 
-[LN,RN] = find_subnetwork_coords(patient_coordinates);
+subnetwork_params = cfg_power(pc);
 
-%%%% 1) Left SOZ
-
- subnetwork.leftSOZ.nodes = LN;
-
-%%%% 2) Right SOZ
-
-subnetwork.rightSOZ.nodes = RN;
-
-%%%% 3) From Left to Right SOZ
-
-subnetwork.acrossSOZ.nodes.source = LN;
-subnetwork.acrossSOZ.nodes.target = RN;
-
-%%%% 4) Pre to post CG - left 
-
-%%%% 5) Pre to post CG - right
-
-%%%% 6) Upper pre to post CG - left
-
-%%%% 7) Upper pre to post CG - right
-
-%%%% 8) Superior temporal lobe - left
-
-%%%% 9) SOZ + Superior temporal lobe
-
-
-
+fn = fieldnames(subnetwork_params);
+for k=1:numel(fn)
+    fprintf(['...computing ' fn{k} ' coherence \n'])
+    nodes = subnetwork_params.(fn{k}).nodes;
+    model.(fn{k}) = compute_power(model,nodes,data_cell);
 end
 
-
+model.subnetwork_params = subnetwork_params;
 
 % fprintf('...computing dom pre-post SOZ coherence \n')
 % [PreN,PostN,PrUp,PoUp] = find_subnetwork_prepost(pc);
@@ -90,5 +67,34 @@ end
 % 
 % fprintf('...computing within left superior temporal lobe coherence \n')
 % model.left_stl =compute_soz_coherence(model,LNstl);
+
+
+% %%% ----- Normalize by other brain region left and right ------------------
+% 
+% [ LNf,RNf] = find_subnetwork_str( pc,'superiorfrontal');
+% fprintf('...computing left superior frontal lobe coherence \n');
+% if length(LN) < length(LNf)
+%     i = randperm(length(LNf),length(LN));
+%     nodes = LNf(i);
+% else
+%     nodes = LNf;
+% end
+% model.superior_frontal_left = compute_soz_coherence(model,nodes);
+% model.superior_frontal_left.nodes =nodes;
+% model.superior_frontal_left.LNf =LNf;
+% fprintf('...computing left superior fromtal lobe coherence \n');
+% if length(RN) < length(RNf)
+%     i = randperm(length(RNf),length(RN));
+%     nodes = RNf(i);
+% else
+%     nodes = RNf;
+% end
+% model.superior_frontal_right = compute_soz_coherence(model,nodes);
+% model.superior_frontal_right.nodes =nodes;
+% model.superior_frontal_right.RNf =RNf;
+
+end
+
+
 
 

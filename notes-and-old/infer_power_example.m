@@ -27,7 +27,7 @@ model = remove_artifacts_all_lobes(model,pc);
 % [ data] = remove_bad_channels( model );
 
 %%% 4. INFER NETWORK
-model = infer_power(model);
+model = infer_power_old(model);
 
 %%% 5. SAVE DATA
 % model.data = NaN;  % clear data

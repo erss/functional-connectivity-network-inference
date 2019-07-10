@@ -28,7 +28,6 @@ if strcmp(model.method,'relative_power_trial')
     dataL = bsxfun(@rdivide,dataL,nanstd(dataL,1));
     dataR = bsxfun(@rdivide,dataR,nanstd(dataR,1));
     dataC = bsxfun(@rdivide,dataC,nanstd(dataC,1));
-    
 end
 fprintf('...inferring left SOZ power \n');
 [SL,~,fL,SerrL]  = mtspecgramc(dataL,movingwin,params);

@@ -12,4 +12,6 @@ dtemp = data(1:tsamp*dim1,:);
 data  = reshape(dtemp,dim1,tsamp*size(data,2));
 
 end
-
+%%%
+% M = [(1:7)',(8:14)',(15:21)'];
+% Mt= convert_to_trials( M, 3 )
