@@ -7,6 +7,7 @@ function regions = cfg_power( patient_coordinates )
 regions.leftSOZ.nodes = LN;
 regions.rightSOZ.nodes = RN;
 
+
 %%%% 2) Pre to post CG left and right
 pctemp = patient_coordinates;
 pctemp.hand = 'left';

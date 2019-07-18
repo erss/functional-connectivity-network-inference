@@ -7,11 +7,11 @@ addpath(genpath(bects_default.fcnetworkinference))
 addpath(genpath(bects_default.chronuxtoolbox))
 addpath(genpath(bects_default.mgh))
 DATAPATH    = bects_default.datapath;
-OUTDATAPATH = bects_default.outdatapathpwr;
+OUTDATAPATH = '~/Documents/BECTS-project/bects_results/test/';
 
 data_directory = dir(DATAPATH);
-for k =7:37;%:10 %5:35 loop through patients
-    model.method = 'absolute_power_trial';
+for k =6;%:10 %5:35 loop through patients
+    model.method = 'old';
     model.sampling_frequency = 2035;
     model.patient_name = data_directory(k).name;
     model.threshold = -2.8;
@@ -25,8 +25,8 @@ for k =7:37;%:10 %5:35 loop through patients
     dataL =[];
     dataR =[];
     dataC =[];
-    
-    for i = 1:size(source_directory,1)
+     time_clean_cell = cell(1,size(source_directory,1));
+    for i = 1:1l%size(source_directory,1)
         
         %%% ---- Load source data and patient coordinate structure --------
         fprintf(['Loading source ' num2str(i) ' of ' num2str(size(source_directory,1)) '...\n'])
@@ -40,16 +40,16 @@ for k =7:37;%:10 %5:35 loop through patients
         [LN,RN] = find_subnetwork_coords(patient_coordinates);
         nL=length(LN);
         data =[data_left;data_right];
-        [data_clean,t_clean] = remove_artifacts(data([LN;RN],:),time,model.sampling_frequency,model.threshold);
+        [data_clean,time_clean_cell{i}] = remove_artifacts(data([LN;RN],:),time,model.sampling_frequency,model.threshold);
         
         %%% ---- Convert left SOZ into 1 s trials -------------------------
         dataLt = data_clean(1:nL,:);
         dataLt = convert_to_trials( dataLt', T*2035 );
         
-        for i = size(dataLt,2):-1:1 % remove any trial that contains a nan
-            dtemp = dataLt(:,i);
+        for ii = size(dataLt,2):-1:1 % remove any trial that contains a nan
+            dtemp = dataLt(:,ii);
             if any(isnan(dtemp)) % col contains at least one nan
-                dataLt(:,i)=[];
+                dataLt(:,ii)=[];
             end
             
         end
@@ -57,20 +57,20 @@ for k =7:37;%:10 %5:35 loop through patients
         %%% ---- Convert right SOZ into 1 s trials ------------------------
         dataRt = data_clean(nL+1:end,:);
         dataRt = convert_to_trials( dataRt', T*2035 );
-        for i = size(dataRt,2):-1:1 % remove any trial that contains a nan
-            dtemp = dataRt(:,i);
+        for ii = size(dataRt,2):-1:1 % remove any trial that contains a nan
+            dtemp = dataRt(:,ii);
             if any(isnan(dtemp)) % col contains at least one nan
-                dataRt(:,i)=[];
+                dataRt(:,ii)=[];
             end
             
         end
         
         %%% ---- Convert left and right SOZ into 1 s trials ---------------
         dataCt = convert_to_trials( data_clean', T*2035 );
-        for i = size(dataCt,2):-1:1 % remove any trial that contains a nan
-            dtemp = dataCt(:,i);
+        for ii = size(dataCt,2):-1:1 % remove any trial that contains a nan
+            dtemp = dataCt(:,ii);
             if any(isnan(dtemp)) % col contains at least one nan
-                dataCt(:,i)=[];
+                dataCt(:,ii)=[];
             end
         end
         

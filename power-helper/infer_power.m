@@ -4,7 +4,7 @@ function model = infer_power( model, pc, data_cell)
 subnetwork_params = cfg_power(pc);
 
 fn = fieldnames(subnetwork_params);
-for k=1:numel(fn)
+for k=1:5;%:numel(fn)
     fprintf(['...computing ' fn{k} ' coherence \n'])
     nodes = subnetwork_params.(fn{k}).nodes;
     model.(fn{k}) = compute_power(model,nodes,data_cell);

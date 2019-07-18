@@ -12,8 +12,8 @@ m    = repmat(m,[1 size(data,2)]);
 data = data - m;
 
 
-window_step = 0.5;
-window_size = 0.5;
+window_step = 1;
+window_size = 1;
 i_total = 1+floor((t(end)-t(1)-window_size) /window_step);  % # intervals.
 
 data_clean = data;

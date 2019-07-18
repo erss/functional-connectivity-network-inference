@@ -21,5 +21,13 @@ y  = mean(log(Sxx(f_indices,:)),2);
 b = glmfit(X,y);
 b=b(2);
 
+
+%  plot(log(faxis(f_indices)),log(Sxx(f_indices)))
+% xlabel('log frequencies')
+% ylabel('log power')
+% title('Time indices 202-3, b = -2.81, LN only')
+% set(gca,'FontSize',18)
+% xlim([3.4,4.6])
+% ylim([-63.5,-59.5])
 end
 

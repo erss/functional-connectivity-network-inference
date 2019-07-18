@@ -7,11 +7,12 @@ addpath(genpath(bects_default.fcnetworkinference))
 addpath(genpath(bects_default.chronuxtoolbox))
 addpath(genpath(bects_default.mgh))
 DATAPATH    = bects_default.datapath;
-OUTDATAPATH = bects_default.outdatapathpwr;
+OUTDATAPATH = [bects_default.outdatapathpwr 'test/'];
+    mkdir(bects_default.outdatapathpwr,test);
 
 data_directory = dir(DATAPATH);
-for k =6;%7:37;%:10 %5:35 loop through patients
-    model.method='all-labels';
+for k =7:37;%:10 %5:35 loop through patients
+    model.method='new-1s-most-labels';
     model.sampling_frequency = 2035;
     model.patient_name = data_directory(k).name;
     model.threshold = -2.8;
@@ -42,7 +43,8 @@ for k =6;%7:37;%:10 %5:35 loop through patients
     patient_coordinates = load_patient_coordinates(PATIENTPATH,[OUTDATAPATH model.patient_name ],source_session );
     
     model = infer_power( model, patient_coordinates,data_cell);
-    
+    save([ OUTDATAPATH model.patient_name '/' model.method '/power.mat'],'model')
+
     clear model
     clear patient_coordinates
     clear data_cell
