@@ -1,4 +1,4 @@
-function model_region = compute_power( model,nodes,data_cell)
+function model_region = compute_power( model,data)
 % model_region = compute_power( model,nodes,data_cell)
 % Computes power for group of nodes over time such that each node pair
 % within group and all 1 s intervals are treated as trials.
@@ -20,34 +20,24 @@ function model_region = compute_power( model,nodes,data_cell)
 
 f0 = model.sampling_frequency;
 T=model.T;
-data = [];
-time_clean_cell = cell(1,size(data_cell,2));
 
-if ~isempty(nodes)
-    for k =1:size(data_cell,2)
-        dtemp = data_cell{1,k};
-        [data_clean,time_clean_cell{k}] = remove_artifacts(dtemp(nodes,:),data_cell{2,k},f0, model.threshold);
-        
-        %%% ---- Convert region into 1 s trials -------------------------
-        data_clean = convert_to_trials( data_clean', T*f0 );
-        
-        for i = size(data_clean,2):-1:1 % remove any trial that contains a nan
-            dtemp = data_clean(:,i);
-            if any(isnan(dtemp)) % col contains at least one nan
-                data_clean(:,i)=[];
-            end
-            
-        end
-        
-        data = [data, data_clean];
-        
+%%% ---- Convert region into 1 s trials -------------------------
+data_clean = convert_to_trials( data', T*f0 );
+trialtemp = size(data_clean,2);
+for i = size(data_clean,2):-1:1 % remove any trial that contains a nan
+    dtemp = data_clean(:,i);
+    if any(isnan(dtemp)) % col contains at least one nan
+        data_clean(:,i)=[];
     end
-else
-    data=[];
+    
 end
 
+data = data_clean;
+model_region.ntrials = size(data_clean,2);
+model_region.ntrials_removed = trialtemp-size(data_clean,2);
+
 % 2. Load model parameters
-band_params = cfg_band('power');
+band_params = cfg_band('power',model.sampling_frequency);
 model.band_params=band_params;
 
 % 3. Compute power
@@ -66,6 +56,10 @@ if ~isempty(data)
     model_region.f    = f;
     model_region.Serr = Serr;
     
+    Sfit = fit_line(f,model_region.Srel,10,15);
+    stat = compute_statistic( f,model_region.Srel,Sfit,10,15,'area' );
+    model_region.sigma_bump = stat;
+    
 else
     model_region.sbratio    = nan;
     model_region.total_power = nan;
@@ -73,8 +67,8 @@ else
     model_region.Srel = nan;
     model_region.f    = nan;
     model_region.Serr = nan;
+    model_region.sigma_bump = nan;
     
 end
-model_region.time_clean_cell = time_clean_cell;
 
 end

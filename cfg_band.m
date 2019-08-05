@@ -1,4 +1,4 @@
-function [ band_params ] = cfg_band( band )
+function [ band_params ] = cfg_band( band,f0 )
 %UNTITLED10 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -11,7 +11,7 @@ function [ band_params ] = cfg_band( band )
 
 band_params.params.trialave = 1;           % ... trial average.
 band_params.params.fpass    = [1 50.1];    % ... freq range to pass.
-band_params.params.Fs       = 2035;        % ... sampling frequency.
+band_params.params.Fs       = f0;        % ... sampling frequency.
 band_params.params.err      = [2 0.05];    % ... Jacknife error bars, p =0.05;
 
 if strcmp(band,'delta')

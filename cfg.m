@@ -1,24 +1,32 @@
 function cfg()
 
 global bects_default;
+% 
+% [ret, name] = system('hostname')
+% char(java.lang.System.getProperty('user.name'))
+% char(java.net.InetAddress.getLocalHost.getHostName)
 
 host = java.lang.System.getProperty('user.name');
-if strcmp(host, 'erss') % my mac
-    bects_default.bectsnetworkstoolbox = '~/Documents/MATLAB/bects-networks-toolbox/';
-        bects_default.bu = '~/Documents/MATLAB/Toolboxes/bu/';
-
-    bects_default.fcnetworkinference = '~/Documents/MATLAB/fc-network-inference-bootstrap/';
-    bects_default.chronuxtoolbox = '~/Documents/MATLAB/Toolboxes/chronux/';
-    bects_default.mgh =       '~/Documents/MATLAB/Toolboxes/mgh/';
-    bects_default.splineGrangertoolbox = '~/Documents/MATLAB/spline-granger-causality/';
-    bects_default.datapath =  '~/Documents/BECTS-project/bects_data/DKData/';
-    bects_default.outdatapathcc = '~/Documents/BECTS-project/bects_results/cross_correlation/';
-    bects_default.outdatapathpwc = '~/Documents/BECTS-project/bects_results/coherence_pairwise/';
-    bects_default.outdatapathtc = '~/Documents/BECTS-project/bects_results/coherence_trial/';
-    bects_default.outdatapathsg = '~/Documents/BECTS-project/bects_results/spline-Granger/';
-    bects_default.outmoviepath =  '~/Documents/BECTS-project/bects_results/cleaning_movies/';
-    bects_default.outdatapathpwr = '~/Documents/BECTS-project/bects_results/power/';
+if strcmp(host, 'erss')
     
+    
+    
+    % scc
+    bects_default.bectsnetworkstoolbox = '/projectnb/ecog/liz/toolboxes/bects-networks-toolbox';
+    bects_default.bu =  '/projectnb/ecog/liz/toolboxes/bu';
+
+    bects_default.fcnetworkinference = '/projectnb/ecog/liz/toolboxes/fc-network-inference-bootstrap/';
+    bects_default.chronuxtoolbox = '/projectnb/ecog/liz/toolboxes/chronux/';
+    bects_default.mgh =       '/projectnb/ecog/liz/toolboxes/mgh/';
+    
+    bects_default.datapath =  '/projectnb/ecog/BECTS/source_data_ds/';
+
+    bects_default.outdatapathpwr = '/projectnb/ecog/BECTS/bects_results/power/';
+    bects_default.outvidpath     = '/projectnb/ecog/BECTS/bects_results/cleaning_videos/';
+    
+    
+    
+   
 elseif strcmp(host, 'liz') % Galactica
     
     bects_default.splineGrangertoolbox = '~/Documents/MATLAB/spline-granger-causality';
@@ -35,7 +43,27 @@ elseif strcmp(host, 'liz') % Galactica
     bects_default.outmoviepath =  '~/Desktop/bects_results/cleaning_movies/';
     bects_default.outdatapathpwr = '~/Desktop/bects_results/power/';
     
+elseif strcmp(host,'erss') %%% my mac
+     
+    % my mac
+    bects_default.bectsnetworkstoolbox = '~/Documents/MATLAB/bects-networks-toolbox/';
+    bects_default.bu = '~/Documents/MATLAB/Toolboxes/bu/';
 
+    bects_default.fcnetworkinference = '~/Documents/MATLAB/fc-network-inference-bootstrap/';
+    bects_default.chronuxtoolbox = '~/Documents/MATLAB/Toolboxes/chronux/';
+    bects_default.mgh =       '~/Documents/MATLAB/Toolboxes/mgh/';
+    bects_default.splineGrangertoolbox = '~/Documents/MATLAB/spline-granger-causality/';
+    bects_default.datapath =  '~/Documents/BECTS-project/bects_data/DKData/';
+    bects_default.outdatapathcc = '~/Documents/BECTS-project/bects_results/cross_correlation/';
+    bects_default.outdatapathpwc = '~/Documents/BECTS-project/bects_results/coherence_pairwise/';
+    bects_default.outdatapathtc = '~/Documents/BECTS-project/bects_results/coherence_trial/';
+    bects_default.outdatapathsg = '~/Documents/BECTS-project/bects_results/spline-Granger/';
+    bects_default.outmoviepath =  '~/Documents/BECTS-project/bects_results/cleaning_movies/';
+    bects_default.outdatapathpwr = '~/Documents/BECTS-project/bects_results/power/';
+    bects_default.outdatapathdownsample = '~/Documents/BECTS-project/bects_data/DKData/downsampled_data/';
+
+    
+    
 end
 
 end

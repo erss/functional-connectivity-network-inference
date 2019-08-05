@@ -7,47 +7,109 @@ addpath(genpath(bects_default.fcnetworkinference))
 addpath(genpath(bects_default.chronuxtoolbox))
 addpath(genpath(bects_default.mgh))
 DATAPATH    = bects_default.datapath;
-OUTDATAPATH = [bects_default.outdatapathpwr 'test/'];
-    mkdir(bects_default.outdatapathpwr,test);
-
+OUTDATAPATH = bects_default.outdatapathpwr;
+OUTVIDPATH = bects_default.outvidpath;
 data_directory = dir(DATAPATH);
-for k =7:37;%:10 %5:35 loop through patients
-    model.method='new-1s-most-labels';
-    model.sampling_frequency = 2035;
+load([DATAPATH 'npdata.mat']);
+T=table;
+for k =5; %7:37;%:10 %5:35 loop through patients
+    model.sampling_frequency = 407;
     model.patient_name = data_directory(k).name;
-    model.threshold = -2.8;
-    fprintf(['Inferring power for ' model.patient_name '\n']);
-    source_directory = dir([ DATAPATH data_directory(k).name '/sleep_source/*.mat']);
-    mkdir(OUTDATAPATH,model.patient_name)
-    mkdir([OUTDATAPATH model.patient_name],model.method)
+    model.threshold = -1.5;
+    fprintf(['Inferring data for ' model.patient_name '\n']);
+    load([ DATAPATH data_directory(k).name '/source_dsamp_data.mat'])
+    load([ DATAPATH data_directory(k).name '/patient_coordinates.mat'])
+    load([ DATAPATH data_directory(k).name '/spike_times.mat'])
+    
+    mkdir(model.patient_name,OUTDATAPATH)
+    % mkdir([OUTDATAPATH model.patient_name],model.method)
     PATIENTPATH = [DATAPATH model.patient_name];
     addpath(PATIENTPATH)
     model.T = 1; %window_size
     
-    %%% ---- Load all data into cell --------------------------------------
-    data_cell = cell(2,size(source_directory,1));
-    for i = 1:size(source_directory,1)
+    fprintf('... cleaning data \n')
+    % Clean data
+    [data_clean,b] = remove_artifacts_chrx(data,t,model.sampling_frequency,model.threshold,model.T);
+    % Apply data mask & remove
+    data_clean = remove_mask(data_clean,t_mask);
+    % Remove spikes times
+    if ~strcmp(patient_coordinates.status,'Healthy')
+        [LN,RN]= find_subnetwork_coords(patient_coordinates);
+        nL = length(LN);
+        t_spike_mask_left = create_spike_times_mask( t, spike_times_left );
+        t_spike_mask_right = create_spike_times_mask( t, spike_times_right );
         
-        %%% ---- Load source data and patient coordinate structure --------
-        fprintf(['Loading source ' num2str(i) ' of ' num2str(size(source_directory,1)) '...\n'])
-        source_session       = source_directory(i).name;
-        load([PATIENTPATH '/sleep_source/' source_session],'data_left')
-        load([PATIENTPATH '/sleep_source/' source_session],'data_right')
-        load([PATIENTPATH '/sleep_source/' source_session],'time')        
-
-        %%% --- Clean data in left SOZ and right SOZ ----------------------
-        data_cell{1,i}=[data_left;data_right];
-        data_cell{2,i}=time;
+        dataL = remove_mask(data_clean(1:nL,:),t_spike_mask_left);
+        dataR = remove_mask(data_clean(nL+1:end,:),t_spike_mask_right);
+        
+        data_clean= [dataL;dataR];
         
     end
-    patient_coordinates = load_patient_coordinates(PATIENTPATH,[OUTDATAPATH model.patient_name ],source_session );
     
-    model = infer_power( model, patient_coordinates,data_cell);
-    save([ OUTDATAPATH model.patient_name '/' model.method '/power.mat'],'model')
+    model.b=b;
+    model.status = patient_coordinates.status;
+    
+    %%%%%%%%%%%%%%%%%%%%%%%% WRITE VIDEO SCRIPT TO CHECK CLEANING AND
+    %%%%%%%%%%%%%%%%%%%%%%%% SPIKE REMOVAL PROCEDURE.
+    
+    visualize_data_clean( data([LN;RN],:),data_clean([LN;RN],:), t,OUTVIDPATH );
+    
+    model = infer_power( model, patient_coordinates,data_clean);
+    save([ OUTDATAPATH model.patient_name '/power.mat'],'model')
+    pc= patient_coordinates;
+    
+    fn = fieldnames(model.labels);
+    for i = 1:numel(fn)
+        temp = model.labels.(fn{i});
+        
+        %%% THINGS OF INTEREST
+        name = cellstr(pc.name);
+        label = cellstr(fn{i});
+        status = cellstr(pc.status);
+        hand = cellstr(pc.hand);
+        gender = cellstr(pc.gender);
+        age = pc.age;
+        
+        
+        %%% STUFF FROM TABLE
+        ii = find(strcmp(npdata.ID,name)==1);
+        GPBdomRaw = npdata.GPBdomRaw(ii);
+        GPBdomZ   = npdata.GPBdomZ(ii);
+        GPBnonRaw = npdata.GPBnonRaw(ii);
+        GPBnonZ   = npdata.GPBnonZ(ii);
+        PhonoAwareRaw = npdata.PhonoAwareRaw(ii);
+        PhonoAwareZ =npdata.PhonoAwareZ(ii);
+        spiking_hem = npdata.SpikingHemisphere(ii);
+        %%% ANALYSIS
+        
+        if isfield(temp,'warning_msg')
+            sbratio = nan;
+            total_power = nan;
+            sigma_bump =nan;
+            
+            ntrials = temp.ntrials;
+            ntrials_removed = temp.ntrials_removed;      
+        else
+            sbratio = temp.sbratio;
+            total_power = temp.total_power;
+            
+            ntrials = temp.ntrials;
+            ntrials_removed = temp.ntrials_removed;
+            sigma_bump = temp.sigma_bump;            
+        end
+        
+        T_temp = table(name,status,label,hand,gender,age, spiking_hem,...
+            sbratio,sigma_bump,total_power,ntrials,ntrials_removed, ...
+            GPBdomRaw,GPBdomZ,GPBnonRaw,GPBnonZ,PhonoAwareRaw,PhonoAwareZ);
+        T=[T;T_temp];
+        
+        
+    end
 
+    save([ OUTDATAPATH model.patient_name '/sigma_bump_table.mat'],'T')
+    
     clear model
     clear patient_coordinates
-    clear data_cell
-    
 end
+
 

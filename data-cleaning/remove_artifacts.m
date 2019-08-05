@@ -1,4 +1,4 @@
-function [data_clean,t_clean, b ] = remove_artifacts(data,t,f0,threshold)
+function [data_clean,t_clean, b ] = remove_artifacts(data,t,f0,threshold,window)
 % Procedure to detect and remove all artifacts. Compute
 % average spectrum of signals within data matrix. Fit line to log f-log
 % power. If slope is > threshold, mark as artifact.
@@ -12,8 +12,8 @@ m    = repmat(m,[1 size(data,2)]);
 data = data - m;
 
 
-window_step = 1;
-window_size = 1;
+window_step = window;
+window_size = window;
 i_total = 1+floor((t(end)-t(1)-window_size) /window_step);  % # intervals.
 
 data_clean = data;
