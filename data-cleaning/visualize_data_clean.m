@@ -28,7 +28,7 @@ data_removed = reshape(data_temp,size(data_clean));
 
 
 %h=figure('visible','on');
-for k=1:i_total;
+for k=1:i_total
     
     % Get 1 s time window
     t_start = t(1) + (k-1) * window_step;   %... get window start time [s],

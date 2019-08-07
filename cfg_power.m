@@ -144,7 +144,7 @@ regions.rightPosteriorCingulate.nodes = RN;
 %%%% 27) caudal anterior cingulate
 [LN,RN]=find_subnetwork_str( patient_coordinates,'caudalanteriorcingulate');
 regions.leftCaudalAnteriorCingulate.nodes  = LN;
-regions.rightCaudalAnteriorCingulare.nodes = RN;
+regions.rightCaudalAnteriorCingulate.nodes = RN;
 
 %%%% 28) rostral anterior cingulate
 [LN,RN] = find_subnetwork_str( patient_coordinates,'rostralanteriorcingulate');

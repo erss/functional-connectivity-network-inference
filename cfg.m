@@ -43,7 +43,7 @@ elseif strcmp(host, 'liz') % Galactica
     bects_default.outmoviepath =  '~/Desktop/bects_results/cleaning_movies/';
     bects_default.outdatapathpwr = '~/Desktop/bects_results/power/';
     
-elseif strcmp(host,'erss') %%% my mac
+elseif strcmp(host,'erssack') %%% my mac
      
     % my mac
     bects_default.bectsnetworkstoolbox = '~/Documents/MATLAB/bects-networks-toolbox/';
@@ -53,7 +53,7 @@ elseif strcmp(host,'erss') %%% my mac
     bects_default.chronuxtoolbox = '~/Documents/MATLAB/Toolboxes/chronux/';
     bects_default.mgh =       '~/Documents/MATLAB/Toolboxes/mgh/';
     bects_default.splineGrangertoolbox = '~/Documents/MATLAB/spline-granger-causality/';
-    bects_default.datapath =  '~/Documents/BECTS-project/bects_data/DKData/';
+    bects_default.datapath =  '~/Documents/BECTS-project/bects_data/source_data_ds/';
     bects_default.outdatapathcc = '~/Documents/BECTS-project/bects_results/cross_correlation/';
     bects_default.outdatapathpwc = '~/Documents/BECTS-project/bects_results/coherence_pairwise/';
     bects_default.outdatapathtc = '~/Documents/BECTS-project/bects_results/coherence_trial/';
