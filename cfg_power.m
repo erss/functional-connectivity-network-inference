@@ -168,8 +168,8 @@ regions.rightEntorhinal.nodes = RN;
 
 %%%% 32) fusiform
 [LN,RN] = find_subnetwork_str( patient_coordinates,'fusiform');
-regions.leftEntorhinal.nodes  = LN;
-regions.rightEntorhinal.nodes = RN;
+regions.leftFusiform.nodes  = LN;
+regions.rightFusiform.nodes = RN;
 
 end
 

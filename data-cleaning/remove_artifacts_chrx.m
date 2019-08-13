@@ -36,7 +36,7 @@ for k = 1:i_total
     badChannels = b{1,k} >threshold;
     data_clean(badChannels,indices)= NaN;
    % t_clean(indices)=NaN;
-   fprintf(['...cleanign on window ' num2str(k) '/' num2str(i_total) '\n'])
+ %  fprintf(['...cleaning on window ' num2str(k) '/' num2str(i_total) '\n'])
 end
 
 % Remove mean after removing bad time intervals

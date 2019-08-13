@@ -1,7 +1,7 @@
 cfg();
 
 global bects_default;
-
+%%
 addpath(genpath(bects_default.bectsnetworkstoolbox))
 addpath(genpath(bects_default.fcnetworkinference))
 addpath(genpath(bects_default.chronuxtoolbox))
@@ -11,11 +11,10 @@ addpath(genpath(bects_default.mgh))
 DATAPATH    = bects_default.datapath;
 %%%
 OUTDATAPATH = bects_default.outdatapathpwr;
-OUTVIDPATH = bects_default.outvidpath;
 data_directory = dir(DATAPATH);
 load([DATAPATH 'npdata.mat']);
 T=table;
-
+%%
 %%% DO NOT ANALYZE patients 7,37,38
 for k =[4:10 12:25 28:size(data_directory,1)] %[4:11 13:25 28:size(data_directory,1)] %7:37;%:10 %5:35 loop through patients
     model.sampling_frequency = 407;
@@ -25,9 +24,9 @@ for k =[4:10 12:25 28:size(data_directory,1)] %[4:11 13:25 28:size(data_director
     mkdir(OUTDATAPATH,model.patient_name )
     load([ DATAPATH data_directory(k).name '/patient_coordinates.mat'])
     
-    if exist([ OUTDATAPATH model.patient_name '/power_dynamic.mat'],'file' ) == 2
+    if exist([ OUTDATAPATH model.patient_name '/power_all_bands.mat'],'file' ) == 2
         fprintf(['...file already exists for ' model.patient_name '\n'])
-        load([ OUTDATAPATH model.patient_name '/power_dynamic.mat'] );
+        load([ OUTDATAPATH model.patient_name '/power_all_bands.mat'] );
         
     else
         load([ DATAPATH data_directory(k).name '/source_dsamp_data.mat'])
@@ -47,7 +46,7 @@ for k =[4:10 12:25 28:size(data_directory,1)] %[4:11 13:25 28:size(data_director
         data_clean = remove_mask(data_clean,t_mask);
         % Remove spikes times
         [LN,RN]= find_subnetwork_coords(patient_coordinates);
-        %%%%%%%%%%%% FIX THIS IS WRONG THIS GETS RID OF ALL DATA !!!!!
+
         if ~strcmp(patient_coordinates.status,'Healthy')
             load([ DATAPATH data_directory(k).name '/spike_times.mat'])
             nL = length(LN);
@@ -70,11 +69,12 @@ for k =[4:10 12:25 28:size(data_directory,1)] %[4:11 13:25 28:size(data_director
         
         %%%%%%%%%%%%%%%%%%%%%%%% WRITE VIDEO SCRIPT TO CHECK CLEANING AND
         %%%%%%%%%%%%%%%%%%%%%%%% SPIKE REMOVAL PROCEDURE.
-        fprintf('... plotting videos')
+        fprintf('... plotting videos \n')
     %    visualize_data_clean( data([LN;RN],:),data_clean([LN;RN],:), t,[OUTVIDPATH model.patient_name '_cleaning_movie'] );
-        fprintf('... inferring power')
-        model = infer_power( model, patient_coordinates,data_clean,'all','SOZ');
-        save([ OUTDATAPATH model.patient_name '/power_dynamic.mat'],'model')
+        fprintf('... inferring power \n')
+
+        model = infer_power( model, patient_coordinates,data_clean,'SOZ','individual');
+        save([ OUTDATAPATH model.patient_name '/power_all_bands.mat'],'model')
         
     end
 %     pc= patient_coordinates;
@@ -143,6 +143,5 @@ for k =[4:10 12:25 28:size(data_directory,1)] %[4:11 13:25 28:size(data_director
     clear patient_coordinates
 end
 
-    save([ OUTDATAPATH 'sigma_bump_table.mat'],'T')
 
 
