@@ -36,6 +36,7 @@ for k =5:size(data_directory,1) %[4:11 13:25 28:size(data_directory,1)] %7:37;%:
         if exist([ DATAPATH data_directory(k).name '/source_dsamp_data_clean.mat'],'file' ) == 2
             load([ DATAPATH data_directory(k).name '/source_dsamp_data_clean.mat']);
         else
+            load([ DATAPATH data_directory(k).name '/source_dsamp_data.mat'])
             % Clean data
             [data_clean,b] = remove_artifacts_chrx(data,t,model.sampling_frequency,model.threshold,model.T);
             % Apply data mask & remove
