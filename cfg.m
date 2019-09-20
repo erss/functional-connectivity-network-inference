@@ -7,7 +7,7 @@ global bects_default;
 % char(java.net.InetAddress.getLocalHost.getHostName)
 
 host = java.lang.System.getProperty('user.name');
-if strcmp(host, 'erss')
+if strcmp(host, 'erss-scc')
     
     
     
@@ -43,7 +43,7 @@ elseif strcmp(host, 'liz') % Galactica
     bects_default.outmoviepath =  '~/Desktop/bects_results/cleaning_movies/';
     bects_default.outdatapathpwr = '~/Desktop/bects_results/power/';
     
-elseif strcmp(host,'erssack') %%% my mac
+elseif strcmp(host,'erss') %%% my mac
      
     % my mac
     bects_default.bectsnetworkstoolbox = '~/Documents/MATLAB/bects-networks-toolbox/';
@@ -61,6 +61,7 @@ elseif strcmp(host,'erssack') %%% my mac
     bects_default.outmoviepath =  '~/Documents/BECTS-project/bects_results/cleaning_movies/';
     bects_default.outdatapathpwr = '~/Documents/BECTS-project/bects_results/power/';
     bects_default.outdatapathdownsample = '~/Documents/BECTS-project/bects_data/DKData/downsampled_data/';
+    bects_default.outvidpath=bects_default.datapath ;
 
     
     

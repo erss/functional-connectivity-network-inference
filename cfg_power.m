@@ -122,7 +122,7 @@ regions.rightCuneus.nodes = RN;
 
 %%%% 23) pericalcarine
 [LN,RN]=find_subnetwork_str( patient_coordinates,'pericalcarine');
-regions.leftPericalcarine.nodes = LN;
+regions.leftPericalarine.nodes = LN;
 regions.rightPericalarine.nodes = RN;
 
 %%%% 24) lingual

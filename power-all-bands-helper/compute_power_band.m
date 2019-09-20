@@ -37,7 +37,7 @@ end
 data = data_clean;
 model_region.ntrials = size(data_clean,2);
 model_region.ntrials_removed = trialtemp-size(data_clean,2);
-
+fprintf(['... ... ... ... size of data is: ' num2str(size(data)) '\n'])
 % 2. Load model parameters
 model.band_params=band_params;
 
@@ -48,11 +48,9 @@ if ~isempty(data)
     [S,~,f,Serr]  = mtspecgramc(data,movingwin,params);
     
     model_region.S = S(f==band_params.f_start);
-    
     model_region.f    = f(f==band_params.f_start);
-    model_region.Serr = Serr(2,f==band_params.f_start);
+    model_region.Serr = Serr(:,f==band_params.f_start);
     
- 
     
 else
 
