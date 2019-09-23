@@ -17,9 +17,10 @@ load([DATAPATH 'npdata.mat']);
 T=table;
 %%
 %%% DO NOT ANALYZE patients 7,37,38
-for k =12% , 30]%[4:10 12:25 28:size(data_directory,1)] %[4:11 13:25 28:size(data_directory,1)] %7:37;%:10 %5:35 loop through patients
+for k =size(data_directory,1)
     model.sampling_frequency = 407;
     model.patient_name = data_directory(k).name;
+    model.OUTDATAPATH= OUTDATAPATH;
     model.threshold = -1.5;
     model.T = 1; %window_size
     fprintf(['Analyzing patient ' model.patient_name '\n']);
@@ -29,6 +30,7 @@ for k =12% , 30]%[4:10 12:25 28:size(data_directory,1)] %[4:11 13:25 28:size(dat
     if exist([ OUTDATAPATH model.patient_name '/power.mat'],'file' ) == 2
         fprintf(['...file already exists for ' model.patient_name '\n'])
         load([ OUTDATAPATH model.patient_name '/power.mat'] );
+        model.OUTDATAPATH= OUTDATAPATH;
         if  exist([ DATAPATH data_directory(k).name '/source_dsamp_data_clean.mat'],'file' ) == 2
             load([ DATAPATH data_directory(k).name '/source_dsamp_data_clean.mat']);
             
@@ -60,10 +62,10 @@ for k =12% , 30]%[4:10 12:25 28:size(data_directory,1)] %[4:11 13:25 28:size(dat
             end
             cleaning_threshold = model.threshold;
             win_size = model.T;
-            save([ DATAPATH data_directory(k).name '/source_dsamp_data_clean.mat'],'data_clean','cleaning_threshold','win_size')
+            save([ DATAPATH data_directory(k).name '/source_dsamp_data_clean.mat'],'data_clean','cleaning_threshold','win_size','-v7.3')
         end
         
-        model = infer_power( model, patient_coordinates,data_clean,'SOZ','individual');
+        model = infer_power( model, patient_coordinates,data_clean,'SOZ','general');
     else
         load([ DATAPATH data_directory(k).name '/source_dsamp_data.mat'])
         
@@ -104,10 +106,11 @@ for k =12% , 30]%[4:10 12:25 28:size(data_directory,1)] %[4:11 13:25 28:size(dat
             end
             cleaning_threshold = model.threshold;
             win_size = model.T;
-            save([ DATAPATH data_directory(k).name '/source_dsamp_data_clean.mat'],'data_clean','cleaning_threshold','win_size')
+            
+            save([ DATAPATH data_directory(k).name '/source_dsamp_data_clean.mat'],'data_clean','cleaning_threshold','win_size','-v7.3')
         end
         
-        model.b=b;
+        
         model.status = patient_coordinates.status;
         
         %%%%%%%%%%%%%%%%%%%%%%%% WRITE VIDEO SCRIPT TO CHECK CLEANING AND
@@ -115,7 +118,7 @@ for k =12% , 30]%[4:10 12:25 28:size(data_directory,1)] %[4:11 13:25 28:size(dat
         fprintf('... plotting videos')
         % visualize_data_clean( data([LN;RN],:),data_clean([LN;RN],:), t,[OUTVIDPATH model.patient_name '_cleaning_movie_2'] );
         fprintf('... inferring power')
-        model = infer_power( model, patient_coordinates,data_clean,'SOZ','individual');
+        model = infer_power( model, patient_coordinates,data_clean,'SOZ','general');
         save([ OUTDATAPATH model.patient_name '/power.mat'],'model')
         clear model
         clear patient_coordinates

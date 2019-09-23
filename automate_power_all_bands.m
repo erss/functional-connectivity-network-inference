@@ -21,7 +21,7 @@ load([DATAPATH 'npdata.mat']);
 T=table;
 %%
 %%% DO NOT ANALYZE patients 7,37,38
-for k =5:size(data_directory,1) %[4:11 13:25 28:size(data_directory,1)] %7:37;%:10 %5:35 loop through patients
+for k =5:7 %[4:11 13:25 28:size(data_directory,1)] %7:37;%:10 %5:35 loop through patients
     model.sampling_frequency = 407;
     model.patient_name = data_directory(k).name;
     model.threshold = -1.5;
@@ -32,7 +32,7 @@ for k =5:size(data_directory,1) %[4:11 13:25 28:size(data_directory,1)] %7:37;%:
     if exist([ OUTDATAPATH model.patient_name '/power_all_bands.mat'],'file' ) == 2
         fprintf(['...file already exists for ' model.patient_name '\n'])
         load([ OUTDATAPATH model.patient_name '/power_all_bands.mat'] );
-        
+        model.OUTDATAPATH= OUTDATAPATH;
         if exist([ DATAPATH data_directory(k).name '/source_dsamp_data_clean.mat'],'file' ) == 2
             load([ DATAPATH data_directory(k).name '/source_dsamp_data_clean.mat']);
         else
@@ -62,7 +62,7 @@ for k =5:size(data_directory,1) %[4:11 13:25 28:size(data_directory,1)] %7:37;%:
             end
             cleaning_threshold = model.threshold;
             win_size = model.T;
-            save([ DATAPATH data_directory(k).name '/source_dsamp_data_clean.mat'],'data_clean','cleaning_threshold','win_size')
+            save([ DATAPATH data_directory(k).name '/source_dsamp_data_clean.mat'],'data_clean','cleaning_threshold','win_size','-v7.3')
             
             
         end
@@ -100,11 +100,11 @@ for k =5:size(data_directory,1) %[4:11 13:25 28:size(data_directory,1)] %7:37;%:
             
         end
         
-        model.b=b;
+        
         model.status = patient_coordinates.status;
         cleaning_threshold = model.threshold;
         win_size = model.T;
-        save([ DATAPATH data_directory(k).name '/source_dsamp_data_clean.mat'],'data_clean','cleaning_threshold','win_size')
+        save([ DATAPATH data_directory(k).name '/source_dsamp_data_clean.mat'],'data_clean','cleaning_threshold','win_size','-v7.3')
         %%%%%%%%%%%%%%%%%%%%%%%% WRITE VIDEO SCRIPT TO CHECK CLEANING AND
         %%%%%%%%%%%%%%%%%%%%%%%% SPIKE REMOVAL PROCEDURE.
         fprintf('... plotting videos \n')

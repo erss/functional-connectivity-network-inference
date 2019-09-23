@@ -14,6 +14,13 @@ if ~isfield(model,'labels')
     model.labels=[];
 end
 
+if strcmp(labelsmsg,'aaa')
+    nk = 2;
+    PATH = [ OUTDATAPATH model.patient_name '/power_no_spikes.mat'];
+else
+    PATH = [ OUTDATAPATH model.patient_name '/power.mat'];
+end
+
 
 for k=1:nk
     fprintf(['...computing ' fn{k} ' power \n'])
@@ -25,7 +32,7 @@ for k=1:nk
 
             if ~isfield(model.labels,fn{k})
                 model.labels.(fn{k}) = compute_power(model,data(nodes,:));
-                save([ OUTDATAPATH model.patient_name '/power.mat'],'model')
+                save(PATH,'model')
 
             end
             
@@ -59,22 +66,31 @@ for k=1:nk
                 fprintf(['... ... ... skipping alpha band \n'])
             end
             
-            if ~isfield(model.labels.(fn{k}),'sigma')
-                
+%             if ~isfield(model.labels.(fn{k}),'sigma')
+%                 
                 fprintf(['... ... ... in sigma band \n'])
                 model.labels.(fn{k}).sigma = compute_power_band(model,data(nodes,:),'sigma');
                 save([ OUTDATAPATH model.patient_name '/power_all_bands.mat'],'model')
-            else
-                fprintf(['... ... ... skipping sigma band \n'])
-            end
+%             else
+%                 fprintf(['... ... ... skipping sigma band \n'])
+%             end
             
-            if ~isfield(model.labels.(fn{k}),'gamma')
+%             if ~isfield(model.labels.(fn{k}),'beta')
+%                 
+                fprintf(['... ... ... in beta band \n'])
+                model.labels.(fn{k}).beta = compute_power_band(model,data(nodes,:),'beta');
+                save([ OUTDATAPATH model.patient_name '/power_all_bands.mat'],'model')
+%             else
+%                 fprintf(['... ... ... skipping beta band \n'])
+%             end
+            
+ %           if ~isfield(model.labels.(fn{k}),'gamma')
                 fprintf(['... ... ... in gamma band \n'])
                 model.labels.(fn{k}).gamma = compute_power_band(model,data(nodes,:),'gamma');
                 save([ OUTDATAPATH model.patient_name '/power_all_bands.mat'],'model')
-            else
-                fprintf(['... ... ... skipping gamma band \n'])
-            end
+%             else
+%                 fprintf(['... ... ... skipping gamma band \n'])
+%             end
         end
         
     else

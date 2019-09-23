@@ -45,11 +45,11 @@ model.band_params=band_params;
 params    = band_params.params;
 movingwin = band_params.movingwin;                                   % ... Window size and step.
 if ~isempty(data)
-    [S,~,f,Serr]  = mtspecgramc(data,movingwin,params);
-    
-    model_region.S = S(f==band_params.f_start);
-    model_region.f    = f(f==band_params.f_start);
-    model_region.Serr = Serr(:,f==band_params.f_start);
+    [S,~,f,Serr]      = mtspecgramc(data,movingwin,params);
+    nearestFreq       = find_nearest_value( f, band_params.f_start);
+    model_region.S    = S(f==nearestFreq);
+    model_region.f    = f(f==nearestFreq);
+    model_region.Serr = Serr(:,f==nearestFreq);
     
     
 else

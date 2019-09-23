@@ -73,8 +73,8 @@ elseif strcmp(band,'beta')
     band_params.params.fpass    = [14 30];    % ... freq range to pass.
 
     band_params.W           = 7.5;
-    band_params.f_start     = 22.2578; % 22.3572
-    band_params.f_stop      = 22.2578; %  22.3572
+    band_params.f_start     = 22.5; % 22.3572
+    band_params.f_stop      = 22.5; %  22.3572
     band_params.window_step = 1;       % in seconds
     band_params.window_size = 1;       % in seconds
     band_params.params.pad  = 1;       % ... with zero padding.
@@ -84,8 +84,8 @@ elseif strcmp(band, 'gamma')
     band_params.params.fpass    = [30 50.1];    % ... freq range to pass.
 
     band_params.W           = 10;
-    band_params.f_start     = 39.9020;%39.9804;
-    band_params.f_stop      = 39.9020;%39.9804;
+    band_params.f_start     = 40;%39.9804;
+    band_params.f_stop      = 40;%39.9804;
     band_params.window_step = 0.5;   % in seconds
     band_params.window_size = 0.5;   % in seconds
     band_params.params.pad  = -1;    % ... no zero padding.
