@@ -16,7 +16,7 @@ band_params.params.err      = [2 0.05];    % ... Jacknife error bars, p =0.05;
 
 if strcmp(band,'delta')
     band_params.params.fpass    = [2 4];
-    band_params.W           = 1;
+    band_params.W           = 1; % BT = NW
     band_params.window_step = 5;       % in seconds
     band_params.window_size = 5;       % in seconds
     band_params.f_start     = 3;
@@ -52,7 +52,7 @@ elseif strcmp(band,'alpha')
     band_params.params.pad  = -1; % ... no zero padding.
     band_params.fband = 'alpha';
 elseif strcmp(band,'sigma')
-       band_params.params.fpass    = [10 15]; 
+    band_params.params.fpass    = [10 15]; 
     band_params.W           = 2.5;
     band_params.f_start     = 12.5;
     band_params.f_stop      = 12.5;
@@ -70,11 +70,11 @@ elseif strcmp(band,'sigma')
 %     band_params.fband = 'sigma';
     
 elseif strcmp(band,'beta')
-    band_params.params.fpass    = [14 30];    % ... freq range to pass.
+    band_params.params.fpass    = [15 30];    % ... freq range to pass.
 
     band_params.W           = 7.5;
-    band_params.f_start     = 22.5; % 22.3572
-    band_params.f_stop      = 22.5; %  22.3572
+    band_params.f_start     = 22.5; % 22.6553
+    band_params.f_stop      = 22.5; % 22.6553
     band_params.window_step = 1;       % in seconds
     band_params.window_size = 1;       % in seconds
     band_params.params.pad  = 1;       % ... with zero padding.
@@ -93,6 +93,8 @@ elseif strcmp(band, 'gamma')
 elseif strcmp(band, 'power')
     band_params.params.fpass    = [1 50.1];    % ... freq range to pass.
     band_params.W           = 1;
+    band_params.f_start = 1;
+    band_params.f_stop = 50;
     band_params.window_step = 1;   % in seconds
     band_params.window_size = 1;   % in seconds
     band_params.params.pad  = -1;    % ... no zero padding.

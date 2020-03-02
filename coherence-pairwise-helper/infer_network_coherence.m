@@ -1,4 +1,4 @@
-function model = infer_network_coherence( model,patient_coordinates)
+function model = infer_network_coherence( model,data,path)
 % Infers network structure using coherence + imaginary coherency;
 % Employs a bootstrap procedure to determine significance.
 %
@@ -17,16 +17,15 @@ function model = infer_network_coherence( model,patient_coordinates)
 % distr_coh = surrogate distrobution of coherence [1 x model.nsurrogates]
 
 % 1. Load model parameters
-nsurrogates = model.nsurrogates;
-data        = model.data_clean;
-time        = model.t;
-n           = size(model.data_clean,1);  % number of electrodes
+
+band_params  = cfg_band( 'sigma',model.sampling_frequency );
+n           = size(data,1);  % number of electrodes
 
 
-f_start     = round(model.band_params.f_start,3);
-f_stop      = round(model.band_params.f_stop, 3);
-params      = model.band_params.params;
-movingwin   = model.band_params.movingwin;
+f_start     = round(band_params.f_start,3);
+f_stop      = round(band_params.f_stop, 3);
+params      = band_params.params;
+movingwin   = band_params.movingwin;
 
 
 %%% If coherence network already exists, skip this step.
@@ -34,11 +33,11 @@ if ~isfield(model,'kC')
     
     d1 = data(1,:)';
     d2 = data(2,:)';
-
-    [~,~,~,~,~,t,f]=cohgramc(d1,d2,movingwin,params);
+    
+    [C,~,~,~,~,t,f]=cohgramc(d1,d2,movingwin,params);
     kC  = nan([n n length(t)]);
     kUp = nan([n n length(t)]);
-    kLo = nan([n n length(t)]); 
+    kLo = nan([n n length(t)]);
     phi = nan([n n length(t)]);
     % Compute the coherence.
     % Note that coherence is positive.
@@ -46,51 +45,69 @@ if ~isfield(model,'kC')
     %%%% step
     for i = 1:n
         d1 = data(i,:)';
+        d1 = d1 - nanmean(d1);
         parfor j = (i+1):n % parfor on inside
-            d2 = data(j,:)';
-            [net_coh,phase,~,~,~,~,ftmp,~,~,Cerr] = cohgramc(d1,d2,movingwin,params);
-            f_indices  = round(ftmp,3) >= f_start & round(ftmp,3) <= f_stop;
-          %  kC(i,j,:)  = mean(net_coh(:,f_indices),2);
-            kC(i,j,:)  = net_coh(:,f_indices);
-            kUp(i,j,:) = Cerr(2,:,f_indices);
-            kLo(i,j,:) = Cerr(1,:,f_indices);
-            phi(i,j,:) = phase(:,f_indices);
-            fprintf(['Infering edge row: ' num2str(i) ' and col: ' num2str(j) '. \n' ])
+            if isnan(kC(i,j,:))
+                d2 = data(j,:)';
+                
+                d2 = d2 - nanmean(d2);
+                [net_coh,phase,~,~,~,~,ftmp,~,~,Cerr] = cohgramc(d1,d2,movingwin,params);
+                f_indices  = round(ftmp,3) >= f_start & round(ftmp,3) <= f_stop;
+                % kC(i,j,:)  = mean(net_coh(:,f_indices),2);
+                kC(i,j,:)  =net_coh(:,f_indices);
+                
+                %  kC(i,j,:)  = nanmean(net_coh,1);
+                
+                kUp(i,j,:) = Cerr(2,:,f_indices);
+                kLo(i,j,:) = Cerr(1,:,f_indices);
+                % phi(i,j,:) =  nanmean(phase,1);
+                phi(i,j,:) =  phase(:,f_indices);
+                
+                fprintf(['Infering edge row: ' num2str(i) ' and col: ' num2str(j) '. \n' ])
+            end
         end
         
         fprintf(['Inferred edge row: ' num2str(i) '\n' ])
+        model.sigma.f = f;
+        model.sigma.net_coh = kC;
+        model.sigma.phi = phi;
+        model.sigma.kUp = kUp;
+        model.sigma.kLo = kLo;
+        model.sigma.t   = t;
+        save(path,'model','-v7.3')
+        
     end
+    model.sigma.f = f;
+    model.sigma.t = t;
+    model.sigma.net_coh = kC;
+    model.sigma.phi = phi;
+    model.sigma.kUp = kUp;
+    model.sigma.kLo = kLo;
+    save(path,'model','-v7.3')
     
-    model.dynamic_network_taxis = t + time(1); %%% DOUBLE CHECK THIS STEP
-                                               %%% TO FIX TIME AXIS
-    model.f = f;
-    model.net_coh = kC;
-    model.phi = phi;
-    model.kLo = kLo;
-    model.kUp = kUp;
 end
-[ model.leftSOZ,model.rightSOZ,model.acrossSOZ ] = patient_activity_temp( kC, patient_coordinates );
+%[ model.leftSOZ,model.rightSOZ,model.acrossSOZ ] = patient_activity_temp( kC, patient_coordinates );
 % % % 3. Compute surrogate distrubution.
 % fprintf(['... generating surrogate distribution \n'])
 % if ~isfield(model,'distr_coh')
-%     
+%
 %     model = gen_surrogate_distr_coh(model,params,movingwin,f_start,f_stop);
 % end
 % %
 % % % 4. Compute pvals using surrogate distribution.
 % fprintf(['... computing pvals \n'])
-% 
+%
 % % Initialize coherence pvals
 % pval_coh = NaN(size(model.kC));
 % distr_coh = sort(model.distr_coh);
-% 
+%
 % num_nets = size(pval_coh,3);
-% 
+%
 % for i = 1:n
 %     for j = (i+1):n
-%         
+%
 %         for k = 1:num_nets
-%             
+%
 %             % Compute coherence for node pair (i,j) at time k
 %             kCohTemp = model.kC(i,j,k);
 %             if isnan(kCohTemp)
@@ -102,30 +119,30 @@ end
 %                     pval_coh(i,j,k)=0.5/nsurrogates;
 %                 end
 %             end
-%             
+%
 %         end
 %     end
 % end
-% 
-% 
+%
+%
 % % 5. Use FDR to determine significant pvals.
 % fprintf(['... computing significance (FDR) \n'])
 % q=model.q;
-% 
-% 
+%
+%
 % % Compute significant pvals for coherence
 % net_coh = zeros(n,n,num_nets);
-% 
+%
 % for ii = 1:num_nets
 %     if sum(sum(isfinite(pval_coh(:,:,ii)))) >0
 %         adj_mat = pval_coh(:,:,ii);
 %         p = adj_mat(isfinite(adj_mat));
 %         p = sort(p);
-%         
+%
 %         m = length(p);                 % number of total tests performed
 %         ivals = (1:m)';
 %         sp = ivals*q/m;
-%         
+%
 %         i0 = find(p-sp<=0);
 %         if ~isempty(i0)
 %             threshold = p(max(i0));
@@ -141,7 +158,7 @@ end
 %         net_coh(:,:,ii) = NaN(n,n);
 %     end
 % end
-% 
+%
 % % 6. Output/save everything
 % model.net_coh = net_coh;
 % model.pval_coh = pval_coh;

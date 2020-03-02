@@ -21,17 +21,18 @@ load([DATAPATH 'npdata.mat']);
 T=table;
 %%
 %%% DO NOT ANALYZE patients 7,37,38
-for k =5:7 %[4:11 13:25 28:size(data_directory,1)] %7:37;%:10 %5:35 loop through patients
+for k =5:6 %loop through patients
     model.sampling_frequency = 407;
     model.patient_name = data_directory(k).name;
+    SAVEPATH = [ OUTDATAPATH model.patient_name '/power_all_bands_good_windowing.mat'];
     model.threshold = -1.5;
     fprintf(['Analyzing patient ' model.patient_name '\n']);
     mkdir(OUTDATAPATH,model.patient_name )
     load([ DATAPATH data_directory(k).name '/patient_coordinates.mat'])
     model.T = 1;
-    if exist([ OUTDATAPATH model.patient_name '/power_all_bands.mat'],'file' ) == 2
+    if exist(SAVEPATH,'file' ) == 2
         fprintf(['...file already exists for ' model.patient_name '\n'])
-        load([ OUTDATAPATH model.patient_name '/power_all_bands.mat'] );
+        load(SAVEPATH);
         model.OUTDATAPATH= OUTDATAPATH;
         if exist([ DATAPATH data_directory(k).name '/source_dsamp_data_clean.mat'],'file' ) == 2
             load([ DATAPATH data_directory(k).name '/source_dsamp_data_clean.mat']);
@@ -66,7 +67,7 @@ for k =5:7 %[4:11 13:25 28:size(data_directory,1)] %7:37;%:10 %5:35 loop through
             
             
         end
-        model = infer_power( model, patient_coordinates,data_clean,'SOZ','individual');
+        model = infer_power( model, patient_coordinates,data_clean,SAVEPATH);
         
     else
         load([ DATAPATH data_directory(k).name '/source_dsamp_data.mat'])
@@ -111,9 +112,10 @@ for k =5:7 %[4:11 13:25 28:size(data_directory,1)] %7:37;%:10 %5:35 loop through
         %   visualize_data_clean( data([LN;RN],:),data_clean([LN;RN],:), t,[OUTVIDPATH model.patient_name '_cleaning_movie'] );
         fprintf('... inferring power \n')
         model.OUTDATAPATH = OUTDATAPATH;
-        model = infer_power( model, patient_coordinates,data_clean,'SOZ','individual');
         
-        save([ OUTDATAPATH model.patient_name '/power_all_bands.mat'],'model')
+        model = infer_power( model, patient_coordinates,data_clean,SAVEPATH);
+        
+        save(SAVEPATH,'model')
         
     end
 

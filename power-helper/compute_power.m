@@ -57,8 +57,10 @@ if ~isempty(data)
     model_region.f    = f;
     model_region.Serr = Serr;
     
-    Sfit = fit_line(f,model_region.Srel,10,15);
-    stat = compute_statistic( f,model_region.Srel,Sfit,10,15,'area' );
+    %     Sfit = fit_line(f,model_region.Srel,10,15);
+    %     stat = compute_statistic( f,model_region.Srel,Sfit,10,15,'area' );
+    Sfit = fit_line(f,model_region.S,10,15);
+    stat = compute_statistic( f,model_region.S,Sfit,10,15,'area' );
     model_region.sigma_bump = stat;
     
 else

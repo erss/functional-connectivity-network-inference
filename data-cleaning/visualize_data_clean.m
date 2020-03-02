@@ -49,7 +49,7 @@ for k=1:i_total
     F = getframe(h); % ***
     image = F.cdata; % ***
     writeVideo(v,image(1:end,1:end,:)); % ***
-     fprintf(['Plotting image ' num2str(k) '/' num2str(i_total) '.\n'])
+    fprintf(['Plotting image ' num2str(k) '/' num2str(i_total) '.\n'])
 
 
 end

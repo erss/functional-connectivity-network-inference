@@ -7,6 +7,14 @@ function regions = cfg_power( patient_coordinates )
 regions.leftSOZ.nodes = LN;
 regions.rightSOZ.nodes = RN;
 
+%%%% 1.5) Large SOZ
+% [LN1,RN1] = find_subnetwork_coords(patient_coordinates);
+% [LN2,RN2]=find_subnetwork_str( patient_coordinates,'insula');
+% [LN3,RN3]=find_subnetwork_str( patient_coordinates,'parsopercularis');
+% [LN4,RN4] = find_subnetwork_str( patient_coordinates,'superiortemporal');
+% 
+% regions.leftCompleteSOZ.nodes  = [LN1;LN2;LN3;LN4];
+% regions.rightCompleteSOZ.nodes = [RN1;RN2;RN3;RN4];
 
 %%%% 2) Pre to post CG left and right
 pctemp = patient_coordinates;
@@ -15,8 +23,21 @@ pctemp.hand = 'left';
 pctemp.hand = 'right';
 [ PreLN,PostLN,PreUpperLN,PostUpperLN ] = find_subnetwork_prepost( pctemp);
 
+regions.leftUpperPreCG.nodes   = PreUpperLN;
+regions.rightUpperPreCG.nodes  = PreUpperRN;
+regions.leftUpperPostCG.nodes  = PostUpperLN;
+regions.rightUpperPostCG.nodes = PostUpperRN;
+
 regions.leftMotorNetwork.nodes  = [PreLN;PostLN];
 regions.rightMotorNetwork.nodes = [PreRN;PostRN];
+
+%%%%2a)
+
+regions.leftPreCG.nodes = PreLN;
+regions.rightPreCG.nodes = PreRN;
+
+regions.leftPostCG.nodes = PostLN;
+regions.rightPostCG.nodes = PostRN;
 
 %%%% 3) Pre to post CG upper coords left and right
 
@@ -122,8 +143,11 @@ regions.rightCuneus.nodes = RN;
 
 %%%% 23) pericalcarine
 [LN,RN]=find_subnetwork_str( patient_coordinates,'pericalcarine');
-regions.leftPericalarine.nodes = LN;
-regions.rightPericalarine.nodes = RN;
+regions.leftPericalcarine.nodes = LN;
+regions.rightPericalcarine.nodes = RN;
+% FIX TO COMMENTED ONE LATER
+% regions.leftPericalcarine.nodes = LN;
+% regions.rightPericalcarine.nodes = RN;
 
 %%%% 24) lingual
 [LN,RN]=find_subnetwork_str( patient_coordinates,'lingual');

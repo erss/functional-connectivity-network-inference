@@ -24,7 +24,8 @@ f0 = model.sampling_frequency;
 T=band_params.movingwin(1);
 
 %%% ---- Convert region into 1 s trials -------------------------
-data_clean = convert_to_trials( data', ceil(T*f0) );
+fprintf('... ... ... converting trials in good way \n')
+data_clean = convert_to_trials_remove_nan( data', ceil(T*f0) );
 trialtemp = size(data_clean,2);
 for i = size(data_clean,2):-1:1 % remove any trial that contains a nan
     dtemp = data_clean(:,i);
@@ -50,7 +51,8 @@ if ~isempty(data)
     model_region.S    = S(f==nearestFreq);
     model_region.f    = f(f==nearestFreq);
     model_region.Serr = Serr(:,f==nearestFreq);
-    
+    fprintf(['... ... ' band ', f: ' num2str(nearestFreq) ', S: ' num2str(model_region.S) '\n'])
+
     
 else
 
