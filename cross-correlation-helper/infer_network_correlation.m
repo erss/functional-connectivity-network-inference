@@ -102,8 +102,8 @@ end
 
 % 6. Output/save everything
 model.dynamic_network_taxis = t_net;
-model.mx0 = mx0;
-model.lag0 = lag0;
-model.C = C;
-model.pvals = pval;
+model.mx0                   = mx0;
+model.lag0                  = lag0;
+model.C                     = C;
+model.pvals                 = pval;
 end
