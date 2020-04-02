@@ -14,8 +14,9 @@ model.q                  = 0.05;  % false-discovery-rate
 model.nsurrogates        = 10000; % number of surrogates used to generate bootstrap distribution
 model.t                  = time;  % time axis
 
-%%% 3. REMOVE ARTIFACTS
+%%% 3. REMOVE ARTIFACTS 
 model = remove_artifacts_all_lobes(model,patient_coordinates_013);
+% NOTE: model contains new field: 'data_clean' where NaNs replace artifacts
 
 %%% 4. INFER NETWORK
 model = infer_network_correlation( model);
