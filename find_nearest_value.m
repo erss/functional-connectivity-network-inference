@@ -1,4 +1,6 @@
 function [nearestValue,nearestValueIdx] = find_nearest_value( values, target )
+% Elizabeth Spencer Sept 22 2019
+%
 % FIND_NEAREST_VALUE find the values in a vector that are closest to target
 % measurements of interest.
 % INPUTS:
