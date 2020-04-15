@@ -13,7 +13,7 @@ function data_trials = convert_to_trials_remove_nan( data, dim1 )
 % M(5:10,1) =nan
 % M(7:14,2) =nan
 % M(19:22,2)=nan
-% 
+
 % convert_to_trials_remove_nan( M, 7 )
 
 % Convert vectors to column vectors.
@@ -34,8 +34,10 @@ for col = 1:nelectrodes
     D = mat2cell(signal,idr(:),size(signal,2));
     for i = 1:length(D)
         temp = D{i};
-        dataTemp = convert_to_trials( temp, dim1 );
-        data_trials = [data_trials, dataTemp];
+        if all(isfinite(temp))
+            dataTemp = convert_to_trials( temp, dim1 );
+            data_trials = [data_trials, dataTemp];
+        end
     end
     
 end
