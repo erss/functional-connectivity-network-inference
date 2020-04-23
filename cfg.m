@@ -1,20 +1,17 @@
 function cfg()
 
 global bects_default;
+global angelman_default;
 % 
 % [ret, name] = system('hostname')
 % char(java.lang.System.getProperty('user.name'))
 % char(java.net.InetAddress.getLocalHost.getHostName)
 
 host = java.lang.System.getProperty('user.name');
-if strcmp(host, 'erss-scc')
-    
-    
-    
+if strcmp(host, 'erss')
     % scc
     bects_default.bectsnetworkstoolbox = '/projectnb/ecog/liz/toolboxes/bects-networks-toolbox';
     bects_default.bu =  '/projectnb/ecog/liz/toolboxes/bu';
-
     bects_default.fcnetworkinference = '/projectnb/ecog/liz/toolboxes/fc-network-inference-bootstrap/';
     bects_default.chronuxtoolbox = '/projectnb/ecog/liz/toolboxes/chronux/';
     bects_default.mgh =       '/projectnb/ecog/liz/toolboxes/mgh/';
@@ -23,9 +20,12 @@ if strcmp(host, 'erss-scc')
 
     bects_default.outdatapathpwr = '/projectnb/ecog/BECTS/bects_results/power/';
     bects_default.outvidpath     = '/projectnb/ecog/BECTS/bects_results/cleaning_videos/';
-    
-    
-    
+    bects_default.datapath =  '/projectnb/ecog/BECTS/source_data_ds/';
+
+    angelman_default.fieldtrip = '/projectnb/ecog/liz/toolboxes/fieldtrip-20200409';
+    angelman_default.datapath =  '/projectnb/ecog/angelman-data/data/';
+    angelman_default.outdatapath =  '/projectnb/ecog/angelman-data/data_mat_files/';
+
    
 elseif strcmp(host, 'liz') % Galactica
     
@@ -43,7 +43,7 @@ elseif strcmp(host, 'liz') % Galactica
     bects_default.outmoviepath =  '~/Desktop/bects_results/cleaning_movies/';
     bects_default.outdatapathpwr = '~/Desktop/bects_results/power/';
     
-elseif strcmp(host,'erss') %%% my mac
+elseif strcmp(host,'erss-mac') %%% my mac
      
     % my mac
     bects_default.bectsnetworkstoolbox = '~/Documents/MATLAB/bects-networks-toolbox/';

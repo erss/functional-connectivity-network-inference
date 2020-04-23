@@ -10,8 +10,8 @@ function [nearestValue,nearestValueIdx] = find_nearest_value( values, target )
 %   nearestValue = vector of same dim(target).
 %   nearestValueIdx = vector of 0s and 1s indexing where target appears in vector of values.               
 % Example:
-%  values = [0:10];
-%  target = [0.2,4.2,4.5,9.6];
+%  values = [10 3 4 2 1 9 8 7 0 5 6];
+%  target = [0.5,0.2,4.2,4.5,9.6];
 %  [nearestValue, nearestValueIdx] = find_nearest_value( values, target )
 %  OUTPUT:
 %   nearestValue = 0     4     4    10
@@ -20,16 +20,20 @@ function [nearestValue,nearestValueIdx] = find_nearest_value( values, target )
 %  NOTE: If target number is half way between two values,  then what is
 %  returned is the first number it is closest to (the lowest).
 
-values = sort(values,'ascend');
+
+values_sorted = sort(values,'ascend');
 nearestValue = nan(1,length(target));
-nearestValueIdx= zeros(1,length(values));
+nearestValueIdx= zeros(1,length(values_sorted));
 
 for i = 1:length(target)
     
-    [~,idx]=min(abs(values-target(i)));
-    nearestValue(i)=values(idx);
+    [~,idx]=min(abs(values_sorted-target(i)));
+    nearestValue(i)=values_sorted(idx);
+    
+    idx = find(values==nearestValue(i));
     nearestValueIdx(idx) = 1;
 end
 
+nearestValueIdx = logical(nearestValueIdx);
 end
 
