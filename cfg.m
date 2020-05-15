@@ -25,7 +25,7 @@ if strcmp(host, 'erss')
     angelman_default.fieldtrip = '/projectnb/ecog/liz/toolboxes/fieldtrip-20200409';
     angelman_default.datapath =  '/projectnb/ecog/angelman-data/data/';
     angelman_default.outdatapath =  '/projectnb/ecog/angelman-data/data_mat_files/';
-
+    angelman_default.angelman = '/projectnb/ecog/liz/toolboxes/angelman/';
    
 elseif strcmp(host, 'liz') % Galactica
     

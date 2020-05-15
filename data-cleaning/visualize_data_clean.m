@@ -15,8 +15,8 @@ function visualize_data_clean( data_original,data_clean, t, OUTVIDPATH)
 v = VideoWriter(OUTVIDPATH); % path to save video, 'v'
 v.FrameRate=15;              % frames/sec
 open(v);
-window_size = 1;
-window_step = 1;
+window_size = 10;
+window_step = 10;
 i_total = 1+floor((t(end)-t(1)-window_size) /window_step);  % # intervals.
 h = figure('units','normalized','outerposition',[0 0 .5 1],'visible','off');
 
@@ -28,7 +28,7 @@ data_removed = reshape(data_temp,size(data_clean));
 
 
 %h=figure('visible','on');
-for k=1:i_total
+for k=1:floor(i_total/2)
     
     % Get 1 s time window
     t_start = t(1) + (k-1) * window_step;   %... get window start time [s],
