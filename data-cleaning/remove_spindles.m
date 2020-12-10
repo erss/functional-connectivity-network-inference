@@ -17,7 +17,7 @@ if isempty(varargin)
         ch_names{i} = num2str(i);
     end
     hdr.info.ch_names =ch_names;
-    options.minPeakProminence = 2*exp(-12);
+    options.MinPeakProminence = 2*exp(-12);
     spindle_prob = LSM_spindle_probabilities(data, hdr,options);
     spindle_det = LSM_spindle_detections(spindle_prob);
     

@@ -21,9 +21,9 @@ function [nearestValue,nearestValueIdx] = find_nearest_value( values, target )
 %  returned is the first number it is closest to (the lowest).
 
 
-values_sorted = sort(values,'ascend');
-nearestValue = nan(1,length(target));
-nearestValueIdx= zeros(1,length(values_sorted));
+[values_sorted, vsIndex ]= sort(values,'ascend');
+nearestValue    = nan(1,length(target));
+nearestValueIdx = zeros(1,length(values_sorted));
 
 for i = 1:length(target)
     
@@ -35,5 +35,7 @@ for i = 1:length(target)
 end
 
 nearestValueIdx = logical(nearestValueIdx);
+%nearestValueIdx = nearestValueIdx(vsIndex);
+
 end
 
